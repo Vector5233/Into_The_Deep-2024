@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.training;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -10,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Servo Port 00: servoOne // must match variable name in CH and in Java
  */
 
-@Disabled
+//@Disabled
 @TeleOp(group = "Primary", name = "Servo with buttons")
 public class Example_001c_ServoOne extends LinearOpMode {
 
@@ -23,10 +22,8 @@ public class Example_001c_ServoOne extends LinearOpMode {
     //Try not to use sleep/delay in Teleop
 
 
-
-
     @Override
-    public void  runOpMode() throws InterruptedException{
+    public void runOpMode() throws InterruptedException {
         initHardware();
 
         while(!isStarted()){
@@ -70,8 +67,18 @@ public class Example_001c_ServoOne extends LinearOpMode {
             servoOne.setPosition(servoOnePositionTwo);
         }
         if(gamepad1.right_bumper){
-            //servoOneSlower(servoOnePositionOne, servoOnePositionTwo, servoOneDelay);
+            servoOneSlower(servoOnePositionOne, servoOnePositionTwo, servoOneDelay);
         }
 
+    }
+    public void servoOneSlower(double startPosition, double endPosition, int delay){
+            // maybe for Auto mode.
+        double range =((endPosition - startPosition) * 100);
+        //for(local variable; conditional; update variable)
+        for(int i =0; i<= range; i++){
+            servoOne.setPosition(startPosition);
+            sleep(delay);
+            startPosition = startPosition + 0.01;
+        }
     }
 }
