@@ -79,6 +79,6 @@ public class Example_001c_ServoOne extends LinearOpMode {
             servoOne.setPosition(startPosition);
             sleep(delay);
             startPosition = startPosition + 0.01;
-        }
+        }// not sure of missing section.
     }
 }
