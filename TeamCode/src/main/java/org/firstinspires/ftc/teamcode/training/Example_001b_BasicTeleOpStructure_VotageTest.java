@@ -19,7 +19,7 @@ Block Comments can collapse...
 
 @Disabled // does not show up on DriverStation- must be commented out before uploading
 @TeleOp(group = "Primary", name = "ShorName")
-public class Example_001b_BasicTeleOpStructure extends LinearOpMode {
+public class Example_001b_BasicTeleOpStructure_VotageTest extends LinearOpMode {
     //public - An access modifier indicating this method can be called from outside this class
     //class - A collection/blueprint of members/fields/global variables and methods and functions
     //Classes are named in UpperCamelCase
