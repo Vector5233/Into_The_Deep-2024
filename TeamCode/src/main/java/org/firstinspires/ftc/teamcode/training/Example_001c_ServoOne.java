@@ -15,11 +15,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Example_001c_ServoOne extends LinearOpMode {
 
     //global variables go below the class name
-    private static Servo servoOne; // servos go from 0 to 1 rotates 180 degrees
-    final double servoOneInitPosition =0.5; // doubles store a decimal
-    final double servoOnePositionOne =0.0;
-    final double servoOnePositionTwo =1.0;
-    final int servoOneDelay = 10;
+    private Servo servoOne; // servos go from 0 to 1 rotates 180 degrees
+    double servoOneInitPosition =0.5; // doubles store a decimal
+    double servoOnePositionOne =0.0;
+    double servoOnePositionTwo =1.0;
+    int servoOneDelay = 10;
     //Try not to use sleep/delay in Teleop
 
 
