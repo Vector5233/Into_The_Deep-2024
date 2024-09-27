@@ -8,11 +8,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 /**Configuration file
  * Control Hub:
  * Servo Port 00: servoOne // must match variable name in CH and in Java
+ * Servo Port 01: servoTwo
  */
 
 @Disabled
 @TeleOp(group = "Primary", name = "Servo with buttons")
-public class Example_001c_ServoOne extends LinearOpMode {
+public class Example_001d_ServoOneandTwo extends LinearOpMode {
 
     //global variables go below the class name
     private Servo servoOne; // servos go from 0 to 1 rotates 180 degrees
@@ -75,7 +76,7 @@ public class Example_001c_ServoOne extends LinearOpMode {
 
     }
     public void servoOneSlower(double startPosition, double endPosition, int delay){
-            // maybe for Auto mode.
+        // maybe for Auto mode.
         double range =((endPosition - startPosition) * 100);
         //for(local variable; conditional; update variable)
         for(int i =0; i<= range; i++){
