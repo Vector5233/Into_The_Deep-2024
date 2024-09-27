@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.training;
 // Cover packages (directories), creating a java class, and refactoring
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -16,7 +16,8 @@ Block Comments can collapse...
  * Configuration file
  *
  */
-//@Disabled // does not show up on DriverStation- must be commented out before uploading
+
+@Disabled // does not show up on DriverStation- must be commented out before uploading
 @TeleOp(group = "Primary", name = "ShorName")
 public class Example_001b_BasicTeleOpStructure extends LinearOpMode {
     //public - An access modifier indicating this method can be called from outside this class
