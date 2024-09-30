@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @Disabled
-@TeleOp(group = "Primary", name = "ShorName")
+@TeleOp(group = "Primary", name = "Short Name")
 public class Example_001a_BasicTeleOpStructure extends LinearOpMode {
     @Override
     public void  runOpMode() throws InterruptedException{
