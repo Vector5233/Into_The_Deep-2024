@@ -82,7 +82,7 @@ public class Example_001e_ServoThree extends LinearOpMode {
     }
 
     public void  initServoThree(){
-        crServoThree = hardwareMap.get(CRServo.class, "crServoTree");
+        crServoThree = hardwareMap.get(CRServo.class, "crServoThree");
         crServoThree.setDirection(CRServo.Direction.FORWARD);
         crServoThree.setPower(crServoThreeZeroPower);
     }

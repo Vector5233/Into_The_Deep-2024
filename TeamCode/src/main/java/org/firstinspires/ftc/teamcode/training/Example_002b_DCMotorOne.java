@@ -36,10 +36,11 @@ public class Example_002b_DCMotorOne extends LinearOpMode {
 
     public  void  initMotorOne(){
         motorOne = hardwareMap.get(DcMotor.class, "motorOne");
-        motorOne.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorOne.setDirection(DcMotor.Direction.FORWARD);
         motorOne.setPower(motorOneZeroPower);
         motorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);//FLOAT for cost to a stop
         motorOne.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         /**
          * STOP_AND_RESET_ENCODER - The encoder's current position is set to zero
