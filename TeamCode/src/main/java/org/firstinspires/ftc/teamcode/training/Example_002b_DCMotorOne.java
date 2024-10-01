@@ -20,17 +20,18 @@ public class Example_002b_DCMotorOne extends LinearOpMode {
 
     @Override
     public void  runOpMode() throws InterruptedException{
+    teleOpControls();
         initHardware();
         while(!isStarted()){
             motorTelemetry();
         }
         waitForStart();
         while(opModeIsActive()){
-            teleOpControls();
             motorTelemetry();
         }
     }
     public void initHardware(){
+
         initMotorOne();
     }
 
