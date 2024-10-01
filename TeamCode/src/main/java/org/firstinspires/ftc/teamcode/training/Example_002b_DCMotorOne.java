@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.training;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 /**Configuration file
@@ -39,7 +39,7 @@ public class Example_002b_DCMotorOne extends LinearOpMode {
 
     public  void  initMotorOne(){
         motorOne = hardwareMap.get(DcMotor.class, "motorOne");
-        motorOne.setDirection(DcMotor.Direction.REVERSE);
+        motorOne.setDirection(DcMotor.Direction.FORWARD);
         motorOne.setPower(motorOneZeroPower);
         motorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);//FLOAT for cost to a stop
         motorOne.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
