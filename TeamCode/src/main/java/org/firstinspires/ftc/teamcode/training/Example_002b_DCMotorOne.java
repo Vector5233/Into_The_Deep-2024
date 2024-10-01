@@ -3,7 +3,8 @@ package org.firstinspires.ftc.teamcode.training;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+
 
 /**Configuration file
  * ControlHub
@@ -20,13 +21,14 @@ public class Example_002b_DCMotorOne extends LinearOpMode {
 
     @Override
     public void  runOpMode() throws InterruptedException{
-    teleOpControls();
+
         initHardware();
         while(!isStarted()){
             motorTelemetry();
         }
         waitForStart();
         while(opModeIsActive()){
+            teleOpControls();
             motorTelemetry();
         }
     }
@@ -37,13 +39,14 @@ public class Example_002b_DCMotorOne extends LinearOpMode {
 
     public  void  initMotorOne(){
         motorOne = hardwareMap.get(DcMotor.class, "motorOne");
-        motorOne.setDirection(DcMotor.Direction.FORWARD);
+        motorOne.setDirection(DcMotor.Direction.REVERSE);
         motorOne.setPower(motorOneZeroPower);
         motorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);//FLOAT for cost to a stop
         motorOne.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorOne.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        /**
+
+       /**
          * STOP_AND_RESET_ENCODER - The encoder's current position is set to zero
          * RUN_WITHOUT_ENCODER - The encoder data is collected, but the velocity of the motor is set to a specific power level without the PID.
          * RUN_USING_ENCODER - The generic PID contoller is used to achieved a specific power using encoder data
