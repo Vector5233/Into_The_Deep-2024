@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  */
 
 //@Disabled
-@TeleOp(group = "Primary", name = "DcMotor two with JoyStick")
+@TeleOp(group = "Primary", name = "DC Motor Run to position")
 public class Example_002b_DCMotorThree extends LinearOpMode {
     //Global Variables
     private DcMotor motorOne;
@@ -27,8 +27,8 @@ public class Example_002b_DCMotorThree extends LinearOpMode {
     private DcMotor motorThree;
     double motorThreeZeroPower = 0.0;
     double motorThreePower = 1.0;
-    double motorThreePositionOne = 0;
-    double motorThreePositionTwo = 1000;
+    int motorThreePositionOne = 0;
+    int motorThreePositionTwo = 1000;
 
 
     @Override
@@ -86,23 +86,61 @@ public class Example_002b_DCMotorThree extends LinearOpMode {
     public void  motorTelemetry(){
 //        telemetry.addData("motorOne", "Encoder: %2d, Power:%.2f", motorOne.getCurrentPosition(), motorOne.getPower());
 //        telemetry.update();
-        telemetry.addData("motorTwo", "Encoder: %2d, Power:%.2f", motorTwo.getCurrentPosition(), motorTwo.getPower());
+//        telemetry.addData("motorTwo", "Encoder: %2d, Power:%.2f", motorTwo.getCurrentPosition(), motorTwo.getPower());
+        telemetry.addData("Note", "Tap y to reset Encoders");
+        telemetry.addData("motorThree","Encoder: %2d, Power: %2f", motorThree.getCurrentPosition(), motorThree.getPower());
         telemetry.update();
     }
+    public void runMotorThreeToPosition(int position) {
+        motorThree.setTargetPosition(position);
+        motorThree.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorThree.setPower(motorThreePower);
+        while (motorThree.isBusy()) {
+            motorTelemetry();
+        }
+        motorThree.setPower(motorThreeZeroPower);// Optional /
+    }
 
-    public void teleOpControls(){
+    public void resetEncoders(){
+        stopMotors();
+        stopAndResetEncoders();
+        resetMode();
+    }
+    public void stopMotors(){
+        motorThree.setPower(motorThreeZeroPower);
+    }
+    public void stopAndResetEncoders(){
+        motorThree.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+    public void resetMode(){
+        motorThree.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void teleOpControls() {
         //Button control motor
-        if(gamepad2.x){
+        if (gamepad2.x) {
             motorOne.setPower(-motorOnePower);
         }
-        if(gamepad2.a){
+        if (gamepad2.a) {
             motorOne.setPower(motorOneZeroPower);
         }
-        if(gamepad2.b){
+        if (gamepad2.b) {
             motorOne.setPower(motorOnePower);
         }
         // run motor with joyStick
-       motorTwo.setPower(gamepad2.right_stick_y * motorTwoSensitivity);
+        motorTwo.setPower(gamepad2.right_stick_y * motorTwoSensitivity);
 
+        if (gamepad2.left_bumper) {
+            runMotorThreeToPosition(motorThreePositionOne);
+        }
+        if (gamepad2.right_bumper) {
+            runMotorThreeToPosition(motorThreePositionTwo);
+        }
+        if (gamepad2.y) {
+            resetEncoders();
+
+        }
     }
+
+
 }
