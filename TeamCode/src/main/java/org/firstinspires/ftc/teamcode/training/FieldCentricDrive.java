@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 
 /**Configuration file
  * Motor port 1 : leftFM
@@ -51,7 +50,7 @@ public class FieldCentricDrive extends LinearOpMode {
         leftFM = hardwareMap.get(DcMotor.class,"leftFM");
         rightFM = hardwareMap.get(DcMotor.class,"rightFM");
         leftBM = hardwareMap.get(DcMotor.class,"leftBM");
-        rightFM = hardwareMap.get(DcMotor.class,"rightBM");
+        rightBM = hardwareMap.get(DcMotor.class,"rightBM");
 
         // set oneside to reverse
         leftFM.setDirection(DcMotor.Direction.REVERSE);
