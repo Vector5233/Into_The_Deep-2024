@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.zalkin;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 /**
  * Configuration file
@@ -17,7 +17,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 //@Disabled
 @TeleOp(group = "Zalkin", name = "BasicTeleop")
-public class BASICTELEOPSTRUCTURE extends LinearOpMode {
+public class VOLTAGE_TEST extends LinearOpMode {
+    private VoltageSensor batteryVoltageSensor;
     @Override
     public void runOpMode() throws InterruptedException {
         initHardware(); // method initiates hardware components
@@ -32,20 +33,13 @@ public class BASICTELEOPSTRUCTURE extends LinearOpMode {
     }
 
     public void initHardware() {
+        initVoltageSensor();
+    }
+    public void initVoltageSensor(){
+            batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
+    }
+    public void sensorTelemetry(){
+        telemetry.addData("get voltage", batteryVoltageSensor.getVoltage());
+        telemetry.update();
     }
 }
-/*
-
-------------------/---\
------------------/ \   \
-                    \   \
-                     \   \
-                      \  /---/
-                       \/   /
-                      /    /
-                     /    /
-     ---------------/    /
-                     \  /
-     -----------------\/
-
- */
