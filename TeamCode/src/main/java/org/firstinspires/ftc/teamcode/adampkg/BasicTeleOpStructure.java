@@ -20,7 +20,8 @@ public class BasicTeleOpStructure extends LinearOpMode {
     initHardware();
     while(!isStarted())
     {
-        //camera methods that 2
+        //camera methods that
+        //This is a comment
     }
     waitForStart();
     while(opModeIsActive())
