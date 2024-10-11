@@ -34,18 +34,3 @@ public class BASICTELEOPSTRUCTURE extends LinearOpMode {
     public void initHardware() {
     }
 }
-/*
-
-------------------/---\
------------------/ \   \
-                    \   \
-                     \   \
-                      \  /---/
-                       \/   /
-                      /    /
-                     /    /
-     ---------------/    /
-                     \  /
-     -----------------\/
-
- */
