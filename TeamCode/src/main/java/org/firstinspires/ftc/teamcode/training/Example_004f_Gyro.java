@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.training;
 
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 /**
  * Configuration file
@@ -19,16 +17,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 @TeleOp(group = "Primary", name = "Imu-Gyro Use")
 public class Example_004f_Gyro extends LinearOpMode {
 
-    private BNO055IMU imu;
-    double imuX = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
-    double imuY = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle;
-    double imuZ = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
-
+    private IMU imu;
 
     @Override
     public void runOpMode() throws InterruptedException {
         initHardware();
         while (!isStarted()) {
+            imuTelemetry();
         }
         waitForStart();
         while (opModeIsActive()) {
@@ -40,17 +35,20 @@ public class Example_004f_Gyro extends LinearOpMode {
         initImu();
     }
     public void  initImu(){
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters(); // new instance
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES; // settings
-        parameters.calibrationDataFile = "SensorBHI260Calibration.json"; // settings
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
 
+
+    }
+    public double getAngle(){
+        double heading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        return heading;
     }
     public void imuTelemetry(){
-        telemetry.addData("Pitch-X", "%.2f", imuX);//USB ports to servo ports
-        telemetry.addData("Roll-Y", "%.2f", imuY); // Motor ports to sensor ports
-        telemetry.addData("Yaw-Z", "%.2f", imuZ);   // Top to bottom
+        telemetry.addData("Robot Angle", getAngle());  // Top to bottom
         telemetry.update();
 
     }
