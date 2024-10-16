@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.training;
 
-import com.qualcomm.hardware.bosch.BHI260IMU;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 @TeleOp(group = "Primary", name = "Imu-Gyro Use")
 public class Example_004f_Gyro extends LinearOpMode {
 
-    private BHI260IMU imu;
+    private BNO055IMU imu;
     double imuX = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
     double imuY = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle;
     double imuZ = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
@@ -40,10 +40,10 @@ public class Example_004f_Gyro extends LinearOpMode {
         initImu();
     }
     public void  initImu(){
-        BHI260IMU.Parameters parameters = new BNO055IMU.Parameters(); // new instance
-        parameters.angleUnit = BHI260IMU.AngleUnit.DEGREES; // settings
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters(); // new instance
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES; // settings
         parameters.calibrationDataFile = "SensorBHI260Calibration.json"; // settings
-        imu = hardwareMap.get(BHI260IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
     }
