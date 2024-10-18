@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.training;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -20,7 +21,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Servo port 05:rightLights
  */
 
-//@Disabled
+@Disabled
 @TeleOp(group = "Primary", name = "Led Controller")
 public class Example_004d_BlinkinLEDController extends LinearOpMode {
     private RevBlinkinLedDriver leftLights, rightLights;
@@ -42,7 +43,7 @@ public class Example_004d_BlinkinLEDController extends LinearOpMode {
 
     public void initHardware() {
         initLights();
-      //  Thread.sleep(blinkinDelay);
+        sleep(blinkinDelay);
         blinkinGreen();
 
     }
@@ -106,7 +107,8 @@ public class Example_004d_BlinkinLEDController extends LinearOpMode {
     }
 
     public void timeTelemetry() {
-
+    telemetry.addData("Timer", time);
+    telemetry.update();
 
     }
 }

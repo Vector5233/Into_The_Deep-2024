@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.training;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -10,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Servo Port 01: servoTwo
  */
 
-//@Disabled
+@Disabled
 @TeleOp(group = "Primary", name = "Servo with buttons")
 public class Example_001d_ServoTwo extends LinearOpMode {
 

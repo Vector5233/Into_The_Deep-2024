@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.training;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * I2C Port 01:distanceSensor
  */
 
-//@Disabled
+@Disabled
 @TeleOp(group = "Primary", name = "Distance Sensor")
 public class Example_004a_DistanceSen extends LinearOpMode {
     private DistanceSensor distanceSensor; // voltage issues - as battery drops you can get error sound with connection

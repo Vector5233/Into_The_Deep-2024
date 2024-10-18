@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.training;
 
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * Motor port 4 : rightBM
  */
 
-@Disabled
+//@Disabled
 @TeleOp(group = "Primary", name = "Short Name")
 public class Example_003d_FieldCentricDrive extends LinearOpMode {
     private DcMotor leftFM;

@@ -1,20 +1,31 @@
 package org.firstinspires.ftc.teamcode.training;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-@TeleOp
-public class Example_000a_BasicTeleOpStructureTwo {
+@Disabled
+@TeleOp(group ="Secondary", name="OtherOpModeStructure")
+public class Example_000a_BasicTeleOpStructureTwo extends OpMode {
     //define gobal variables here
 
     @Override
     public void init(){
         //init method stack goes here
     }
-    @Override
+   @Override
     public void init_loop(){
 
     }
-    public void loop(){
+    @Override
+    public void start(){
+
+    }
+    @Override
+    public void stop(){
+
+    }
+    @Override
+    public  void  loop(){
 
     }
 }

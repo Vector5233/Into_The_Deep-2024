@@ -4,19 +4,23 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-/**Configuration file
- *
+/**
+ * Configuration file
  */
 
 @Disabled
 @TeleOp(group = "Primary", name = "Short Name")
 public class Example_001a_BasicTeleOpStructure extends LinearOpMode {
     @Override
-    public void  runOpMode() throws InterruptedException{
+    public void runOpMode() throws InterruptedException {
         initHardware();
-        while(!isStarted()){}
+        while (!isStarted()) {
+        }
         waitForStart();
-        while(opModeIsActive()){}
+        while (opModeIsActive()) {
+        }
     }
-    public void initHardware(){}
+
+    public void initHardware() {
+    }
 }

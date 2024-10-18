@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.training;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -7,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *
  */
 
-//@Disabled
+@Disabled
 @TeleOp(group = "Primary", name = "Text Output")
 public class Example_002a_HelloWorld extends LinearOpMode {
     @Override
