@@ -31,11 +31,13 @@ public class Example_004c_ToSensor extends LinearOpMode {
         }
         waitForStart();
         while(opModeIsActive()){
+            getTouchSensor();
             switchTelemetry();
             teleOpControls();
         }
     }
     public void initHardware(){
+        getTouchSensor();
         initTouchSensor();
         initServoOne();
     }
