@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.training;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -11,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * I2c Port 03: colorSensor
  */
 
-@Disabled
+//@Disabled
 @TeleOp(group = "Primary", name = "Color Sensor")
 public class Example_004b_ColorSensor extends LinearOpMode {
     private ColorSensor colorSensor;
@@ -19,7 +18,7 @@ public class Example_004b_ColorSensor extends LinearOpMode {
     double greenValue;
     double blueValue;
     double alphaValue; // light Intensity
-    double targetValue = 1000;
+    double targetValue = 500;
 
     private Servo servoOne;
     double servoOneInitPosition =0.5;
@@ -52,12 +51,14 @@ public class Example_004b_ColorSensor extends LinearOpMode {
     }
 
     public void initColorSensor(){
+
         colorSensor=hardwareMap.get(ColorSensor.class, "colorSensor");
     }
     public void getColor(){
         redValue = colorSensor.red();
         greenValue = colorSensor.green();
         blueValue = colorSensor.blue();
+        alphaValue = colorSensor.alpha();
 
 
     }
