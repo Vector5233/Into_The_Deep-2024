@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.training;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -17,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(group = "Primary", name = "Distance Sensor")
 public class Example_004a_DistanceSen extends LinearOpMode {
     private DistanceSensor distanceSensor; // voltage issues - as battery drops you can get error sound with connection
-    int distanceSensorTarget = 10;
+    double distanceSensorTarget = 10;
 
     private Servo servoOne;
     double servoOneInitPosition =0.5;
@@ -55,7 +54,7 @@ public class Example_004a_DistanceSen extends LinearOpMode {
         //always test with a ruler or tape measure.
     }
     public void teleOpControls(){
-        if(distanceSensor.getDistance(DistanceUnit.CM)< distanceSensorTarget){
+        if(distanceSensor.getDistance(DistanceUnit.CM) < distanceSensorTarget){
             servoOne.setPosition(servoOnePositionTwo);
         }else{
             servoOne.setPosition(servoOnePositionOne);
