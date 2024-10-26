@@ -35,10 +35,7 @@ public class Example_003c_BasicMechanumDrive extends LinearOpMode {
         while(opModeIsActive()){
             // this drives the motors but setting the power lx to -1-0-1  forward and backward on Left joyStick and ly -1-0-1 left and right.
             // right joyStick spins the bot in rx left or right on center axis.
-            leftFront.setPower((ly + lx + rx) / max); //*power
-            leftBack.setPower((ly - lx + rx) / max);  //*power
-            rightFront.setPower((ly - lx - rx) / max); //*power
-            rightBack.setPower((ly + lx - rx) / max); //*power
+           teleOpControls();
 
         }
     }
@@ -50,5 +47,12 @@ public class Example_003c_BasicMechanumDrive extends LinearOpMode {
         // motor reversed as they are set to spin rotation right.
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    public void teleOpControls(){
+        leftFront.setPower((ly + lx + rx) / max); //*power
+        leftBack.setPower((ly - lx + rx) / max);  //*power
+        rightFront.setPower((ly - lx - rx) / max); //*power
+        rightBack.setPower((ly + lx - rx) / max); //*power
     }
 }
