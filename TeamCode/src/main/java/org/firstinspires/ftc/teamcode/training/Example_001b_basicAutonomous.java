@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.training;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /**
@@ -10,9 +11,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * Expansion Hub
  */
 
-
+@Disabled
 @Autonomous (group="secondary", name="name")
-//@Disabled
+
 public class Example_001b_basicAutonomous extends LinearOpMode {
     //global variables
     @Override

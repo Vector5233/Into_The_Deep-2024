@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.training;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -10,7 +11,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  * Digital port 01: touchSensor defaults to the higher number if one sensor.
  */
 
-//@Disabled
+@Disabled
 @TeleOp(group = "Primary", name = "Touch Sensor")
 public class Example_004c_ToSensor extends LinearOpMode {
     private TouchSensor touchSensor;
