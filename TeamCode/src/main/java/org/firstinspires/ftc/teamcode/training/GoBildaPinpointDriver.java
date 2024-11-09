@@ -20,12 +20,11 @@
  *   SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode.training;
+package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.util.TypeConversion.byteArrayToInt;
 
 import com.qualcomm.hardware.lynx.LynxI2cDeviceSynch;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchSimple;
@@ -41,13 +40,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
-@Disabled
+
 @I2cDeviceType
 @DeviceProperties(
         name = "goBILDA® Pinpoint Odometry Computer",
         xmlTag = "goBILDAPinpoint",
         description ="goBILDA® Pinpoint Odometry Computer (IMU Sensor Fusion for 2 Wheel Odometry)"
-)
+        )
 
 public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSimple> {
 
@@ -156,7 +155,7 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
 
 
     /** Writes an int to the i2c device
-     @param reg the register to write the int to
+    @param reg the register to write the int to
      @param i the integer to write to the register
      */
     private void writeInt(final Register reg, int i){
@@ -518,3 +517,8 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
 
 
 }
+
+
+
+
+
