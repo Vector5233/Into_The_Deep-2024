@@ -14,7 +14,7 @@ import java.util.Locale;
 
 public class SensorPinpointDriveToPoint extends LinearOpMode {
 
-    Pinpoint odo; // Declare OpMode member for the Odometry Computer
+    GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     private DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
 
     enum StateMachine{
@@ -36,12 +36,28 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
-        odo = hardwareMap.get(Pinpoint.class,"odo");
+        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odo.setOffsets(-142.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
-        odo.setEncoderResolution(Pinpoint.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(Pinpoint.EncoderDirection.REVERSED, Pinpoint.EncoderDirection.FORWARD);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
-        odo.reset();
+         /*
+        Before running the robot, recalibrate the IMU. This needs to happen when the robot is stationary
+        The IMU will automatically calibrate when first powered on, but recalibrating before running
+        the robot is a good idea to ensure that the calibration is "good".
+        resetPosAndIMU will reset the position to 0,0,0 and also recalibrate the IMU.
+        This is recommended before you run your autonomous, as a bad initial calibration can cause
+        an incorrect starting value for x, y, and heading.
+         */
+        //odo.recalibrateIMU();
+        odo.resetPosAndIMU();
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("X offset", odo.getXOffset());
+        telemetry.addData("Y offset", odo.getYOffset());
+        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
+        telemetry.addData("Device Scalar", odo.getYawScalar());
+        telemetry.update();
 
         nav.initializeMotors();
         nav.setXYCoefficients(0.02,0.002,0.0,DistanceUnit.MM,12);
@@ -50,13 +66,6 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
 
         StateMachine stateMachine;
         stateMachine = StateMachine.WAITING_FOR_START;
-
-        telemetry.addData("Status", "Initialized");
-        telemetry.addData("X offset", odo.getXOffset());
-        telemetry.addData("Y offset", odo.getYOffset());
-        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
-        telemetry.addData("Device Scalar", odo.getYawScalar());
-        telemetry.update();
 
         // Wait for the game to start (driver presses START)
         waitForStart();
