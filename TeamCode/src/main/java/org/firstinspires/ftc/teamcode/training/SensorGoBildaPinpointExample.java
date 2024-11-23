@@ -91,7 +91,7 @@ public class SensorGoBildaPinpointExample extends LinearOpMode {
         If you're using another kind of odometry pod, uncomment setEncoderResolution and input the
         number of ticks per mm of your odometry pod.
          */
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
         //odo.setEncoderResolution(13.26291192);
 
 
@@ -134,6 +134,12 @@ public class SensorGoBildaPinpointExample extends LinearOpMode {
             from the device in a single I2C read.
              */
             odo.update();
+
+             final Pose2D target1 = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
+             sleep(500);
+             final Pose2D target2 = new Pose2D(DistanceUnit.MM, 300, 20, AngleUnit.DEGREES, 0);
+             sleep(500);
+             final Pose2D target3 = new Pose2D(DistanceUnit.MM,500,0, AngleUnit.DEGREES,0);
 
             /*
             Optionally, you can update only the heading of the device. This takes less time to read, but will not
