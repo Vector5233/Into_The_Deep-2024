@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.adampkg;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -30,14 +31,31 @@ public class MechAnimAQ extends LinearOpMode {
     DcMotor liftRight;
     DcMotor liftLeft;
 
-
+//ALL THE SERVO STUFF
     private Servo servoPincher; // servos go from 0 to 1 rotates 180 degrees
-    double servoPincherInitPosition = 0.5; // doubles store a decimal
+    double servoPincherInitPosition = 0.0; // doubles store a decimal
     double servoPincherPositionOpen = 0.0;
-    double servoPincherPositionClose = 1.0;
-    int servoOneDelay = 10;
+    double servoPincherPositionClose = 0.3;
 
-    //a game pad = a controller
+    private Servo pincherPivot; // servos go from 0 to 1 rotates 180 degrees
+    double pincherPivotInitPosition = 0.0; // doubles store a decimal
+    double pincherPivotPositionOutside = 0.0;
+    double pincherPivotPositionInside = 0.55;
+
+    private Servo shortArmPivot; // servos go from 0 to 1 rotates 180 degrees
+    double shortArmPivotInitPosition = 0.5; // doubles store a decimal
+    double shortArmPivotPositionOutside = 0.0;
+    double shortArmPivotPositionInside = 1.0;
+
+    private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
+    double shortArmWristInitPosition = 0.5; // doubles store a decimal
+    double shortArmWristPositionPickup = 0.0;
+    double shortArmWristPositionPassOff = 1.0;
+
+    private CRServo geckoWheel; // servos go from 0 to 1 rotates 180 degrees
+    double geckoWheelPower = 0.0; // doubles store a decimal
+    double geckWheelSensitivity=0.5;
+    double geckoWheelBuffer=0.01;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -71,7 +89,7 @@ public class MechAnimAQ extends LinearOpMode {
     }
     public void initHardware() {
         initDrive();
-        initServoOne();
+        initServos();
     }
 
     private void initDrive() {
@@ -82,13 +100,19 @@ public class MechAnimAQ extends LinearOpMode {
         liftRight = hardwareMap.get(DcMotor.class, "rightLift");
         liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
         liftLeft.setDirection(DcMotor.Direction.REVERSE);
-        // backLeft.setDirection(DcMotor.Direction.REVERSE);
+        //back left reverse os up for debate because we changed hardware and it stopped working
+         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
     }
-    public void initServoOne() {
+    public void initServos() {
         servoPincher = hardwareMap.get(Servo.class, "servoPincher"); // maps the servo
         servoPincher.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
         servoPincher.setPosition(servoPincherInitPosition); // sets the initial position from the variable above.
+
+        pincherPivot = hardwareMap.get(Servo.class, "pincherPivot"); // maps the servo
+        pincherPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+        pincherPivot.setPosition(pincherPivotInitPosition); // sets the initial position from the variable above.
+
     }
     public void ServoMovement()
     {
@@ -99,6 +123,14 @@ public class MechAnimAQ extends LinearOpMode {
         if(gamepad1.left_bumper)
         {
             servoPincher.setPosition(servoPincherPositionClose);
+        }
+        if(gamepad1.right_trigger >= 0.5)
+        {
+            pincherPivot.setPosition(pincherPivotPositionInside);
+        }
+        if(gamepad1.left_trigger >= 0.5)
+        {
+            pincherPivot.setPosition(pincherPivotPositionOutside);
         }
 
     }
@@ -120,12 +152,10 @@ public class MechAnimAQ extends LinearOpMode {
         telemetry.addData("Position", servoPincher.getPosition());
         telemetry.addData("Direction", servoPincher.getDirection());
         telemetry.addData("Controller", servoPincher.getController());
-        telemetry.addData("Port Number", servoPincher.getConnectionInfo());
-        telemetry.addData("Device Name", servoPincher.getDeviceName());
-        telemetry.addData("Manufacture", servoPincher.getManufacturer());
-        telemetry.addData("Version", servoPincher.getVersion());
-        telemetry.addData("Class", servoPincher.getClass());
-        telemetry.update();
+
+        telemetry.addData("Position", pincherPivot.getPosition());
+        telemetry.addData("Direction", pincherPivot.getDirection());
+        telemetry.addData("Controller", pincherPivot.getController());
     }
     public void teleOpControls() {
         driveTrain();
