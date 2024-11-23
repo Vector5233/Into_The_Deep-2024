@@ -6,8 +6,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /*
  * This OpMode illustrates an autonomous opmode using simple Odometry
@@ -17,10 +18,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 
 @Autonomous(name="Sample Autonomous", group = "Mr. Phil")
+@Disabled
 public class SampleAutonomous extends LinearOpMode
 {
     // get an instance of the "Robot" class.
-    private SimplifiedOdometryRobot robot = new SimplifiedOdometryRobot(this);
+    private org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot robot = new org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot(this);
 
     @Override public void runOpMode()
     {

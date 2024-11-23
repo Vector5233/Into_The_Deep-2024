@@ -47,10 +47,10 @@ public class DriveToPoint {
     private static double yawDGain = 0.0;
     private static double yawAccel = 2.0;
 
-    private DcMotor leftFrontDrive;
-    private DcMotor rightFrontDrive;
-    private DcMotor leftBackDrive;
-    private DcMotor rightBackDrive;
+    private DcMotor leftFront;
+    private DcMotor rightFront;
+    private DcMotor leftBack;
+    private DcMotor rightBack;
 
     private ElapsedTime holdTimer = new ElapsedTime();
     private ElapsedTime currentTime = new ElapsedTime();
@@ -89,10 +89,10 @@ public class DriveToPoint {
     }
 
     public void initializeMotors() {
-        leftFrontDrive = setupDriveMotor("leftFrontDrive", DcMotorSimple.Direction.REVERSE);
-        rightFrontDrive = setupDriveMotor("rightFrontDrive", DcMotorSimple.Direction.FORWARD);
-        leftBackDrive = setupDriveMotor("leftBackDrive", DcMotorSimple.Direction.REVERSE);
-        rightBackDrive = setupDriveMotor("rightBackDrive", DcMotorSimple.Direction.FORWARD);
+        leftFront = setupDriveMotor("leftFront", DcMotorSimple.Direction.REVERSE);
+        rightFront = setupDriveMotor("rightFront", DcMotorSimple.Direction.FORWARD);
+        leftBack = setupDriveMotor("leftBack", DcMotorSimple.Direction.REVERSE);
+        rightBack = setupDriveMotor("rightBack", DcMotorSimple.Direction.FORWARD);
     }
 
     public boolean driveTo(Pose2D currentPosition, Pose2D targetPosition, double power, double holdTime) {
@@ -174,10 +174,10 @@ public class DriveToPoint {
             rightBack /= max;
         }
 
-        leftFrontDrive.setPower(leftFront);
-        rightFrontDrive.setPower(rightFront);
-        leftBackDrive.setPower(leftBack);
-        rightBackDrive.setPower(rightBack);
+        this.leftFront.setPower(leftFront);
+        this.rightFront.setPower(rightFront);
+        this.leftBack.setPower(leftBack);
+        this.rightBack.setPower(rightBack);
     }
 
     private void driveTank(double forward, double yaw){
@@ -191,10 +191,10 @@ public class DriveToPoint {
             right /= max;
         }
 
-        leftFrontDrive.setPower(left);
-        rightFrontDrive.setPower(right);
-        leftBackDrive.setPower(left);
-        rightBackDrive.setPower(right);
+        leftFront.setPower(left);
+        rightFront.setPower(right);
+        leftBack.setPower(left);
+        rightBack.setPower(right);
     }
 
     private DcMotor setupDriveMotor(String deviceName, DcMotor.Direction direction) {

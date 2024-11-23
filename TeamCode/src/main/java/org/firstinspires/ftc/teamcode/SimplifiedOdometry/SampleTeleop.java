@@ -6,6 +6,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * An external "Robot" class is used to manage all motor/sensor interfaces, and to assist driving functions.
  * The IMU gyro is used to stabilize the heading when the operator is not requesting a turn.
  */
-
+@Disabled
 @TeleOp(name="Sample Teleop", group = "Mr. Phil")
 public class SampleTeleop extends LinearOpMode
 {
@@ -29,7 +30,7 @@ public class SampleTeleop extends LinearOpMode
     boolean autoHeading    = false; // used to indicate when heading should be locked.
 
     // get an instance of the "Robot" class.
-    SimplifiedOdometryRobot robot = new SimplifiedOdometryRobot(this);
+    org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot robot = new org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot(this);
 
     @Override public void runOpMode()
     {

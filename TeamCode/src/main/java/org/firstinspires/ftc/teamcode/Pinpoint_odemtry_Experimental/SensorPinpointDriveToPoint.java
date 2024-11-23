@@ -62,7 +62,7 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
         nav.initializeMotors();
         nav.setXYCoefficients(0.02,0.002,0.0,DistanceUnit.MM,12);
         nav.setYawCoefficients(1,0,0.0, AngleUnit.DEGREES,2);
-        nav.setDriveType(DriveToPoint.DriveType.TANK);
+        nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
         StateMachine stateMachine;
         stateMachine = StateMachine.WAITING_FOR_START;
