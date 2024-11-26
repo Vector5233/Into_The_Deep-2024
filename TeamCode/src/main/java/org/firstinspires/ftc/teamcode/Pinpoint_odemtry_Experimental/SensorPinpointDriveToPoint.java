@@ -37,9 +37,9 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-        odo.setOffsets(142.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
+        odo.setOffsets(-142.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
          /*
         Before running the robot, recalibrate the IMU. This needs to happen when the robot is stationary
@@ -68,6 +68,13 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
 
         while (opModeIsActive()) {
             odo.update();
+            telemetry.addData("Status", "Initialized");
+            telemetry.addData("X offset", odo.getXOffset());
+            telemetry.addData("Y offset", odo.getYOffset());
+            telemetry.addData("Device Version Number:", odo.getDeviceVersion());
+            telemetry.addData("Device Scalar", odo.getYawScalar());
+            telemetry.update();
+
 
             if(stateMachine == StateMachine.WAITING_FOR_START){
                 stateMachine = StateMachine.DRIVE_TO_TARGET_1;
@@ -79,12 +86,7 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
                     stateMachine = StateMachine.DRIVE_TO_TARGET_2;
                 }
             }
-            telemetry.addData("Status", "Initialized");
-            telemetry.addData("X offset", odo.getXOffset());
-            telemetry.addData("Y offset", odo.getYOffset());
-            telemetry.addData("Device Version Number:", odo.getDeviceVersion());
-            telemetry.addData("Device Scalar", odo.getYawScalar());
-            telemetry.update();
+
 //            if (stateMachine == StateMachine.DRIVE_TO_TARGET_2){
 //                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 3)) {
 //                    telemetry.addLine("at position #2!");
