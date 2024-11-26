@@ -26,8 +26,8 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
     }
 
     static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 300, 20, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,500,0, AngleUnit.DEGREES,0);
+   // static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 300, 20, AngleUnit.DEGREES, 0);
+    //static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,500,0, AngleUnit.DEGREES,0);
 
 
     @Override
@@ -37,7 +37,7 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-        odo.setOffsets(-142.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
+        odo.setOffsets(142.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
@@ -52,12 +52,7 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
         //odo.recalibrateIMU();
         odo.resetPosAndIMU();
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.addData("X offset", odo.getXOffset());
-        telemetry.addData("Y offset", odo.getYOffset());
-        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
-        telemetry.addData("Device Scalar", odo.getYawScalar());
-        telemetry.update();
+
 
         nav.initializeMotors();
         nav.setXYCoefficients(0.02,0.002,0.0,DistanceUnit.MM,12);
@@ -84,29 +79,34 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
                     stateMachine = StateMachine.DRIVE_TO_TARGET_2;
                 }
             }
-
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_2){
-                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 3)) {
-                    telemetry.addLine("at position #2!");
-                    //stateMachine = StateMachine.DRIVE_TO_TARGET_3;
-                }
-            }
-
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_3){
-                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 3)){
-                    telemetry.addLine("at position #3!");
-                    stateMachine = StateMachine.AT_TARGET;
-                }
-            }
+            telemetry.addData("Status", "Initialized");
+            telemetry.addData("X offset", odo.getXOffset());
+            telemetry.addData("Y offset", odo.getYOffset());
+            telemetry.addData("Device Version Number:", odo.getDeviceVersion());
+            telemetry.addData("Device Scalar", odo.getYawScalar());
+            telemetry.update();
+//            if (stateMachine == StateMachine.DRIVE_TO_TARGET_2){
+//                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 3)) {
+//                    telemetry.addLine("at position #2!");
+//                    //stateMachine = StateMachine.DRIVE_TO_TARGET_3;
+//                }
+//            }
+//
+//            if (stateMachine == StateMachine.DRIVE_TO_TARGET_3){
+//                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 3)){
+//                    telemetry.addLine("at position #3!");
+//                    stateMachine = StateMachine.AT_TARGET;
+//                }
+//            }
 
             telemetry.addData("current state:",stateMachine);
             Pose2D pos = odo.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Position", data);
 
-            Pose2D heading = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.RADIANS,nav.calculateTargetHeading(pos,TARGET_2));
-            telemetry.addData("target heading: ", heading.getHeading(AngleUnit.RADIANS));
-            telemetry.update();
+//            Pose2D heading = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.RADIANS,nav.calculateTargetHeading(pos,TARGET_2));
+//            telemetry.addData("target heading: ", heading.getHeading(AngleUnit.RADIANS));
+//            telemetry.update();
 
         }
     }}
