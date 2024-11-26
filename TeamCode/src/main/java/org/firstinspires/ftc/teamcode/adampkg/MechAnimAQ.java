@@ -53,7 +53,7 @@ public class MechAnimAQ extends LinearOpMode {
     double shortArmWristPositionPassOff = 1.0;
 
     private CRServo geckoWheel; // servos go from 0 to 1 rotates 180 degrees
-    double geckoWheelPower = 0.0; // doubles store a decimal
+    double geckoWheelPower = 1.0; // doubles store a decimal
     double geckWheelSensitivity=0.5;
     double geckoWheelBuffer=0.01;
 
@@ -113,6 +113,17 @@ public class MechAnimAQ extends LinearOpMode {
         pincherPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
         pincherPivot.setPosition(pincherPivotInitPosition); // sets the initial position from the variable above.
 
+        shortArmWrist = hardwareMap.get(Servo.class, "grabberPivot"); // maps the servo
+        shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+        shortArmWrist.setPosition(shortArmWristInitPosition); // sets the initial position from the variable above.
+
+        geckoWheel = hardwareMap.get(CRServo.class, "grabberRotation");
+        geckoWheel.setDirection(CRServo.Direction.FORWARD);
+
+        shortArmPivot = hardwareMap.get(Servo.class, "armRotation"); // maps the servo
+        shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+        shortArmPivot.setPosition(shortArmPivotInitPosition); // sets the initial position from the variable above.
+
     }
     public void ServoMovement()
     {
@@ -133,6 +144,31 @@ public class MechAnimAQ extends LinearOpMode {
             pincherPivot.setPosition(pincherPivotPositionOutside);
         }
 
+        if(gamepad2.right_bumper)
+        {
+            shortArmPivot.setPosition(shortArmPivotPositionOutside);
+        }
+        if(gamepad2.left_bumper)
+        {
+            shortArmPivot.setPosition(shortArmPivotPositionInside);
+        }
+        if(gamepad2.right_trigger >= 0.5)
+        {
+            shortArmWrist.setPosition(shortArmWristPositionPickup);
+        }
+        if(gamepad2.left_trigger >= 0.5)
+        {
+            shortArmWrist.setPosition(shortArmWristPositionPassOff);
+        }
+        if(gamepad2.a)
+        {
+            geckoWheel.setPower(geckoWheelPower);
+        } else if (gamepad2.y) {
+            geckoWheel.setPower(-geckoWheelPower);
+        }
+        else {
+            geckoWheel.setPower(0);
+        }
     }
 
     public void driveTrain()
