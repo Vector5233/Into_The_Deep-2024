@@ -19,7 +19,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         AT_TARGET,
         DRIVE_TO_TARGET_1,
         DRIVE_TO_TARGET_2,
-        DRIVE_TO_TARGET_3;
+        //DRIVE_TO_TARGET_3;
     }
   /*  static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,-220,1340,AngleUnit.DEGREES,-90);
 
@@ -29,9 +29,9 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 */
   static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
 
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,0, 0, AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-720 ,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 0, -300, AngleUnit.DEGREES, 0);
+    //static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,0, 0, AngleUnit.DEGREES,0);
     @Override
     public void runOpMode() {
 
@@ -73,28 +73,35 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 
             if(stateMachine == AutonomousBase.StateMachine.WAITING_FOR_START){
                 stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_1;
+                stateMachine = StateMachine.AT_TARGET;
+                stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_2;
             }
-
+            telemetry.addData("Status", "Initialized");
+            telemetry.addData("X offset", odo.getXOffset());
+            telemetry.addData("Y offset", odo.getYOffset());
+            telemetry.addData("Device Version Number:", odo.getDeviceVersion());
+            telemetry.addData("Device Scalar", odo.getYawScalar());
+            telemetry.update();
             if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_1) {
-                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 0.1)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.4, 0.1)) {
                     telemetry.addLine("at position #1!");
-                    stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_2;
+                    stateMachine = StateMachine.AT_TARGET;
                 }
             }
 
             if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_2){
                 if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 0.1)) {
                     telemetry.addLine("at position #2!");
-                    stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_3;
+                    stateMachine = StateMachine.AT_TARGET;
                 }
             }
-
-            if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_3){
-                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1)){
-                    telemetry.addLine("at position #3!");
-                    stateMachine = AutonomousBase.StateMachine.AT_TARGET;
-                }
-            }
+//
+//            if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_3){
+//                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1)){
+//                    telemetry.addLine("at position #3!");
+//                    stateMachine = AutonomousBase.StateMachine.AT_TARGET;
+//                }
+//            }
 
             telemetry.addData("current state:",stateMachine);
             Pose2D pos = odo.getPosition();
@@ -104,6 +111,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
             Pose2D heading = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.RADIANS,nav.calculateTargetHeading(pos,TARGET_2));
             telemetry.addData("target heading: ", heading.getHeading(AngleUnit.RADIANS));
             telemetry.update();
+
 
         }
     }
