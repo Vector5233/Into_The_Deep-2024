@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.adampkg.auto;
 /*   MIT License
  *   Copyright (c) [2024] [Base 10 Assets, LLC]
  *

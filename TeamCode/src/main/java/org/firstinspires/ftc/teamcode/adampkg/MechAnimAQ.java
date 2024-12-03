@@ -49,13 +49,17 @@ public class MechAnimAQ extends LinearOpMode {
 
     private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
     double shortArmWristInitPosition = 0.5; // doubles store a decimal
-    double shortArmWristPositionPickup = 0.0;
+    double shortArmWristPositionPickup = 0.5;
     double shortArmWristPositionPassOff = 1.0;
+
+    private Servo trayPivot; // servos go from 0 to 1 rotates 180 degrees
+    double trayPivotInitPosition = 0.5; // doubles store a decimal
+    double trayPivotPositionPickup = 0.2;
+    double trayPivotPositionDropOff = 1.0;
 
     private CRServo geckoWheel; // servos go from 0 to 1 rotates 180 degrees
     double geckoWheelPower = 1.0; // doubles store a decimal
-    double geckWheelSensitivity=0.5;
-    double geckoWheelBuffer=0.01;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -124,9 +128,21 @@ public class MechAnimAQ extends LinearOpMode {
         shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
         shortArmPivot.setPosition(shortArmPivotInitPosition); // sets the initial position from the variable above.
 
+        trayPivot = hardwareMap.get(Servo.class, "trayPivot"); // maps the servo
+        trayPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+        trayPivot.setPosition(trayPivotInitPosition); // sets the initial position from the variable above.
+
     }
     public void ServoMovement()
     {
+        if(gamepad1.x)
+        {
+            trayPivot.setPosition(trayPivotPositionPickup);
+        }
+        if(gamepad1.b)
+        {
+            trayPivot.setPosition(trayPivotPositionDropOff);
+        }
         if(gamepad1.right_bumper)
         {
             servoPincher.setPosition(servoPincherPositionOpen);
@@ -188,6 +204,14 @@ public class MechAnimAQ extends LinearOpMode {
         telemetry.addData("Position", servoPincher.getPosition());
         telemetry.addData("Direction", servoPincher.getDirection());
         telemetry.addData("Controller", servoPincher.getController());
+
+        telemetry.addData("Position", pincherPivot.getPosition());
+        telemetry.addData("Direction", pincherPivot.getDirection());
+        telemetry.addData("Controller", pincherPivot.getController());
+
+        telemetry.addData("pOWER", geckoWheel.getPower());
+        telemetry.addData("Direction", geckoWheel.getDirection());
+        telemetry.addData("Port", geckoWheel.getPortNumber());
 
         telemetry.addData("Position", pincherPivot.getPosition());
         telemetry.addData("Direction", pincherPivot.getDirection());

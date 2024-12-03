@@ -1,20 +1,17 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.adampkg.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import java.util.Locale;
+@Autonomous(name="GoBildaPinpointDriverBase", group="GoBildaPinpointDriverBase")
 
-@Autonomous(name="GoBildaPinpointDriverRedLeft", group="GoBildaPinpointDriver")
+public class AutonomousBase extends LinearOpMode {
 //@Disabled
-
-public class RedLeft extends LinearOpMode {
-
-    GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
+GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     private DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
 
     enum StateMachine{
@@ -24,12 +21,17 @@ public class RedLeft extends LinearOpMode {
         DRIVE_TO_TARGET_2,
         DRIVE_TO_TARGET_3;
     }
+  /*  static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,-220,1340,AngleUnit.DEGREES,-90);
+
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-220,1340,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -220, 600, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-220, 600, AngleUnit.DEGREES,0);
+*/
+  static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
 
     static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 2260, 0, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,2260, 2260, AngleUnit.DEGREES,0);
-
-
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,0, 0, AngleUnit.DEGREES,0);
     @Override
     public void runOpMode() {
 
@@ -42,14 +44,15 @@ public class RedLeft extends LinearOpMode {
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
         odo.resetPosAndIMU();
+        odo.setPosition(REDRIGHT_INIT);
 
         nav.initializeMotors();
-        nav.setXYCoefficients(0.03 ,0.005,0.0,DistanceUnit.MM,12);
+        nav.setXYCoefficients(0.03 ,0.000,0.0,DistanceUnit.MM,12);
         nav.setYawCoefficients(1,0,0.0, AngleUnit.DEGREES,2);
         nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
-        StateMachine stateMachine;
-        stateMachine = StateMachine.WAITING_FOR_START;
+        AutonomousBase.StateMachine stateMachine;
+        stateMachine = AutonomousBase.StateMachine.WAITING_FOR_START;
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", odo.getXOffset());
@@ -61,32 +64,35 @@ public class RedLeft extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         waitForStart();
         resetRuntime();
-
+        stateMachine(stateMachine);
+    }
+    public void stateMachine(AutonomousBase.StateMachine stateMachine)
+    {
         while (opModeIsActive()) {
             odo.update();
 
-            if(stateMachine == StateMachine.WAITING_FOR_START){
-                stateMachine = StateMachine.DRIVE_TO_TARGET_1;
+            if(stateMachine == AutonomousBase.StateMachine.WAITING_FOR_START){
+                stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_1;
             }
 
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_1) {
+            if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_1) {
                 if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 0.1)) {
                     telemetry.addLine("at position #1!");
-                    stateMachine = StateMachine.DRIVE_TO_TARGET_2;
+                    stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_2;
                 }
             }
 
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_2){
+            if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_2){
                 if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 0.1)) {
                     telemetry.addLine("at position #2!");
-                    stateMachine = StateMachine.DRIVE_TO_TARGET_3;
+                    stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_3;
                 }
             }
 
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_3){
+            if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_3){
                 if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1)){
                     telemetry.addLine("at position #3!");
-                    stateMachine = StateMachine.AT_TARGET;
+                    stateMachine = AutonomousBase.StateMachine.AT_TARGET;
                 }
             }
 
@@ -100,4 +106,5 @@ public class RedLeft extends LinearOpMode {
             telemetry.update();
 
         }
-    }}
+    }
+}
