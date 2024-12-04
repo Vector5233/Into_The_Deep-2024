@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import java.util.Locale;
-@Autonomous(name="GoBildaPinpointDriverBase", group="GoBildaPinpointDriverBase")
+@Autonomous(name="RedLeft_AM", group="GoBildaPinpointDriverBase")
 
 public class AutonomousBase extends LinearOpMode {
 //@Disabled
@@ -29,9 +29,9 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 */
   static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
 
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,0, 0, AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-710,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -710, -800, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-910, -800, AngleUnit.DEGREES,0);
     @Override
     public void runOpMode() {
 
