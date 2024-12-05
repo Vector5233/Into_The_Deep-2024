@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.adampkg;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -43,14 +44,14 @@ public class MechAnimAQ extends LinearOpMode {
     double pincherPivotPositionInside = 0.55;
 
     private Servo shortArmPivot; // servos go from 0 to 1 rotates 180 degrees
-    double shortArmPivotInitPosition = 0.5; // doubles store a decimal
-    double shortArmPivotPositionPickUp = 0.0;
-    double shortArmPivotPositionPassOff = 1.0;
+    double shortArmPivotInitPosition = 0.2; // doubles store a decimal
+    double shortArmPivotPositionPickUp = 1.0;
+    double shortArmPivotPositionPassOff = 0.1;
 
     private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
-    double shortArmWristInitPosition = 0.0; // doubles store a decimal
-    double shortArmWristPositionPickup = 0.0;
-    double shortArmWristPositionPassOff = 1.0;
+    double shortArmWristInitPosition = 0.55; // doubles store a decimal
+    double shortArmWristPositionPickup = 1;
+    double shortArmWristPositionPassOff = 0;
 
     private Servo trayPivot; // servos go from 0 to 1 rotates 180 degrees
     double trayPivotInitPosition = 0.5; // doubles store a decimal
@@ -125,7 +126,7 @@ public class MechAnimAQ extends LinearOpMode {
         geckoWheel.setDirection(CRServo.Direction.FORWARD);
 
         shortArmPivot = hardwareMap.get(Servo.class, "armRotation"); // maps the servo
-        shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+        shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
         shortArmPivot.setPosition(shortArmPivotInitPosition); // sets the initial position from the variable above.
 
         trayPivot = hardwareMap.get(Servo.class, "trayPivot"); // maps the servo
@@ -171,15 +172,15 @@ public class MechAnimAQ extends LinearOpMode {
             shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
             shortArmPivot.setPosition(shortArmPivotPositionPassOff);
         }
-        if(gamepad2.right_trigger >= 0.5)
+        if(gamepad2.b)
         {
-            shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+            //shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
 
             shortArmWrist.setPosition(shortArmWristPositionPickup);
         }
-        if(gamepad2.left_trigger >= 0.5)
+        if(gamepad2.x)
         {
-            shortArmWrist.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+           // shortArmWrist.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
 
             shortArmWrist.setPosition(shortArmWristPositionPassOff);
         }

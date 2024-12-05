@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Port 01: Servo servoTwo
  * Port 02: CRServo servoThree
  */
-//@Disabled
-@TeleOp(group = "Qureshi", name = "BasicTeleop")
+@Disabled
+@TeleOp(group = "Qureshi", name = "BasicTeleopStarter")
 public class BasicTeleOpStructure extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

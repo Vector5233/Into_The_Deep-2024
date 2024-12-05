@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.adampkg;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -12,7 +13,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
  * Port 01: Servo servoTwo
  * Port 02: CRServo servoThree
  */
-//@Disabled
+@Disabled
 @TeleOp(group = "Qureshi", name = "AQVoltageTest")
 public class VOLTAGETEST extends LinearOpMode {
     private VoltageSensor batteryVoltageSensor;
