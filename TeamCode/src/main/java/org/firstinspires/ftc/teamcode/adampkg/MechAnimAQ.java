@@ -44,12 +44,12 @@ public class MechAnimAQ extends LinearOpMode {
 
     private Servo shortArmPivot; // servos go from 0 to 1 rotates 180 degrees
     double shortArmPivotInitPosition = 0.5; // doubles store a decimal
-    double shortArmPivotPositionOutside = 0.0;
-    double shortArmPivotPositionInside = 1.0;
+    double shortArmPivotPositionPickUp = 0.0;
+    double shortArmPivotPositionPassOff = 1.0;
 
     private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
-    double shortArmWristInitPosition = 0.5; // doubles store a decimal
-    double shortArmWristPositionPickup = 0.5;
+    double shortArmWristInitPosition = 0.0; // doubles store a decimal
+    double shortArmWristPositionPickup = 0.0;
     double shortArmWristPositionPassOff = 1.0;
 
     private Servo trayPivot; // servos go from 0 to 1 rotates 180 degrees
@@ -162,18 +162,25 @@ public class MechAnimAQ extends LinearOpMode {
 
         if(gamepad2.right_bumper)
         {
-            shortArmPivot.setPosition(shortArmPivotPositionOutside);
+
+           shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+            shortArmPivot.setPosition(shortArmPivotPositionPickUp);
         }
         if(gamepad2.left_bumper)
         {
-            shortArmPivot.setPosition(shortArmPivotPositionInside);
+            shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+            shortArmPivot.setPosition(shortArmPivotPositionPassOff);
         }
         if(gamepad2.right_trigger >= 0.5)
         {
+            shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+
             shortArmWrist.setPosition(shortArmWristPositionPickup);
         }
         if(gamepad2.left_trigger >= 0.5)
         {
+            shortArmWrist.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+
             shortArmWrist.setPosition(shortArmWristPositionPassOff);
         }
         if(gamepad2.a)
@@ -193,7 +200,6 @@ public class MechAnimAQ extends LinearOpMode {
         double ly = -gamepad1.left_stick_y;
         double rx = gamepad1.right_stick_x;
         double max = Math.max(Math.abs(lx) + Math.abs(ly) + Math.abs(rx), 1);
-
         frontLeft.setPower((ly + lx + rx) / max);
         frontRight.setPower((ly - lx - rx) / max);
         backLeft.setPower((ly - lx + rx) / max);

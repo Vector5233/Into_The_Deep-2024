@@ -27,8 +27,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -220, 600, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-220, 600, AngleUnit.DEGREES,0);
 */
-  static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
-
+    static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-710,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -710, -800, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-910, -800, AngleUnit.DEGREES,0);
@@ -70,32 +69,27 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     {
         while (opModeIsActive()) {
             odo.update();
-
             if(stateMachine == AutonomousBase.StateMachine.WAITING_FOR_START){
                 stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_1;
             }
-
             if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_1) {
                 if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 0.1)) {
                     telemetry.addLine("at position #1!");
                     stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_2;
                 }
             }
-
             if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_2){
                 if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 0.1)) {
                     telemetry.addLine("at position #2!");
                     stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_3;
                 }
             }
-
             if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_3){
                 if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1)){
                     telemetry.addLine("at position #3!");
                     stateMachine = AutonomousBase.StateMachine.AT_TARGET;
                 }
             }
-
             telemetry.addData("current state:",stateMachine);
             Pose2D pos = odo.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
