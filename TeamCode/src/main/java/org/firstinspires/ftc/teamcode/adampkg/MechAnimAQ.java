@@ -44,19 +44,19 @@ public class MechAnimAQ extends LinearOpMode {
     double pincherPivotPositionInside = 0.55;
 
     private Servo shortArmPivot; // servos go from 0 to 1 rotates 180 degrees
-    double shortArmPivotInitPosition = 0.2; // doubles store a decimal
+    double shortArmPivotInitPosition = 0.5; // doubles store a decimal
     double shortArmPivotPositionPickUp = 1.0;
     double shortArmPivotPositionPassOff = 0.1;
 
     private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
-    double shortArmWristInitPosition = 0.55; // doubles store a decimal
-    double shortArmWristPositionPickup = 1;
-    double shortArmWristPositionPassOff = 0;
+    double shortArmWristInitPosition = 0.0; // doubles store a decimal
+    double shortArmWristPositionPickup = 0.0;
+    double shortArmWristPositionPassOff = 1.0;
 
     private Servo trayPivot; // servos go from 0 to 1 rotates 180 degrees
     double trayPivotInitPosition = 0.5; // doubles store a decimal
-    double trayPivotPositionPickup = 0.2;
-    double trayPivotPositionDropOff = 1.0;
+    double trayPivotPositionPickup = 0;
+    double trayPivotPositionDropOff = 0.5;
 
     private CRServo geckoWheel; // servos go from 0 to 1 rotates 180 degrees
     double geckoWheelPower = 1.0; // doubles store a decimal
@@ -136,54 +136,15 @@ public class MechAnimAQ extends LinearOpMode {
     }
     public void ServoMovement()
     {
-        if(gamepad1.x)
-        {
-            trayPivot.setPosition(trayPivotPositionPickup);
-        }
-        if(gamepad1.b)
-        {
-            trayPivot.setPosition(trayPivotPositionDropOff);
-        }
-        if(gamepad1.right_bumper)
-        {
-            servoPincher.setPosition(servoPincherPositionOpen);
-        }
-        if(gamepad1.left_bumper)
-        {
-            servoPincher.setPosition(servoPincherPositionClose);
-        }
-        if(gamepad1.right_trigger >= 0.5)
-        {
-            pincherPivot.setPosition(pincherPivotPositionInside);
-        }
-        if(gamepad1.left_trigger >= 0.5)
-        {
-            pincherPivot.setPosition(pincherPivotPositionOutside);
-        }
+        TrayPivot();
+        ServoPincher();
+        PincherPivot();
+        Wrist();
+        ShortArmPivot();
+        GeckoWheel();
+    }
 
-        if(gamepad2.right_bumper)
-        {
-
-           shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-            shortArmPivot.setPosition(shortArmPivotPositionPickUp);
-        }
-        if(gamepad2.left_bumper)
-        {
-            shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-            shortArmPivot.setPosition(shortArmPivotPositionPassOff);
-        }
-        if(gamepad2.b)
-        {
-            //shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-
-            shortArmWrist.setPosition(shortArmWristPositionPickup);
-        }
-        if(gamepad2.x)
-        {
-           // shortArmWrist.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-
-            shortArmWrist.setPosition(shortArmWristPositionPassOff);
-        }
+    private void GeckoWheel() {
         if(gamepad2.a)
         {
             geckoWheel.setPower(geckoWheelPower);
@@ -192,6 +153,71 @@ public class MechAnimAQ extends LinearOpMode {
         }
         else {
             geckoWheel.setPower(0);
+        }
+    }
+
+    private void ShortArmPivot() {
+        if(gamepad2.b)
+        {
+            //shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+        //    shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+            shortArmPivot.setPosition(shortArmPivotPositionPickUp);
+        }
+        if(gamepad2.x)
+        {
+           // shortArmWrist.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+
+          //  shortArmWrist.setPosition(shortArmWristPositionPassOff);
+        //    shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+            shortArmPivot.setPosition(shortArmPivotPositionPassOff);
+        }
+    }
+
+    private void Wrist() {
+        if(gamepad2.right_bumper)
+        {
+            shortArmWrist.setPosition(shortArmWristPositionPickup);
+           //shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+            //shortArmPivot.setPosition(shortArmPivotPositionPickUp);
+        }
+        if(gamepad2.left_bumper)
+        {
+            shortArmWrist.setPosition(shortArmWristPositionPassOff);
+           // shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+            //shortArmPivot.setPosition(shortArmPivotPositionPassOff);
+        }
+    }
+
+    private void PincherPivot() {
+        if(gamepad1.right_trigger >= 0.5)
+        {
+            pincherPivot.setPosition(pincherPivotPositionInside);
+        }
+        if(gamepad1.left_trigger >= 0.5)
+        {
+            pincherPivot.setPosition(pincherPivotPositionOutside);
+        }
+    }
+
+    private void ServoPincher() {
+        if(gamepad1.right_bumper)
+        {
+            servoPincher.setPosition(servoPincherPositionOpen);
+        }
+        if(gamepad1.left_bumper)
+        {
+            servoPincher.setPosition(servoPincherPositionClose);
+        }
+    }
+
+    private void TrayPivot() {
+        if(gamepad1.x)
+        {
+            trayPivot.setPosition(trayPivotPositionPickup);
+        }
+        if(gamepad1.b)
+        {
+            trayPivot.setPosition(trayPivotPositionDropOff);
         }
     }
 

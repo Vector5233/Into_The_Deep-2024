@@ -29,8 +29,8 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 */
     static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-710,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -710, -800, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-910, -800, AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -710, -900, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-1300 , -400, AngleUnit.DEGREES,0);
     @Override
     public void runOpMode() {
 
