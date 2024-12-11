@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.adampkg.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -13,6 +14,13 @@ public class RedRightBlueLeft extends LinearOpMode {
 //@Disabled
 GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     private DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
+    //Motor Encoders
+    private DcMotor leftLift;
+    private DcMotor rightRight;
+    int leftMotorLowPos = 0;
+    int leftMotorHighPos = 0;
+    int rightMotorLowPos = 0;
+    int rightMotorHighPos = 0;
 
     enum StateMachine{
         WAITING_FOR_START,
@@ -73,7 +81,9 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                 stateMachine = StateMachine.DRIVE_TO_TARGET_1;
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_1) {
-                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 0.1)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 7)) {
+                    runLiftsToPos(1000);
+                    runLiftsToPos(0);
                     telemetry.addLine("at position #1!");
                     stateMachine = StateMachine.DRIVE_TO_TARGET_2;
                 }
@@ -89,6 +99,10 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                     telemetry.addLine("at position #3!");
                     stateMachine = StateMachine.AT_TARGET;
                 }
+            }
+            if(stateMachine == StateMachine.AT_TARGET)
+            {
+                nav.Stop();
             }
             telemetry.addData("current state:",stateMachine);
             Pose2D pos = odo.getPosition();

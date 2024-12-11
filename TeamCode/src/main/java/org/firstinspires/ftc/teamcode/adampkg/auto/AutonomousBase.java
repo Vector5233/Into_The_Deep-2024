@@ -65,6 +65,10 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         resetRuntime();
         stateMachine(stateMachine);
     }
+    public void initMotors()
+    {
+
+    }
     public void stateMachine(AutonomousBase.StateMachine stateMachine)
     {
         while (opModeIsActive()) {

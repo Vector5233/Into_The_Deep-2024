@@ -76,6 +76,13 @@ public class DriveToPoint {
         accel = acceleration;
         xyTolerance = unit.toMm(tolerance);
     }
+    public void Stop()
+    {
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+    }
 
     public void setYawCoefficients(double p, double d, double acceleration, AngleUnit unit, double tolerance){
         yawPGain = p;

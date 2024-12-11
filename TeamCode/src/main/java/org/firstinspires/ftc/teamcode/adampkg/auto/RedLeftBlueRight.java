@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.adampkg.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -14,6 +15,14 @@ public class RedLeftBlueRight extends LinearOpMode {
 GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     private DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
 
+    private DcMotor liftLeft;
+    private DcMotor liftRight;
+    int leftMotorLowPos = 0;
+    int leftMotorHighPos = 0;
+    int rightMotorLowPos = 0;
+    int rightMotorHighPos = 0;
+    double liftRightPower = 1.0;
+    double liftLeftPower = 1.0;
     enum StateMachine{
         WAITING_FOR_START,
         AT_TARGET,
@@ -60,10 +69,39 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         telemetry.addData("Device Scalar", odo.getYawScalar());
         telemetry.update();
 
+        initMotors();
         // Wait for the game to start (driver presses START)
         waitForStart();
         resetRuntime();
         stateMachine(stateMachine);
+    }
+    public void initMotors()
+    {
+        liftRight = hardwareMap.get(DcMotor.class, "rightLift");
+        liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
+        liftLeft.setDirection(DcMotor.Direction.REVERSE);
+
+        liftLeft.setPower(liftLeftPower);
+        liftRight.setPower(liftRightPower);
+
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    public void runLiftsToPos(int position)
+    {
+        liftLeft.setTargetPosition(position);
+        liftRight.setTargetPosition(position);
+        telemetry.addData("liftLeft: %2f", liftLeft.getCurrentPosition());
+        telemetry.addData("liftRight: %2f", liftRight.getCurrentPosition());
+
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
     }
     public void stateMachine(StateMachine stateMachine)
     {
@@ -73,7 +111,9 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                 stateMachine = StateMachine.DRIVE_TO_TARGET_1;
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_1) {
-                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 0.1)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 7)) {
+                    runLiftsToPos(1000);
+                    runLiftsToPos(0);
                     telemetry.addLine("at position #1!");
                     stateMachine = StateMachine.DRIVE_TO_TARGET_2;
                 }
@@ -89,6 +129,11 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                     telemetry.addLine("at position #3!");
                     stateMachine = StateMachine.AT_TARGET;
                 }
+
+            }
+            if(stateMachine == StateMachine.AT_TARGET)
+            {
+                nav.Stop();
             }
             telemetry.addData("current state:",stateMachine);
             Pose2D pos = odo.getPosition();

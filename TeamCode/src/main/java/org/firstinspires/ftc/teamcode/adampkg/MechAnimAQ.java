@@ -51,7 +51,7 @@ public class MechAnimAQ extends LinearOpMode {
     private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
     double shortArmWristInitPosition = 0.0; // doubles store a decimal
     double shortArmWristPositionPickup = 0.0;
-    double shortArmWristPositionPassOff = 1.0;
+    double shortArmWristPositionPassOff = 0.66;
 
     private Servo trayPivot; // servos go from 0 to 1 rotates 180 degrees
     double trayPivotInitPosition = 0.5; // doubles store a decimal
