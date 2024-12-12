@@ -17,10 +17,8 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 
     private DcMotor liftLeft;
     private DcMotor liftRight;
-    int leftMotorLowPos = 0;
-    int leftMotorHighPos = 0;
-    int rightMotorLowPos = 0;
-    int rightMotorHighPos = 0;
+    int liftsLowPos = 0;
+    int liftsHighPos = 1000;
     double liftRightPower = 1.0;
     double liftLeftPower = 1.0;
     enum StateMachine{
@@ -103,6 +101,12 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
+    public void RaiseLift()
+    {
+        runLiftsToPos(liftsHighPos);
+        sleep(3000);
+        runLiftsToPos(liftsLowPos);
+    }
     public void stateMachine(StateMachine stateMachine)
     {
         while (opModeIsActive()) {
@@ -112,8 +116,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_1) {
                 if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 7)) {
-                    runLiftsToPos(1000);
-                    runLiftsToPos(0);
+                    RaiseLift();
                     telemetry.addLine("at position #1!");
                     stateMachine = StateMachine.DRIVE_TO_TARGET_2;
                 }

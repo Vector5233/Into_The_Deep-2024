@@ -15,13 +15,13 @@ public class RedRightBlueLeft extends LinearOpMode {
 GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     private DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
     //Motor Encoders
-    private DcMotor leftLift;
-    private DcMotor rightRight;
-    int leftMotorLowPos = 0;
-    int leftMotorHighPos = 0;
-    int rightMotorLowPos = 0;
-    int rightMotorHighPos = 0;
-
+    private DcMotor liftLeft;
+    private DcMotor liftRight;
+    int liftsLowPos = 0;
+    int liftsHighPos = 50;
+    double liftRightPower = 1.0;
+    double liftLeftPower = 1.0;
+    boolean hasLifted = false;
     enum StateMachine{
         WAITING_FOR_START,
         AT_TARGET,
@@ -54,7 +54,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         odo.setPosition(REDRIGHT_INIT);
 
         nav.initializeMotors();
-        nav.setXYCoefficients(0.03 ,0.000,0.0,DistanceUnit.MM,12);
+        nav.setXYCoefficients(0.40 ,0.00,0.0,DistanceUnit.MM,12);
         nav.setYawCoefficients(1,0,0.0, AngleUnit.DEGREES,2);
         nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
@@ -67,11 +67,45 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         telemetry.addData("Device Version Number:", odo.getDeviceVersion());
         telemetry.addData("Device Scalar", odo.getYawScalar());
         telemetry.update();
-
+        initMotors();
         // Wait for the game to start (driver presses START)
         waitForStart();
         resetRuntime();
         stateMachine(stateMachine);
+    }
+    public void initMotors()
+    {
+        liftRight = hardwareMap.get(DcMotor.class, "rightLift");
+        liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
+        liftLeft.setDirection(DcMotor.Direction.REVERSE);
+
+        liftLeft.setPower(liftLeftPower);
+        liftRight.setPower(liftRightPower);
+
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       // liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       // liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    public void runLiftsToPos(int position)
+    {
+        liftLeft.setTargetPosition(position);
+        liftRight.setTargetPosition(position);
+        telemetry.addData("liftLeft: %2f", liftLeft.getCurrentPosition());
+        telemetry.addData("liftRight: %2f", liftRight.getCurrentPosition());
+
+    }
+    public void RaiseLift(int position)
+    {
+        hasLifted = true;
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        runLiftsToPos(position);
+        sleep(3000);
+        //runLiftsToPos(liftsLowPos);
     }
     public void stateMachine(StateMachine stateMachine)
     {
@@ -80,10 +114,13 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
             if(stateMachine == StateMachine.WAITING_FOR_START){
                 stateMachine = StateMachine.DRIVE_TO_TARGET_1;
             }
+
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_1) {
                 if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 7)) {
-                    runLiftsToPos(1000);
-                    runLiftsToPos(0);
+                    if(hasLifted == false)
+                    {
+                        RaiseLift(150);
+                    }
                     telemetry.addLine("at position #1!");
                     stateMachine = StateMachine.DRIVE_TO_TARGET_2;
                 }
@@ -104,6 +141,8 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
             {
                 nav.Stop();
             }
+            telemetry.addData("liftLeft: %2f", liftLeft.getCurrentPosition());
+            telemetry.addData("liftRight: %2f", liftRight.getCurrentPosition());
             telemetry.addData("current state:",stateMachine);
             Pose2D pos = odo.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
