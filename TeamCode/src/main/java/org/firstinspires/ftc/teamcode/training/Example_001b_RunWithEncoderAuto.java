@@ -17,17 +17,18 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
     //global variables
+    //private ElapsedTime runtime = new ElapsedTime();
+
     private DcMotor motorThree;
     double speed = 1;
     double motorThreeZeroPower = 0.0;
     double motorThreePower = Math.abs(speed);
     int motorThreePositionOne = 0;
     int motorThreePositionTwo = 1000;
+    double timeOutS;
     @Override
     public void runOpMode() throws InterruptedException {
         //define runOpMode variables
-//        int motorThreePositionOne = 0;
-//        int motorThreePositionTwo = 1000;
 
 
         waitForStart();
@@ -41,20 +42,21 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
             // commands to run
             initMotorThree();
             motorTelemetry();
-            //runMotorThreeToPosition(motorThreePositionOne);
-           while(){
-               runMotorThreeToPosition(motorThreePositionTwo);
-           }
-            motorThree.setPower(0);
-            //sleep(5000);
+
+            runMotorThreeToPosition(motorThreePositionTwo);
+
+            stopMotors();
+            //stopAndResetEncoders();
+           // sleep(5000);
         }
+
 
         //sleep(500);
         requestOpModeStop();
-
     }
+
+
     public void motorTelemetry() {
-        telemetry.addData("Note", "Tap y to reset Encoders");
         telemetry.addData("motorThree", "Encoder: %2d, Power: %2f", motorThree.getCurrentPosition(), motorThree.getPower());
         telemetry.update();
         //functions here
@@ -66,8 +68,9 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         motorThree.setPower(motorThreeZeroPower);
         motorThree.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //BRAKE stop as fast as possible
-        motorThree.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorThree.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       //motorThree.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
     }
 
