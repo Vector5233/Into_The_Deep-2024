@@ -25,30 +25,33 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
     double motorThreePower = Math.abs(speed);
     int motorThreePositionOne = 0;
     int motorThreePositionTwo = 1000;
+    int motorThreePositionThree = -200;
     double timeOutS;
     @Override
     public void runOpMode() throws InterruptedException {
         //define runOpMode variables
-
+        //load in inits
+        initMotorThree();
 
         waitForStart();
-        while (!opModeIsActive()) {
-            //load in inits
+        while (!isStarted() && !isStopRequested()) {
             motorTelemetry();
-            initMotorThree();
-        }
 
+        }
+        // main loop
         while (opModeIsActive()) {
             // commands to run
-            initMotorThree();
+
             motorTelemetry();
-
             runMotorThreeToPosition(motorThreePositionTwo);
+            sleep(500);
+            runMotorThreeToPosition(motorThreePositionThree);
 
-            stopMotors();
             //stopAndResetEncoders();
            // sleep(5000);
         }
+        stopMotors();
+        // individual commands go here.
 
 
         //sleep(500);
@@ -68,8 +71,8 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         motorThree.setPower(motorThreeZeroPower);
         motorThree.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //BRAKE stop as fast as possible
-        motorThree.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-       //motorThree.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorThree.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorThree.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
     }
@@ -83,6 +86,15 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         }
         motorThree.setPower(motorThreeZeroPower);// Optional /
     }
+
+//    public void raiseLift(int position){
+//        motorThree.setTargetPosition(motorThreePositionTwo);
+//        motorThree.setPower(speed);
+//        while (opModeIsActive() && motorThree.isBusy()){
+//            sleep(1);
+//        }
+//
+//    }
     public void resetEncoders(){
         stopMotors();
         stopAndResetEncoders();
