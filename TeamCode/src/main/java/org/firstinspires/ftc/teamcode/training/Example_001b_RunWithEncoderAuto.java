@@ -17,8 +17,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
     //global variables
-    //private ElapsedTime runtime = new ElapsedTime();
-
     private DcMotor motorThree;
     double speed = 1;
     double motorThreeZeroPower = 0.0;
@@ -32,29 +30,36 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         //define runOpMode variables
         //load in inits
         initMotorThree();
-
         waitForStart();
         while (!isStarted() && !isStopRequested()) {
             motorTelemetry();
-
         }
         // main loop
-        while (opModeIsActive()) {
-            // commands to run
-
-            motorTelemetry();
-            runMotorThreeToPosition(motorThreePositionTwo);
-            sleep(500);
-            runMotorThreeToPosition(motorThreePositionThree);
-
-            //stopAndResetEncoders();
-           // sleep(5000);
-        }
-        stopMotors();
+//        while (opModeIsActive()) {
+//            // commands to run
+//
+//            motorTelemetry();
+//
+//
+//
+//
+//           // sleep(5000);
+//        }
         // individual commands go here.
+        if(opModeIsActive()) {
+            runMotorThreeToPosition(motorThreePositionTwo);
+            while (motorThree.isBusy() && opModeIsActive()) {
+                sleep(0);
+            }
 
-
-        //sleep(500);
+            runMotorThreeToPosition(motorThreePositionThree);
+            while (motorThree.isBusy() && opModeIsActive()) {
+                sleep(500);
+            }
+            //stopMotors();
+            motorTelemetry();
+        }
+        sleep(2500);
         requestOpModeStop();
     }
 
@@ -107,7 +112,7 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         motorThree.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     public void resetMode(){
-        motorThree.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorThree.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
 }
