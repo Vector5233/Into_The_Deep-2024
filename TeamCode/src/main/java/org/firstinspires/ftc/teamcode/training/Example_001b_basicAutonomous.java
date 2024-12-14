@@ -19,7 +19,17 @@ public class Example_001b_basicAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         //define global variables
+
+
         waitForStart();
+        while (!opModeIsActive()){
+            //load in inits
+
+        }
+
+        while (opModeIsActive()){
+         // commands to run
+        }
 
         //sleep(500);
         requestOpModeStop();

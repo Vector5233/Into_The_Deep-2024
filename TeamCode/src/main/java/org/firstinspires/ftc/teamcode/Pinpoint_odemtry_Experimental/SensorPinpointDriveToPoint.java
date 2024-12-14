@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Pinpoint_odemtry_Experimental;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -8,9 +9,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import java.util.Locale;
-
+@Disabled
 @Autonomous(name="Pinpoint Navigation Example", group="Pinpoint")
-//@Disabled
+
 
 public class SensorPinpointDriveToPoint extends LinearOpMode {
 

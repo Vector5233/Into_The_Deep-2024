@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.training;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * port 03: rightBack
  */
 
-//@Disabled
+@Disabled
 @TeleOp(group = "Primary", name = "Tank Mechanum Drive")
 public class Example_003c_BasicMechanumDrive extends LinearOpMode {
     private DcMotor leftFront;

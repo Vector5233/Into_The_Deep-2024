@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.frankfurth;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,7 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  *  Port 02: CRServo servoThree
  *
  */
-//@Disabled
+@Disabled
 @TeleOp(group = "Frankfurth", name = "BasicTeleop")
 public class SERVOTWO_KF extends LinearOpMode {
     private Servo servoTwo;

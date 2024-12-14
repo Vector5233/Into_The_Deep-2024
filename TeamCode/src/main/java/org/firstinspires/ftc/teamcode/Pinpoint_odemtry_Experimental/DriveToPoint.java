@@ -47,10 +47,10 @@ public class DriveToPoint {
     private static double yawDGain = 0.0;
     private static double yawAccel = 2.0;
 
-    private DcMotor leftFront;
-    private DcMotor rightFront;
-    private DcMotor leftBack;
-    private DcMotor rightBack;
+    private DcMotor leftFrontDrive;
+    private DcMotor rightFrontDrive;
+    private DcMotor leftBackDrive;
+    private DcMotor rightBackDrive;
 
     private ElapsedTime holdTimer = new ElapsedTime();
     private ElapsedTime currentTime = new ElapsedTime();
@@ -84,15 +84,23 @@ public class DriveToPoint {
         yawTolerance = unit.toRadians(tolerance);
     }
 
+    public void Stop()
+    {
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+    }
+
     public DriveToPoint(LinearOpMode opmode) {
         myOpMode = opmode;
     }
 
     public void initializeMotors() {
-        leftFront = setupDriveMotor("leftFront", DcMotorSimple.Direction.REVERSE);
-        rightFront = setupDriveMotor("rightFront", DcMotorSimple.Direction.FORWARD);
-        leftBack = setupDriveMotor("leftBack", DcMotorSimple.Direction.REVERSE);
-        rightBack = setupDriveMotor("rightBack", DcMotorSimple.Direction.FORWARD);
+        leftFrontDrive = setupDriveMotor("leftFront", DcMotorSimple.Direction.REVERSE);
+        rightFrontDrive = setupDriveMotor("rightFront", DcMotorSimple.Direction.FORWARD);
+        leftBackDrive = setupDriveMotor("leftBack", DcMotorSimple.Direction.REVERSE);
+        rightBackDrive = setupDriveMotor("rightBack", DcMotorSimple.Direction.FORWARD);
     }
 
     public boolean driveTo(Pose2D currentPosition, Pose2D targetPosition, double power, double holdTime) {
@@ -126,7 +134,7 @@ public class DriveToPoint {
 //                xPWR = 0;
 //                hPWR = calculatePID(currentPosition, temp, Direction.h);
 //            }
-            driveTank(xPWR * power, hPWR * power);
+            //driveTank(xPWR * power, hPWR * power);
 
         } else {
             double xPWR = calculatePID(currentPosition, targetPosition, Direction.x);
@@ -174,28 +182,28 @@ public class DriveToPoint {
             rightBack /= max;
         }
 
-        this.leftFront.setPower(leftFront);
-        this.rightFront.setPower(rightFront);
-        this.leftBack.setPower(leftBack);
-        this.rightBack.setPower(rightBack);
+        this.leftFrontDrive.setPower(leftFront);
+        this.rightFrontDrive.setPower(rightFront);
+        this.leftBackDrive.setPower(leftBack);
+        this.rightBackDrive.setPower(rightBack);
     }
 
-    private void driveTank(double forward, double yaw){
-        double left = forward - yaw;
-        double right = forward + yaw;
-
-        double max = Math.max(Math.abs(left),Math.abs(right));
-
-        if (max > 1.0) {
-            left /= max;
-            right /= max;
-        }
-
-        leftFront.setPower(left);
-        rightFront.setPower(right);
-        leftBack.setPower(left);
-        rightBack.setPower(right);
-    }
+//    private void driveTank(double forward, double yaw){
+//        double left = forward - yaw;
+//        double right = forward + yaw;
+//
+//        double max = Math.max(Math.abs(left),Math.abs(right));
+//
+//        if (max > 1.0) {
+//            left /= max;
+//            right /= max;
+//        }
+//
+//        leftFrontDrive.setPower(left);
+//        rightFrontDrive.setPower(right);
+//        leftBackDrive.setPower(left);
+//        rightBackDrive.setPower(right);
+//    }
 
     private DcMotor setupDriveMotor(String deviceName, DcMotor.Direction direction) {
         DcMotor aMotor = myOpMode.hardwareMap.get(DcMotor.class, deviceName);
