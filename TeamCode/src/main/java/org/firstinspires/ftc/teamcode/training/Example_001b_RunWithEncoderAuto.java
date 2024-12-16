@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Robot Config
@@ -24,15 +25,23 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
     int motorThreePositionOne = 0;
     int motorThreePositionTwo = 1000;
     int motorThreePositionThree = -200;
-    double timeOutS;
+    // servo variables
+    private Servo servoOne; // servos go from 0 to 1 rotates 180 degrees
+    double servoOneInitPosition = 0.5; // doubles store a decimal
+    double servoOnePositionOne = 0.0;
+    double servoOnePositionTwo = 1.0;
+    int servoOneDelay = 10;
+
     @Override
     public void runOpMode() throws InterruptedException {
         //define runOpMode variables
         //load in inits
-        initMotorThree();
+        inits();
+
         waitForStart();
         while (!isStarted() && !isStopRequested()) {
             motorTelemetry();
+
         }
         // main loop
 //        while (opModeIsActive()) {
@@ -49,17 +58,25 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         if(opModeIsActive()) {
             runMotorThreeToPosition(motorThreePositionTwo);
             while (motorThree.isBusy() && opModeIsActive()) {
-                sleep(0);
+                sleep(50);
             }
 
             runMotorThreeToPosition(motorThreePositionThree);
             while (motorThree.isBusy() && opModeIsActive()) {
-                sleep(500);
+                sleep(50);
             }
             //stopMotors();
             motorTelemetry();
+                servoOne.setPosition(servoOnePositionOne);
+                sleep(1000);
+            servoTelemetry();
+                servoOne.setPosition(servoOnePositionTwo); //
+                sleep(500);
+            servoTelemetry();
         }
         sleep(2500);
+
+
         requestOpModeStop();
     }
 
@@ -69,6 +86,18 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         telemetry.update();
         //functions here
     }
+
+    public void servoTelemetry(){
+        telemetry.addData("Position", servoOne.getPosition());
+        telemetry.addData("Direction", servoOne.getDirection());
+        telemetry.update();
+    }
+    public void inits(){
+        initMotorThree();
+        initServoOne();
+    }
+
+
 
     public void initMotorThree() {
         motorThree = hardwareMap.get(DcMotor.class, "motorThree");
@@ -92,14 +121,6 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         motorThree.setPower(motorThreeZeroPower);// Optional /
     }
 
-//    public void raiseLift(int position){
-//        motorThree.setTargetPosition(motorThreePositionTwo);
-//        motorThree.setPower(speed);
-//        while (opModeIsActive() && motorThree.isBusy()){
-//            sleep(1);
-//        }
-//
-//    }
     public void resetEncoders(){
         stopMotors();
         stopAndResetEncoders();
@@ -114,5 +135,13 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
     public void resetMode(){
         motorThree.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+
+    public void initServoOne(){
+        servoOne = hardwareMap.get(Servo.class, "servoOne"); // maps the servo
+        servoOne.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+        servoOne.setPosition(servoOneInitPosition); // sets the initial position from the variable above.
+    }
+
+
 
 }
