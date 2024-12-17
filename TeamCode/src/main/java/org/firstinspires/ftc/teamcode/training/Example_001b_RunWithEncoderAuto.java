@@ -37,11 +37,11 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         //define runOpMode variables
         //load in inits
         inits();
-
         waitForStart();
+
         while (!isStarted() && !isStopRequested()) {
             motorTelemetry();
-
+            servoTelemetry();
         }
         // main loop
 //        while (opModeIsActive()) {
@@ -86,7 +86,7 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
         requestOpModeStop();
     }
 
-
+// function stack
     public void motorTelemetry() {
         telemetry.addData("motorThree", "Encoder: %2d, Power: %2f", motorThree.getCurrentPosition(), motorThree.getPower());
         telemetry.update();
