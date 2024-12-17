@@ -85,10 +85,12 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        liftLeft.setTargetPosition(0);
+        liftRight.setTargetPosition(0);
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       // liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       // liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public void runLiftsToPos(int position)
     {
@@ -105,7 +107,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         runLiftsToPos(position);
         sleep(3000);
-        //runLiftsToPos(liftsLowPos);
+        //runLiftsToPos(liftsLowPos);3
     }
     public void stateMachine(StateMachine stateMachine)
     {
