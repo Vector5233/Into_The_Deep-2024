@@ -55,11 +55,16 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
 //           // sleep(5000);
 //        }
         // individual commands go here.
+        
         if(opModeIsActive()) {
             runMotorThreeToPosition(motorThreePositionTwo);
             while (motorThree.isBusy() && opModeIsActive()) {
                 sleep(50);
             }
+            if(motorThree.getCurrentPosition() >= 900){
+                servoOne.setPosition(servoOnePositionOne);
+            }
+            servoTelemetry();
 
             runMotorThreeToPosition(motorThreePositionThree);
             while (motorThree.isBusy() && opModeIsActive()) {
@@ -67,11 +72,12 @@ public class Example_001b_RunWithEncoderAuto extends LinearOpMode {
             }
             //stopMotors();
             motorTelemetry();
-                servoOne.setPosition(servoOnePositionOne);
+
                 sleep(1000);
-            servoTelemetry();
-                servoOne.setPosition(servoOnePositionTwo); //
-                sleep(500);
+           if(motorThree.getCurrentPosition()<=200) {
+               servoOne.setPosition(servoOnePositionTwo); //
+               sleep(500);
+           }
             servoTelemetry();
         }
         sleep(2500);
