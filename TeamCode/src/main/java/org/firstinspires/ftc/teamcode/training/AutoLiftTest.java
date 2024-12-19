@@ -3,15 +3,17 @@ package org.firstinspires.ftc.teamcode.training;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 //@Disabled
 @Autonomous(name="AutoLiftTest", group="VECTORAUTO")
 
 public class AutoLiftTest extends LinearOpMode {
     DcMotor liftLeft;
     DcMotor liftRight;
-    int liftPosUp = 100;
+    int liftPosUp = 1500;
     int liftPosDown = -300;
-    double liftPower = 1.0;
+    double liftPower = 0.5;
     double liftZero = 0;
     int positionTolerance = 10; // Tolerance for encoder value
 
@@ -20,13 +22,14 @@ public class AutoLiftTest extends LinearOpMode {
         inits();
         waitForStart();
 
-        liftTelemetry();
         while (!opModeIsActive() && !isStopRequested()) {
-            liftTelemetry();
+
         }
 
         if (opModeIsActive()) {
             runLiftToPosition(liftPosUp);
+
+
             sleep(2000);
         }
 
@@ -39,15 +42,18 @@ public class AutoLiftTest extends LinearOpMode {
     }
 
     public void initLifts() {
-        liftRight = hardwareMap.get(DcMotor.class, "rightLift");
         liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
+        liftRight = hardwareMap.get(DcMotor.class, "rightLift");
+
 
         liftLeft.setDirection(DcMotor.Direction.REVERSE);
+        liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
         liftLeft.setPower(liftZero);
         liftRight.setPower(liftZero);
 
-        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -66,9 +72,7 @@ public class AutoLiftTest extends LinearOpMode {
         liftRight.setPower(liftPower);
 
         // Loop until the motors are within the tolerance range or the op mode stops
-        while (opModeIsActive() &&
-                (Math.abs(liftLeft.getCurrentPosition() - position) > positionTolerance ||
-                        Math.abs(liftRight.getCurrentPosition() - position) > positionTolerance)) {
+        while (liftRight.isBusy()&& liftRight.isBusy()) {
             liftTelemetry();
         }
 
@@ -82,8 +86,8 @@ public class AutoLiftTest extends LinearOpMode {
     }
 
     public void liftTelemetry() {
-        telemetry.addData("LiftLeft", "Encoder: %2d, Power: %2f", -liftLeft.getCurrentPosition(), liftLeft.getPower());
-        telemetry.addData("LiftRight", "Encoder: %2d, Power: %2f", -liftRight.getCurrentPosition(), liftRight.getPower());
+        telemetry.addData("LiftLeft", "Encoder: %2d, Power: %2f", liftLeft.getCurrentPosition(), liftLeft.getPower());
+        telemetry.addData("LiftRight", "Encoder: %2d, Power: %2f", liftRight.getCurrentPosition(), liftRight.getPower());
         telemetry.update();
     }
 }
