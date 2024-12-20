@@ -4,7 +4,7 @@
     See the readme for a link to a video tutorial explaining the operation and limitations of the code.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.SimplifiedOdometry;
 
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SimplifiedOdometryRobot {
     // Adjust these numbers to suit your robot.
-    private final double ODOM_INCHES_PER_COUNT   = 0.002969;   //  GoBilda Odometry Pod (1/226.8)
+    private final double ODOM_INCHES_PER_COUNT   = 0.008192;   //  GoBilda Odometry Pod (1/226.8 --0.002969)
     private final boolean INVERT_DRIVE_ODOMETRY  = true;       //  When driving FORWARD, the odometry value MUST increase.  If it does not, flip the value of this constant.
     private final boolean INVERT_STRAFE_ODOMETRY = true;       //  When strafing to the LEFT, the odometry value MUST increase.  If it does not, flip the value of this constant.
 
@@ -114,8 +114,8 @@ public class SimplifiedOdometryRobot {
 
         // Tell the software how the Control Hub is mounted on the robot to align the IMU XYZ axes correctly
         RevHubOrientationOnRobot orientationOnRobot =
-                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                                             RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                                             RevHubOrientationOnRobot.UsbFacingDirection.UP);
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         // zero out all the odometry readings.

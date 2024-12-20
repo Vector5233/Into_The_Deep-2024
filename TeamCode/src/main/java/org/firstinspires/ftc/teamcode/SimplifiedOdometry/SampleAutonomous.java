@@ -4,7 +4,7 @@
     See the readme for a link to a video tutorial explaining the operation and limitations of the code.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.SimplifiedOdometry;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -22,7 +22,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class SampleAutonomous extends LinearOpMode
 {
     // get an instance of the "Robot" class.
-    private org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot robot = new org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot(this);
+    private org.firstinspires.ftc.teamcode.SimplifiedOdometry.SimplifiedOdometryRobot robot = new org.firstinspires.ftc.teamcode.SimplifiedOdometry.SimplifiedOdometryRobot(this);
 
     @Override public void runOpMode()
     {

@@ -4,9 +4,8 @@
     See the readme for a link to a video tutorial explaining the operation and limitations of the code.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.SimplifiedOdometry;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,8 +15,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * An external "Robot" class is used to manage all motor/sensor interfaces, and to assist driving functions.
  * The IMU gyro is used to stabilize the heading when the operator is not requesting a turn.
  */
-@Disabled
-@TeleOp(name="Sample Teleop", group = "Mr. Phil")
+//@Disabled
+@TeleOp(name="Teleop", group = "Mr. F")
 public class SampleTeleop extends LinearOpMode
 {
     final double SAFE_DRIVE_SPEED   = 0.8 ; // Adjust this to your robot and your driver.  Slower usually means more accuracy.  Max value = 1.0
@@ -30,7 +29,7 @@ public class SampleTeleop extends LinearOpMode
     boolean autoHeading    = false; // used to indicate when heading should be locked.
 
     // get an instance of the "Robot" class.
-    org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot robot = new org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot(this);
+    org.firstinspires.ftc.teamcode.SimplifiedOdometry.SimplifiedOdometryRobot robot = new org.firstinspires.ftc.teamcode.SimplifiedOdometry.SimplifiedOdometryRobot(this);
 
     @Override public void runOpMode()
     {
