@@ -1,69 +1,57 @@
+
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
 /**
  * Config File
- * Port 00: motorOne MFL
- * Port 01: motorTwo MFR
- * Port 02: motorThree MBL
- * Port 03: motorFour MBR
- *
- * Port 00: Servo servoOne
- * Port 01: Servo servoTwo
- * Port 02: CRServo servoThree
+ * Control Hub
+ * Port 00: frontLeft 
+ * Port 01: frontRight
+ * Port 02: backLeft
+ * Port 03: backRight
+ * Servos
+ *  * Port 00: Servo Extension
+ *  * Port 01: Servo Pivot
+ *  * Port 02: Servo Grabber
+ *  
+ * Expansion Hub
+ * port 00: liftRight;
+ * port 01: liftLeft;
+ * Servos
  *
  */
-@Disabled
-@TeleOp(group = "Qureshi", name = "5233 Teleop ")
+//@Disabled
+@TeleOp(group = "TELEOP", name = "5233-Teleop.V1")
 public class TELEOP5233 extends LinearOpMode {
 
-
-    // Drive Motor Declarations
     DcMotor frontLeft;
     DcMotor frontRight;
     DcMotor backLeft;
     DcMotor backRight;
-    // Lift Motor
-    double liftDirection = 0;
     DcMotor liftRight;
     DcMotor liftLeft;
+    double liftDirection = 0;
 
-    //ALL THE SERVO STUFF
-    private Servo servoPincher; // servos go from 0 to 1 rotates 180 degrees
-    double servoPincherInitPosition = 0.0; // doubles store a decimal
-    double servoPincherPositionOpen = 0.0;
-    double servoPincherPositionClose = 0.3;
+    double liftPower=0.8;//ALL THE SERVO STUFF
+    private Servo Grabber; // servos go from 0 to 1 rotates 180 degrees
+    double  GrabberInit = 0.0; // doubles store a decimal
+    double GrabberOpen = 0.0;
+    double GrabberClosed = 0.3;
+    
+    private Servo Pivot; // servos go from 0 to 1 rotates 180 degrees
+    double PivotInitPosition = 0.0; // doubles store a decimal
+    double PivotUp = 0.0;
+    double PivotDown = 0.55;
 
-    private Servo pincherPivot; // servos go from 0 to 1 rotates 180 degrees
-    double pincherPivotInitPosition = 0.0; // doubles store a decimal
-    double pincherPivotPositionOutside = 0.0;
-    double pincherPivotPositionInside = 0.55;
-
-    private Servo shortArmPivot; // servos go from 0 to 1 rotates 180 degrees
-    double shortArmPivotInitPosition = 0.5; // doubles store a decimal
-    double shortArmPivotPositionPickUp = 1.0;
-    double shortArmPivotPositionPassOff = 0.1;
-
-    private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
-    double shortArmWristInitPosition = 0.0; // doubles store a decimal
-    double shortArmWristPositionPickup = 0.0;
-    double shortArmWristPositionPassOff = 0.66;
-
-    private Servo trayPivot; // servos go from 0 to 1 rotates 180 degrees
-    double trayPivotInitPosition = 0.5; // doubles store a decimal
-    double trayPivotPositionPickup = 0;
-    double trayPivotPositionDropOff = 0.5;
-
-    private CRServo geckoWheel; // servos go from 0 to 1 rotates 180 degrees
-    double geckoWheelPower = 1.0; // doubles store a decimal
-
+    private Servo Extension; // servos go from 0 to 1 rotates 180 degrees
+    double ExtensionInitPosition = 0.5; // doubles store a decimal
+    double ExtensionOut = 1.0;
+    double ExtensionIn = 0.1;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -113,116 +101,67 @@ public class TELEOP5233 extends LinearOpMode {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
     }
     public void initServos() {
-        servoPincher = hardwareMap.get(Servo.class, "servoPincher"); // maps the servo
-        servoPincher.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-        servoPincher.setPosition(servoPincherInitPosition); // sets the initial position from the variable above.
-
-        pincherPivot = hardwareMap.get(Servo.class, "pincherPivot"); // maps the servo
-        pincherPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-        pincherPivot.setPosition(pincherPivotInitPosition); // sets the initial position from the variable above.
-
-        shortArmWrist = hardwareMap.get(Servo.class, "grabberPivot"); // maps the servo
-        shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-        shortArmWrist.setPosition(shortArmWristInitPosition); // sets the initial position from the variable above.
-
-        geckoWheel = hardwareMap.get(CRServo.class, "grabberRotation");
-        geckoWheel.setDirection(CRServo.Direction.FORWARD);
-
-        shortArmPivot = hardwareMap.get(Servo.class, "armRotation"); // maps the servo
-        shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-        shortArmPivot.setPosition(shortArmPivotInitPosition); // sets the initial position from the variable above.
-
-        trayPivot = hardwareMap.get(Servo.class, "trayPivot"); // maps the servo
-        trayPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-        trayPivot.setPosition(trayPivotInitPosition); // sets the initial position from the variable above.
-
+        // Grabber Servo 
+        Grabber = hardwareMap.get(Servo.class, "Grabber"); // maps the servo
+        Grabber.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
+        Grabber.setPosition(GrabberInit); // sets the initial position from the variable above.
+        //Pivot Servo
+        Pivot = hardwareMap.get(Servo.class, "pincherPivot"); // maps the servo
+        Pivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+        Pivot.setPosition(PivotInitPosition); // sets the initial position from the variable above.
+        //Extension Servo
+        Extension = hardwareMap.get(Servo.class, "armRotation"); // maps the servo
+        Extension.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+        Extension.setPosition(ExtensionInitPosition); // sets the initial position from the variable above.
     }
-    public void ServoMovement()
-    {
-        TrayPivot();
-        ServoPincher();
-        PincherPivot();
-        Wrist();
-        ShortArmPivot();
-        GeckoWheel();
+    // calls to the method stack methods
+    public void teleOpControls() {
+        driveTrain();
+        Lift();
+        GrabberControls();
+        Pivot();
+        Extension();
+        //liftDirection = 0;// why this?
     }
+    // Method Stack below
 
-    private void GeckoWheel() {
-        if(gamepad2.a)
-        {
-            geckoWheel.setPower(geckoWheelPower);
-        } else if (gamepad2.y) {
-            geckoWheel.setPower(-geckoWheelPower);
-        }
-        else {
-            geckoWheel.setPower(0);
-        }
-    }
-
-    private void ShortArmPivot() {
-        if(gamepad2.b)
-        {
-            //shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-            //    shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-            shortArmPivot.setPosition(shortArmPivotPositionPickUp);
-        }
-        if(gamepad2.x)
-        {
-            // shortArmWrist.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-
-            //  shortArmWrist.setPosition(shortArmWristPositionPassOff);
-            //    shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-            shortArmPivot.setPosition(shortArmPivotPositionPassOff);
-        }
-    }
-
-    private void Wrist() {
-        if(gamepad2.right_bumper)
-        {
-            shortArmWrist.setPosition(shortArmWristPositionPickup);
-            //shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-            //shortArmPivot.setPosition(shortArmPivotPositionPickUp);
-        }
-        if(gamepad2.left_bumper)
-        {
-            shortArmWrist.setPosition(shortArmWristPositionPassOff);
-            // shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-            //shortArmPivot.setPosition(shortArmPivotPositionPassOff);
-        }
-    }
-
-    private void PincherPivot() {
-        if(gamepad1.right_trigger >= 0.5)
-        {
-            pincherPivot.setPosition(pincherPivotPositionInside);
-        }
-        if(gamepad1.left_trigger >= 0.5)
-        {
-            pincherPivot.setPosition(pincherPivotPositionOutside);
-        }
-    }
-
-    private void ServoPincher() {
+    // This method controls the opening and closing of the grabber using the right and left bumpers.
+    // This should rotate from 90 to its init Position degrees.
+    private void GrabberControls() {
         if(gamepad1.right_bumper)
         {
-            servoPincher.setPosition(servoPincherPositionOpen);
+            Grabber.setPosition(GrabberOpen);
         }
         if(gamepad1.left_bumper)
         {
-            servoPincher.setPosition(servoPincherPositionClose);
+            Grabber.setPosition(GrabberClosed);
+        }
+    }
+    // This method allows the pivot servo to rotate from the initial position of Up to the grabbing position of Down.
+    // This method allows to the grabber to collect Specimens in the up position and samples in the down position
+    private void Pivot() {
+        if(gamepad1.right_trigger >= 0.5)
+        {
+            Pivot.setPosition(PivotDown);
+        }
+        if(gamepad1.left_trigger >= 0.5)
+        {
+            Pivot.setPosition(PivotUp);
+        }
+    }
+    // This method allows the Extension Servo to Extend and retract the Slide rail in a horizontal position
+    private void Extension() {
+        if(gamepad2.a)
+        {
+            Extension.setPosition(ExtensionIn);
+        } else if (gamepad2.y) {
+            Extension.setPosition(ExtensionOut);
+        }
+        else {
+            Extension.setPosition(ExtensionInitPosition);
         }
     }
 
-    private void TrayPivot() {
-        if(gamepad1.x)
-        {
-            trayPivot.setPosition(trayPivotPositionPickup);
-        }
-        if(gamepad1.b)
-        {
-            trayPivot.setPosition(trayPivotPositionDropOff);
-        }
-    }
 
     public void driveTrain()
     {
@@ -237,27 +176,17 @@ public class TELEOP5233 extends LinearOpMode {
     }
     public void servoTelemetry() {
         //telemetry.log().clear();
-        telemetry.addData("Position", servoPincher.getPosition());
-        telemetry.addData("Direction", servoPincher.getDirection());
-        telemetry.addData("Controller", servoPincher.getController());
+        telemetry.addData("Position", Grabber.getPosition());
+        telemetry.addData("Direction", Grabber.getDirection());
+        telemetry.addData("Controller", Grabber.getController());
 
-        telemetry.addData("Position", pincherPivot.getPosition());
-        telemetry.addData("Direction", pincherPivot.getDirection());
-        telemetry.addData("Controller", pincherPivot.getController());
+        telemetry.addData("Position", Pivot.getPosition());
+        telemetry.addData("Direction", Pivot.getDirection());
+        telemetry.addData("Controller", Pivot.getController());
 
-        telemetry.addData("pOWER", geckoWheel.getPower());
-        telemetry.addData("Direction", geckoWheel.getDirection());
-        telemetry.addData("Port", geckoWheel.getPortNumber());
-
-        telemetry.addData("Position", pincherPivot.getPosition());
-        telemetry.addData("Direction", pincherPivot.getDirection());
-        telemetry.addData("Controller", pincherPivot.getController());
+        telemetry.addData("Position", Extension.getPosition());
+        telemetry.addData("Direction", Extension.getDirection());
+        telemetry.addData("Controller", Extension.getController());
     }
-    public void teleOpControls() {
-        driveTrain();
-        ServoMovement();
-        Lift();
-        liftDirection = 0;
-    }
+
 }
-

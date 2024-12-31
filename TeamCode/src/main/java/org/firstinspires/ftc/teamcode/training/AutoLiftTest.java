@@ -33,6 +33,8 @@ public class AutoLiftTest extends LinearOpMode {
             sleep(2000);
         }
 
+        runLiftToPosition(liftPosDown);
+
         sleep(5000);
         requestOpModeStop();
     }
@@ -45,7 +47,6 @@ public class AutoLiftTest extends LinearOpMode {
         liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
         liftRight = hardwareMap.get(DcMotor.class, "rightLift");
 
-
         liftLeft.setDirection(DcMotor.Direction.REVERSE);
         liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
         liftLeft.setPower(liftZero);
@@ -53,7 +54,6 @@ public class AutoLiftTest extends LinearOpMode {
 
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -72,7 +72,7 @@ public class AutoLiftTest extends LinearOpMode {
         liftRight.setPower(liftPower);
 
         // Loop until the motors are within the tolerance range or the op mode stops
-        while (liftRight.isBusy()&& liftRight.isBusy()) {
+        while (liftRight.isBusy()&& liftLeft.isBusy()) {
             liftTelemetry();
         }
 
