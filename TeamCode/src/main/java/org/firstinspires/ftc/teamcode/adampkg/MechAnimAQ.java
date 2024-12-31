@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.adampkg;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 //TODO: fix config file
@@ -13,7 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Port 01: motorTwo MFR
  * Port 02: motorThree MBL
  * Port 03: motorFour MBR
- * <p>
+ *
  * Port 00: Servo servoOne
  * Port 01: Servo servoTwo
  * Port 02: CRServo servoThree
@@ -42,6 +43,8 @@ public class MechAnimAQ extends LinearOpMode {
     private Servo pincherPivot; // servos go from 0 to 1 rotates 180 degrees
     private Servo extension; // servos go from 0 to 1 rotates 180 degrees
 
+    private float liftPosition;
+
     @Override
     public void runOpMode() throws InterruptedException {
         initHardware();
@@ -51,18 +54,39 @@ public class MechAnimAQ extends LinearOpMode {
         while (opModeIsActive()) {
             servoTelemetry();
             teleOpControls();
+            SetLift(liftPosition);
         }
 
     }
-
+    public boolean SetLift(float LiftPosition) {
+        //TODO: tune this function
+        //This function might be buggy
+        float padding = 0.5f; //this value might need to change
+        liftRight.setPower(Math.abs(liftRight.getCurrentPosition() - LiftPosition));
+        liftLeft.setPower(Math.abs(liftLeft.getCurrentPosition() - LiftPosition));
+        if (liftRight.getCurrentPosition() < LiftPosition + padding){
+        liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        return false;
+                }
+        else if(liftRight.getCurrentPosition() > LiftPosition - padding){
+            liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+            liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+            return false;
+        }
+        else{
+            liftRight.setPower(0.0);
+            liftLeft.setPower(0.0);
+            return true;
+        }
+    }
     public void Lift() {
         if (gamepad1.y) {
-            liftDirection = 1;
+            liftPosition = 1;
         } else if (gamepad1.a) {
-            liftDirection = -1;
-        } else {
-            liftDirection = 0;
+            liftPosition = 0;
         }
+
         liftRight.setPower(liftDirection);
         liftLeft.setPower(liftDirection);
 
@@ -139,7 +163,27 @@ public class MechAnimAQ extends LinearOpMode {
             servoPincher.setPosition(servoPincherPositionClose);
         }
     }
+    private void grab(){
+        if(gamepad1.right_trigger) {
+            //TODO: set this to optimal height for pickup from wall
+            if(SetLift(0) == true){
+                extension.setPosition(extensionExtended);
+                servoPincher.setPosition(servoPincherPositionOpen);
 
+            }
+
+        }
+        else if(gamepad1.left_trigger) {
+            //TODO: set this to optimal height for scoring specimens
+            if(SetLift(1) == true){
+                extension.setPosition(extensionExtended);
+            }
+
+        }
+        else{
+            servoPincher.setPosition(servoPincherPositionClose);
+        }
+    }
     public void driveTrain() {
         double lx = gamepad1.left_stick_x;
         double ly = -gamepad1.left_stick_y;
@@ -165,11 +209,15 @@ public class MechAnimAQ extends LinearOpMode {
         telemetry.addData("Extension Position", extension.getPosition());
         telemetry.addData("Extension Direction",extension.getDirection());
         telemetry.addData("Extension Controller",extension.getController());
+
+        telemetry.addData("Left lift position",liftLeft.getCurrentPosition());
+        telemetry.addData("Right lift position",liftRight.getCurrentPosition());
     }
     public void teleOpControls() {
         driveTrain();
         ServoMovement();
         Lift();
+        grab();
         liftDirection = 0;
     }
 }
