@@ -43,7 +43,7 @@ public class MechAnimAQ extends LinearOpMode {
     private Servo pincherPivot; // servos go from 0 to 1 rotates 180 degrees
     private Servo extension; // servos go from 0 to 1 rotates 180 degrees
 
-    private float liftPosition;
+    private int liftPosition;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -58,27 +58,30 @@ public class MechAnimAQ extends LinearOpMode {
         }
 
     }
-    public boolean SetLift(float LiftPosition) {
+    public boolean SetLift(int LiftPosition) {
         //TODO: tune this function
         //This function might be buggy
         float padding = 0.5f; //this value might need to change
-        liftRight.setPower(Math.abs(liftRight.getCurrentPosition() - LiftPosition));
-        liftLeft.setPower(Math.abs(liftLeft.getCurrentPosition() - LiftPosition));
-        if (liftRight.getCurrentPosition() < LiftPosition + padding){
-        liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        liftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        return false;
-                }
-        else if(liftRight.getCurrentPosition() > LiftPosition - padding){
-            liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
-            liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
-            return false;
-        }
-        else{
-            liftRight.setPower(0.0);
-            liftLeft.setPower(0.0);
-            return true;
-        }
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setTargetPosition(LiftPosition);
+        liftLeft.setTargetPosition(LiftPosition);
+        return !(liftLeft.isBusy()|| liftRight.isBusy());
+//        if (liftRight.getCurrentPosition() < LiftPosition + padding){
+//        liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
+//        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+//        return false;
+//                }
+//        else if(liftRight.getCurrentPosition() > LiftPosition - padding){
+//            liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//            liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
+//            return false;
+//        }
+//        else{
+//            liftRight.setPower(0.0);
+//            liftLeft.setPower(0.0);
+//            return true;
+//        }
     }
     public void Lift() {
         if (gamepad1.y) {
@@ -106,6 +109,16 @@ public class MechAnimAQ extends LinearOpMode {
         liftRight = hardwareMap.get(DcMotor.class, "rightLift");
         liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
         liftLeft.setDirection(DcMotor.Direction.REVERSE);
+        liftRight.setDirection(DcMotor.Direction.FORWARD);
+        liftLeft.setPower(0.0);
+        liftRight.setPower(0.0);
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         //back left reverse os up for debate because we changed hardware and it stopped working
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -164,7 +177,18 @@ public class MechAnimAQ extends LinearOpMode {
         }
     }
     private void grab(){
-        if(gamepad1.right_trigger) {
+        if (gamepad1.right_trigger >= 0) {
+            if(gamepad1.left_trigger >= 0) {
+                //TODO: set this to optimal height for scoring specimens
+                if(SetLift(1) == true){
+                    extension.setPosition(extensionExtended);
+                }
+
+            }
+            else{
+                servoPincher.setPosition(servoPincherPositionClose);
+            }
+        } else {
             //TODO: set this to optimal height for pickup from wall
             if(SetLift(0) == true){
                 extension.setPosition(extensionExtended);
@@ -172,16 +196,6 @@ public class MechAnimAQ extends LinearOpMode {
 
             }
 
-        }
-        else if(gamepad1.left_trigger) {
-            //TODO: set this to optimal height for scoring specimens
-            if(SetLift(1) == true){
-                extension.setPosition(extensionExtended);
-            }
-
-        }
-        else{
-            servoPincher.setPosition(servoPincherPositionClose);
         }
     }
     public void driveTrain() {
