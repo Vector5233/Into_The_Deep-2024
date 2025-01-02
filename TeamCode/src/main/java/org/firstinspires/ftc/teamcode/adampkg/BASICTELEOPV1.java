@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-//TODO: fix config file
-
 /**
  * Config File
  * Port 00: motorOne MFL
@@ -19,7 +17,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Port 02: Servo extension
  */
 //@Disabled
-@TeleOp(group = "Team5233", name = "BasicTeleopV1")
+@TeleOp(group = "Team5233", name = "BasicTeleopV1.1")
 public class BASICTELEOPV1 extends LinearOpMode {
     double liftDirection = 0;
     DcMotor frontLeft;
@@ -28,16 +26,18 @@ public class BASICTELEOPV1 extends LinearOpMode {
     DcMotor backRight;
     DcMotor liftRight;
     DcMotor liftLeft;
+
     double grabberInitPosition = 0.0; // doubles store a decimal
     double grabberPositionOpen = 0.0;
     double grabberPositionClose = 0.3;
     double pivotInitPosition = 0.0; // doubles store a decimal
     double pivotPositionPickUp = 1.0; //TODO: check this and next value
     double pivotPositionPassOff = 0.1;
-    double extensionInitPosition = 0.5; // doubles store a decimal
+    double extensionInitPosition = 0.0; // doubles store a decimal
     double extensionExtended = 0.0; //TODO: set correct numbers for extension
-    double extensionRetracted = 0.0; //TODO: set correct number for retracted
+    double extensionRetracted = 1.0; //TODO: set correct number for retracted
     //ALL THE SERVO STUFF
+
     private Servo grabber; // servos go from 0 to 1 rotates 180 degrees
     private Servo pivot; // servos go from 0 to 1 rotates 180 degrees
     private Servo extension; // servos go from 0 to 1 rotates 180 degrees
@@ -63,7 +63,7 @@ public class BASICTELEOPV1 extends LinearOpMode {
         float padding = 0.5f; //this value might need to change
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftRight.setTargetPosition(LiftPosition);
+        liftRight.setTargetPosition(-(LiftPosition));
         liftLeft.setTargetPosition(LiftPosition);
         return !(liftLeft.isBusy()|| liftRight.isBusy());
 /*
@@ -87,13 +87,14 @@ public class BASICTELEOPV1 extends LinearOpMode {
 
     //
     public void Lift() {
-        if (gamepad1.y) {
-            liftPosition = 1;
-        } else if (gamepad1.a) {
-            liftPosition = 0;
+        if (gamepad1.right_trigger > 0.5) {
+            liftPosition ++;
+        } else if (gamepad1.left_trigger > 0.5) {
+            liftPosition --;
         }
 
         liftRight.setPower(liftDirection);
+
         liftLeft.setPower(liftDirection);
 
         //return liftDirection;
@@ -137,7 +138,7 @@ public class BASICTELEOPV1 extends LinearOpMode {
         pivot.setPosition(pivotInitPosition); // sets the initial position from the variable above.
 
         extension = hardwareMap.get(Servo.class, "extension"); // maps the servo
-        extension.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+        extension.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
         extension.setPosition(extensionInitPosition); // sets the initial position from the variable above.
     }
 
@@ -152,21 +153,21 @@ public class BASICTELEOPV1 extends LinearOpMode {
         if (gamepad2.b) {
             //shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
             //    shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-            extension.setPosition(extensionExtended);
+            extension.setPosition(extensionRetracted);
         }
         if (gamepad2.x) {
             // shortArmWrist.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
             //  shortArmWrist.setPosition(shortArmWristPositionPassOff);
             //    shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-            extension.setPosition(extensionRetracted);
+            extension.setPosition(extensionExtended);
         }
     }
 
     private void pivot() {
-        if (gamepad1.right_trigger >= 0.5) {
+        if (gamepad2.right_trigger >= 0.5) {
             pivot.setPosition(pivotPositionPickUp);
         }
-        if (gamepad1.left_trigger >= 0.5) {
+        if (gamepad2.left_trigger >= 0.5) {
             pivot.setPosition(pivotPositionPassOff);
         }
     }
@@ -179,29 +180,31 @@ public class BASICTELEOPV1 extends LinearOpMode {
             grabber.setPosition(grabberPositionClose);
         }
     }
-    private void grab(){
-        if (gamepad1.right_trigger >= 0) {
-            if(gamepad1.left_trigger >= 0) {
-                //TODO: set this to optimal height for scoring specimens
-                if(SetLift(1) == true){
-                    extension.setPosition(extensionExtended);
-                }
-
-            }
-            else{
-                grabber.setPosition(grabberPositionClose);
-            }
-        } else {
-            //TODO: set this to optimal height for pickup from wall
-            if(SetLift(0) == true){
+    private void grab() {
+        /*
+        if (gamepad1.y)
+        {
+            //TODO: set this to optimal height for scoring specimens
+            SetLift(1);
+            if (SetLift(1) == true)
+            {
                 extension.setPosition(extensionExtended);
                 grabber.setPosition(grabberPositionOpen);
-
             }
+        }
+        else if(gamepad1.a){
+            extension.setPosition(extensionExtended);
+            SetLift(96);
 
         }
+        else
+        {
+            grabber.setPosition(grabberPositionClose);
+        }
     }
-    public void driveTrain() {
+         */
+    }
+    public void driveTrain(){
         double lx = gamepad1.left_stick_x;
         double ly = -gamepad1.left_stick_y;
         double rx = gamepad1.right_stick_x;
@@ -213,28 +216,29 @@ public class BASICTELEOPV1 extends LinearOpMode {
     }
 
     public void servoTelemetry() {
-        //telemetry.log().clear()
-        telemetry.addData("Pincher Position", grabber.getPosition());
-        telemetry.addData("Pincher Direction", grabber.getDirection());
-        telemetry.addData("Pincher Controller", grabber.getController());
-
-        telemetry.addData("Pivot Position", pivot.getPosition());
-        telemetry.addData("Pivot Direction", pivot.getDirection());
-        telemetry.addData("Pivot Controller", pivot.getController());
+//        telemetry.addData("Pincher Position", grabber.getPosition());
+//        telemetry.addData("Pincher Direction", grabber.getDirection());
+//        telemetry.addData("Pincher Controller", grabber.getController());
+//
+//        telemetry.addData("Pivot Position", pivot.getPosition());
+//        telemetry.addData("Pivot Direction", pivot.getDirection());
+//        telemetry.addData("Pivot Controller", pivot.getController());
 
 
         telemetry.addData("Extension Position", extension.getPosition());
         telemetry.addData("Extension Direction",extension.getDirection());
         telemetry.addData("Extension Controller",extension.getController());
 
-        telemetry.addData("Left lift position",liftLeft.getCurrentPosition());
-        telemetry.addData("Right lift position",liftRight.getCurrentPosition());
+//        telemetry.addData("Left lift position",liftLeft.getCurrentPosition());
+//        telemetry.addData("Right lift position",liftRight.getCurrentPosition());
+        telemetry.update();
     }
     public void teleOpControls() {
+        servoTelemetry();
         driveTrain();
         ServoMovement();
         Lift();
         grab();
-        liftDirection = 0;
+        //liftDirection = 0;
     }
 }
