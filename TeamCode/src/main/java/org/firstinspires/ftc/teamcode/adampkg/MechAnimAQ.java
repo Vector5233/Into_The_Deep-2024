@@ -1,7 +1,6 @@
 
 package org.firstinspires.ftc.teamcode.adampkg;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -34,20 +33,21 @@ public class MechAnimAQ extends LinearOpMode {
 
 //ALL THE SERVO STUFF
     private Servo servoPincher; // servos go from 0 to 1 rotates 180 degrees
-    double servoPincherInitPosition = 0.0; // doubles store a decimal
-    double servoPincherPositionOpen = 0.0;
+    double servoPincherInitPosition = 0.08; // doubles store a decimal
+    double servoPincherPositionOpen = 0.08;
     double servoPincherPositionClose = 0.3;
 
     private Servo pincherPivot; // servos go from 0 to 1 rotates 180 degrees
     double pincherPivotInitPosition = 0.0; // doubles store a decimal
-    double pincherPivotPositionOutside = 0.0;
-    double pincherPivotPositionInside = 0.55;
+    double pincherPivotDown = 1.0;
+    double pincherPivotUp = 0.0;
 
-    private Servo shortArmPivot; // servos go from 0 to 1 rotates 180 degrees
-    double shortArmPivotInitPosition = 0.5; // doubles store a decimal
-    double shortArmPivotPositionPickUp = 1.0;
-    double shortArmPivotPositionPassOff = 0.1;
+    private Servo extension; // servos go from 0 to 1 rotates 180 degrees
+    double extensionInitPosition = 0.0; // doubles store a decimal
+    double extensionExtended = 0.0;
+    double extensionRetracted = 1.0;
 
+    /*
     private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
     double shortArmWristInitPosition = 0.0; // doubles store a decimal
     double shortArmWristPositionPickup = 0.0;
@@ -61,7 +61,7 @@ public class MechAnimAQ extends LinearOpMode {
     private CRServo geckoWheel; // servos go from 0 to 1 rotates 180 degrees
     double geckoWheelPower = 1.0; // doubles store a decimal
 
-
+*/
     @Override
     public void runOpMode() throws InterruptedException {
         initHardware();
@@ -110,14 +110,14 @@ public class MechAnimAQ extends LinearOpMode {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
     }
     public void initServos() {
-        servoPincher = hardwareMap.get(Servo.class, "servoPincher"); // maps the servo
+        servoPincher = hardwareMap.get(Servo.class, "grabber"); // maps the servo
         servoPincher.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
         servoPincher.setPosition(servoPincherInitPosition); // sets the initial position from the variable above.
 
-        pincherPivot = hardwareMap.get(Servo.class, "pincherPivot"); // maps the servo
+        pincherPivot = hardwareMap.get(Servo.class, "pivot"); // maps the servo
         pincherPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
         pincherPivot.setPosition(pincherPivotInitPosition); // sets the initial position from the variable above.
-
+/*
         shortArmWrist = hardwareMap.get(Servo.class, "grabberPivot"); // maps the servo
         shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
         shortArmWrist.setPosition(shortArmWristInitPosition); // sets the initial position from the variable above.
@@ -125,25 +125,30 @@ public class MechAnimAQ extends LinearOpMode {
         geckoWheel = hardwareMap.get(CRServo.class, "grabberRotation");
         geckoWheel.setDirection(CRServo.Direction.FORWARD);
 
-        shortArmPivot = hardwareMap.get(Servo.class, "armRotation"); // maps the servo
-        shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-        shortArmPivot.setPosition(shortArmPivotInitPosition); // sets the initial position from the variable above.
-
         trayPivot = hardwareMap.get(Servo.class, "trayPivot"); // maps the servo
         trayPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
         trayPivot.setPosition(trayPivotInitPosition); // sets the initial position from the variable above.
+  */
+        extension = hardwareMap.get(Servo.class, "extension"); // maps the servo
+        extension.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
+        extension.setPosition(extensionInitPosition); // sets the initial position from the variable above.
+
+
 
     }
     public void ServoMovement()
     {
-        TrayPivot();
         ServoPincher();
         PincherPivot();
-        Wrist();
         ShortArmPivot();
+        /*
         GeckoWheel();
-    }
+        TrayPivot();
+        Wrist();
+*/
 
+    }
+/*
     private void GeckoWheel() {
         if(gamepad2.a)
         {
@@ -155,24 +160,18 @@ public class MechAnimAQ extends LinearOpMode {
             geckoWheel.setPower(0);
         }
     }
-
+*/
     private void ShortArmPivot() {
         if(gamepad2.b)
         {
-            //shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-        //    shortArmPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-            shortArmPivot.setPosition(shortArmPivotPositionPickUp);
+            extension.setPosition(extensionExtended);
         }
         if(gamepad2.x)
         {
-           // shortArmWrist.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-
-          //  shortArmWrist.setPosition(shortArmWristPositionPassOff);
-        //    shortArmPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-            shortArmPivot.setPosition(shortArmPivotPositionPassOff);
+            extension.setPosition(extensionRetracted);
         }
     }
-
+/*
     private void Wrist() {
         if(gamepad2.right_bumper)
         {
@@ -187,15 +186,15 @@ public class MechAnimAQ extends LinearOpMode {
             //shortArmPivot.setPosition(shortArmPivotPositionPassOff);
         }
     }
-
+*/
     private void PincherPivot() {
         if(gamepad1.right_trigger >= 0.5)
         {
-            pincherPivot.setPosition(pincherPivotPositionInside);
+            pincherPivot.setPosition(pincherPivotUp);
         }
         if(gamepad1.left_trigger >= 0.5)
         {
-            pincherPivot.setPosition(pincherPivotPositionOutside);
+            pincherPivot.setPosition(pincherPivotDown);
         }
     }
 
@@ -209,7 +208,7 @@ public class MechAnimAQ extends LinearOpMode {
             servoPincher.setPosition(servoPincherPositionClose);
         }
     }
-
+/*
     private void TrayPivot() {
         if(gamepad1.x)
         {
@@ -220,7 +219,7 @@ public class MechAnimAQ extends LinearOpMode {
             trayPivot.setPosition(trayPivotPositionDropOff);
         }
     }
-
+*/
     public void driveTrain()
     {
         double lx = gamepad1.left_stick_x;
@@ -242,10 +241,11 @@ public class MechAnimAQ extends LinearOpMode {
         telemetry.addData("Direction", pincherPivot.getDirection());
         telemetry.addData("Controller", pincherPivot.getController());
 
+        /*
         telemetry.addData("pOWER", geckoWheel.getPower());
         telemetry.addData("Direction", geckoWheel.getDirection());
         telemetry.addData("Port", geckoWheel.getPortNumber());
-
+*/
         telemetry.addData("Position", pincherPivot.getPosition());
         telemetry.addData("Direction", pincherPivot.getDirection());
         telemetry.addData("Controller", pincherPivot.getController());
