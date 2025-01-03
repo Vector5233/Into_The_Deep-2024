@@ -3,14 +3,15 @@ package org.firstinspires.ftc.teamcode.adampkg;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Config File
- * Port 00: motorOne MFL
- * Port 01: motorTwo MFR
- * Port 02: motorThree MBL
- * Port 03: motorFour MBR
+ * Port 00: motorThree MBL
+ * Port 01: motorFour MBR
+ * Port 02: motorOne MFL
+ * Port 03: motorTwo MFR4
  *
  * Port 00: Servo grabber
  * Port 01: Servo pivot
@@ -32,7 +33,7 @@ public class BASICTELEOPV1 extends LinearOpMode {
     double grabberPositionClose = 0.3;
     double pivotInitPosition = 0.0; // doubles store a decimal
     double pivotPositionPickUp = 1.0; //TODO: check this and next value
-    double pivotPositionPassOff = 0.1;
+    double pivotPositionPassOff = 0.0;
     double extensionInitPosition = 0.0; // doubles store a decimal
     double extensionExtended = 0.0; //TODO: set correct numbers for extension
     double extensionRetracted = 1.0; //TODO: set correct number for retracted
@@ -87,17 +88,16 @@ public class BASICTELEOPV1 extends LinearOpMode {
 
     //
     public void Lift() {
+        double power = 0;
         if (gamepad1.right_trigger > 0.5) {
-            liftPosition ++;
-        } else if (gamepad1.left_trigger > 0.5) {
-            liftPosition --;
+            liftDirection = 1;
         }
-
+        else if (gamepad1.left_trigger > 0.5)
+        {
+            liftDirection = -1;
+        }
         liftRight.setPower(liftDirection);
-
         liftLeft.setPower(liftDirection);
-
-        //return liftDirection;
     }
 
     public void initHardware() {
@@ -225,12 +225,12 @@ public class BASICTELEOPV1 extends LinearOpMode {
 //        telemetry.addData("Pivot Controller", pivot.getController());
 
 
-        telemetry.addData("Extension Position", extension.getPosition());
-        telemetry.addData("Extension Direction",extension.getDirection());
-        telemetry.addData("Extension Controller",extension.getController());
+//        telemetry.addData("Extension Position", extension.getPosition());
+//        telemetry.addData("Extension Direction",extension.getDirection());
+//        telemetry.addData("Extension Controller",extension.getController());
 
-//        telemetry.addData("Left lift position",liftLeft.getCurrentPosition());
-//        telemetry.addData("Right lift position",liftRight.getCurrentPosition());
+        telemetry.addData("Left lift position",liftLeft.getCurrentPosition());
+        telemetry.addData("Right lift position",liftRight.getCurrentPosition());
         telemetry.update();
     }
     public void teleOpControls() {
