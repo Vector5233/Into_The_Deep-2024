@@ -93,8 +93,6 @@ public class BASICTELEOPV1 extends LinearOpMode {
     }
     public void Lift()
     {
-
-
         liftLeft.setPower(.5);
         liftRight.setPower(.5);
         int WALL_HEIGHT = 200;
@@ -102,11 +100,8 @@ public class BASICTELEOPV1 extends LinearOpMode {
         int LOW_BASKET = 3500;
         if (gamepad1.y)
         {
-
-
             liftLeft.setTargetPosition(SCORING_HEIGHT);
             liftRight.setTargetPosition(liftLeft.getTargetPosition());
-
         }
         else if (gamepad1.a)
         {
@@ -131,9 +126,6 @@ public class BASICTELEOPV1 extends LinearOpMode {
         }
 
 }
-
-
-
     public void initHardware()
     {
         initDrive();
@@ -148,6 +140,7 @@ public class BASICTELEOPV1 extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "leftBack");
         backRight = hardwareMap.get(DcMotor.class, "rightBack");
         liftRight = hardwareMap.get(DcMotor.class, "rightLift");
+
         liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
         liftLeft.setDirection(DcMotor.Direction.REVERSE);
         liftRight.setDirection(DcMotor.Direction.FORWARD);

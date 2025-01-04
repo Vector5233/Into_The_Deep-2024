@@ -3,9 +3,7 @@ package org.firstinspires.ftc.teamcode.adampkg;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 
 /**
@@ -23,45 +21,23 @@ import com.qualcomm.robotcore.hardware.Servo;
 //@Disabled
 @TeleOp(group = "Qureshi", name = "BasicTeleop")
 public class MechAnimAQ extends LinearOpMode {
-    double liftDirection = 0;
-    DcMotor frontLeft;
-    DcMotor frontRight;
-    DcMotor backLeft;
-    DcMotor backRight;
-    DcMotor liftRight;
-    DcMotor liftLeft;
-
-//ALL THE SERVO STUFF
-    private Servo servoPincher; // servos go from 0 to 1 rotates 180 degrees
-    double servoPincherInitPosition = 0.08; // doubles store a decimal
-    double servoPincherPositionOpen = 0.08;
-    double servoPincherPositionClose = 0.3;
-
-    private Servo pincherPivot; // servos go from 0 to 1 rotates 180 degrees
-    double pincherPivotInitPosition = 0.0; // doubles store a decimal
-    double pincherPivotDown = 1.0;
-    double pincherPivotUp = 0.0;
-
-    private Servo extension; // servos go from 0 to 1 rotates 180 degrees
-    double extensionInitPosition = 0.0; // doubles store a decimal
-    double extensionExtended = 0.0;
-    double extensionRetracted = 1.0;
+    final RobotBase robotBase = new RobotBase();
 
     /*
-    private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
-    double shortArmWristInitPosition = 0.0; // doubles store a decimal
-    double shortArmWristPositionPickup = 0.0;
-    double shortArmWristPositionPassOff = 0.66;
+        private Servo shortArmWrist; // servos go from 0 to 1 rotates 180 degrees
+        double shortArmWristInitPosition = 0.0; // doubles store a decimal
+        double shortArmWristPositionPickup = 0.0;
+        double shortArmWristPositionPassOff = 0.66;
 
-    private Servo trayPivot; // servos go from 0 to 1 rotates 180 degrees
-    double trayPivotInitPosition = 0.5; // doubles store a decimal
-    double trayPivotPositionPickup = 0;
-    double trayPivotPositionDropOff = 0.5;
+        private Servo trayPivot; // servos go from 0 to 1 rotates 180 degrees
+        double trayPivotInitPosition = 0.5; // doubles store a decimal
+        double trayPivotPositionPickup = 0;
+        double trayPivotPositionDropOff = 0.5;
 
-    private CRServo geckoWheel; // servos go from 0 to 1 rotates 180 degrees
-    double geckoWheelPower = 1.0; // doubles store a decimal
+        private CRServo geckoWheel; // servos go from 0 to 1 rotates 180 degrees
+        double geckoWheelPower = 1.0; // doubles store a decimal
 
-*/
+    */
     @Override
     public void runOpMode() throws InterruptedException {
         initHardware();
@@ -78,100 +54,46 @@ public class MechAnimAQ extends LinearOpMode {
     {
         if(gamepad1.y)
         {
-            liftDirection = 1;
+            robotBase.liftDirection = 1;
         }
         else if(gamepad1.a)
         {
-            liftDirection = -1;
+            robotBase.liftDirection = -1;
         }
         else {
-            liftDirection = 0;
+            robotBase.liftDirection = 0;
         }
-        liftRight.setPower(liftDirection);
-        liftLeft.setPower(liftDirection);
+        robotBase.liftRight.setPower(robotBase.liftDirection);
+        robotBase.liftLeft.setPower(robotBase.liftDirection);
 
         //return liftDirection;
     }
     public void initHardware() {
         initDrive();
-        initServos();
+        robotBase.initServos(hardwareMap);
     }
 
     private void initDrive() {
-        frontLeft = hardwareMap.get(DcMotor.class,"leftFront");
-        frontRight = hardwareMap.get(DcMotor.class,"rightFront");
-        backLeft = hardwareMap.get(DcMotor.class, "leftBack");
-        backRight = hardwareMap.get(DcMotor.class,"rightBack");
-        liftRight = hardwareMap.get(DcMotor.class, "rightLift");
-        liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
-        liftLeft.setDirection(DcMotor.Direction.REVERSE);
+        robotBase.frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
+        robotBase.frontRight = hardwareMap.get(DcMotor.class, "rightFront");
+        robotBase.backLeft = hardwareMap.get(DcMotor.class, "leftBack");
+        robotBase.backRight = hardwareMap.get(DcMotor.class, "rightBack");
+        robotBase.liftRight = hardwareMap.get(DcMotor.class, "rightLift");
+        robotBase.liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
+        robotBase.liftLeft.setDirection(DcMotor.Direction.REVERSE);
         //back left reverse os up for debate because we changed hardware and it stopped working
-         backLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        robotBase.backLeft.setDirection(DcMotor.Direction.REVERSE);
+        robotBase.frontLeft.setDirection(DcMotor.Direction.REVERSE);
     }
-    public void initServos() {
-        servoPincher = hardwareMap.get(Servo.class, "grabber"); // maps the servo
-        servoPincher.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-        servoPincher.setPosition(servoPincherInitPosition); // sets the initial position from the variable above.
 
-        pincherPivot = hardwareMap.get(Servo.class, "pivot"); // maps the servo
-        pincherPivot.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-        pincherPivot.setPosition(pincherPivotInitPosition); // sets the initial position from the variable above.
-/*
-        shortArmWrist = hardwareMap.get(Servo.class, "grabberPivot"); // maps the servo
-        shortArmWrist.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-        shortArmWrist.setPosition(shortArmWristInitPosition); // sets the initial position from the variable above.
-
-        geckoWheel = hardwareMap.get(CRServo.class, "grabberRotation");
-        geckoWheel.setDirection(CRServo.Direction.FORWARD);
-
-        trayPivot = hardwareMap.get(Servo.class, "trayPivot"); // maps the servo
-        trayPivot.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
-        trayPivot.setPosition(trayPivotInitPosition); // sets the initial position from the variable above.
-  */
-        extension = hardwareMap.get(Servo.class, "extension"); // maps the servo
-        extension.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
-        extension.setPosition(extensionInitPosition); // sets the initial position from the variable above.
-
-
-
-    }
     public void ServoMovement()
     {
         ServoPincher();
         PincherPivot();
-        ShortArmPivot();
-        /*
-        GeckoWheel();
-        TrayPivot();
-        Wrist();
-*/
+        robotBase.Extension(gamepad2);
+    }
 
-    }
-/*
-    private void GeckoWheel() {
-        if(gamepad2.a)
-        {
-            geckoWheel.setPower(geckoWheelPower);
-        } else if (gamepad2.y) {
-            geckoWheel.setPower(-geckoWheelPower);
-        }
-        else {
-            geckoWheel.setPower(0);
-        }
-    }
-*/
-    private void ShortArmPivot() {
-        if(gamepad2.b)
-        {
-            extension.setPosition(extensionExtended);
-        }
-        if(gamepad2.x)
-        {
-            extension.setPosition(extensionRetracted);
-        }
-    }
-/*
+    /*
     private void Wrist() {
         if(gamepad2.right_bumper)
         {
@@ -190,22 +112,23 @@ public class MechAnimAQ extends LinearOpMode {
     private void PincherPivot() {
         if(gamepad1.right_trigger >= 0.5)
         {
-            pincherPivot.setPosition(pincherPivotUp);
+            robotBase.pincherPivot.setPosition(robotBase.pincherPivotUp);
         }
         if(gamepad1.left_trigger >= 0.5)
         {
-            pincherPivot.setPosition(pincherPivotDown);
+            robotBase.pincherPivot.setPosition(robotBase.pincherPivotDown);
         }
     }
+
 
     private void ServoPincher() {
         if(gamepad1.right_bumper)
         {
-            servoPincher.setPosition(servoPincherPositionOpen);
+            robotBase.servoPincher.setPosition(robotBase.servoPincherPositionClosed);
         }
         if(gamepad1.left_bumper)
         {
-            servoPincher.setPosition(servoPincherPositionClose);
+            robotBase.servoPincher.setPosition(robotBase.servoPincherPositionOpena);
         }
     }
 /*
@@ -226,34 +149,34 @@ public class MechAnimAQ extends LinearOpMode {
         double ly = -gamepad1.left_stick_y;
         double rx = gamepad1.right_stick_x;
         double max = Math.max(Math.abs(lx) + Math.abs(ly) + Math.abs(rx), 1);
-        frontLeft.setPower((ly + lx + rx) / max);
-        frontRight.setPower((ly - lx - rx) / max);
-        backLeft.setPower((ly - lx + rx) / max);
-        backRight.setPower((ly + lx - rx) / max);
+        robotBase.frontLeft.setPower((ly + lx + rx) / max);
+        robotBase.frontRight.setPower((ly - lx - rx) / max);
+        robotBase.backLeft.setPower((ly - lx + rx) / max);
+        robotBase.backRight.setPower((ly + lx - rx) / max);
     }
     public void servoTelemetry() {
         //telemetry.log().clear();
-        telemetry.addData("Position", servoPincher.getPosition());
-        telemetry.addData("Direction", servoPincher.getDirection());
-        telemetry.addData("Controller", servoPincher.getController());
+        telemetry.addData("Position", robotBase.servoPincher.getPosition());
+        telemetry.addData("Direction", robotBase.servoPincher.getDirection());
+        telemetry.addData("Controller", robotBase.servoPincher.getController());
 
-        telemetry.addData("Position", pincherPivot.getPosition());
-        telemetry.addData("Direction", pincherPivot.getDirection());
-        telemetry.addData("Controller", pincherPivot.getController());
+        telemetry.addData("Position", robotBase.pincherPivot.getPosition());
+        telemetry.addData("Direction", robotBase.pincherPivot.getDirection());
+        telemetry.addData("Controller", robotBase.pincherPivot.getController());
 
         /*
         telemetry.addData("pOWER", geckoWheel.getPower());
         telemetry.addData("Direction", geckoWheel.getDirection());
         telemetry.addData("Port", geckoWheel.getPortNumber());
 */
-        telemetry.addData("Position", pincherPivot.getPosition());
-        telemetry.addData("Direction", pincherPivot.getDirection());
-        telemetry.addData("Controller", pincherPivot.getController());
+        telemetry.addData("Position", robotBase.pincherPivot.getPosition());
+        telemetry.addData("Direction", robotBase.pincherPivot.getDirection());
+        telemetry.addData("Controller", robotBase.pincherPivot.getController());
     }
     public void teleOpControls() {
         driveTrain();
         ServoMovement();
         Lift();
-        liftDirection = 0;
+        robotBase.liftDirection = 0;
     }
 }
