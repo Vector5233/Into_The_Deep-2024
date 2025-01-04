@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.adampkg;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
@@ -30,15 +31,15 @@ public class BASICTELEOPV1 extends LinearOpMode {
 
     float DEADBAND = 0.05f;
 
-    double grabberInitPosition = 0.0; // doubles store a decimal
+    double grabberInitPosition = 0.0;
     double grabberPositionOpen = 0.0;
     double grabberPositionClose = 0.3;
-    double pivotInitPosition = 0.0;   // doubles store a decimal
-    double pivotPositionPickUp = 1.0; // TODO: check this and next value
+    double pivotInitPosition = 0.0;
+    double pivotPositionPickUp = 0.7;
     double pivotPositionPassOff = 0.0;
-    double extensionInitPosition = 0.0; // doubles store a decimal
-    double extensionExtended = 0.0;     // TODO: set correct numbers for extension
-    double extensionRetracted = 1.0;    // TODO: set correct number for retracted
+    double extensionInitPosition = 0.0;
+    double extensionExtended = 1.0;
+    double extensionRetracted = 00;
     // ALL THE SERVO STUFF
 
     private Servo grabber;   // servos go from 0 to 1 rotates 180 degrees
@@ -62,8 +63,9 @@ public class BASICTELEOPV1 extends LinearOpMode {
         }
     }
 
-    /*
+
     public boolean SetLift(int LiftPosition) {
+        /*
         //This function might be buggy
         float padding = 0.5f; //this value might need to change
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -86,29 +88,57 @@ public class BASICTELEOPV1 extends LinearOpMode {
             liftLeft.setPower(0.0);
             return true;
         }
-
-    }
 */
-    //
+        return false;
+    }
     public void Lift()
     {
+
+
+        liftLeft.setPower(.5);
+        liftRight.setPower(.5);
+        int WALL_HEIGHT = 200;
+        int SCORING_HEIGHT = 2750;
+        int LOW_BASKET = 3500;
         if (gamepad1.y)
         {
-            liftDirection = 1;
+
+
+            liftLeft.setTargetPosition(SCORING_HEIGHT);
+            liftRight.setTargetPosition(liftLeft.getTargetPosition());
 
         }
         else if (gamepad1.a)
         {
-            liftDirection = -1;
+            // Pick up from wall
+            liftLeft.setTargetPosition(WALL_HEIGHT);
+            liftRight.setTargetPosition(liftLeft.getTargetPosition());
+
         }
-        liftRight.setPower(1);
-        liftLeft.setPower(1);
-    }
+        else if (gamepad1.x) {
+
+            liftLeft.setTargetPosition(0);
+            liftRight.setTargetPosition(liftLeft.getTargetPosition());
+
+        }
+        else if (gamepad1.b){
+            liftLeft.setTargetPosition(SCORING_HEIGHT-15);
+            liftRight.setTargetPosition(liftLeft.getTargetPosition());
+
+        }
+        else if (gamepad1.left_trigger >= 0.5){
+            liftLeft.setTargetPosition(LOW_BASKET);
+        }
+
+}
+
+
 
     public void initHardware()
     {
         initDrive();
         initServos();
+        extension.setPosition(extensionRetracted);
     }
 
     private void initDrive()
@@ -123,13 +153,15 @@ public class BASICTELEOPV1 extends LinearOpMode {
         liftRight.setDirection(DcMotor.Direction.FORWARD);
         liftLeft.setPower(0.0);
         liftRight.setPower(0.0);
-        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // back left reverse os up for debate because we changed hardware and it stopped working
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -217,6 +249,8 @@ public class BASICTELEOPV1 extends LinearOpMode {
         }
     }
 
+
+    //broken
     private void grab()
     {
         /*
@@ -271,6 +305,15 @@ public class BASICTELEOPV1 extends LinearOpMode {
 
         telemetry.addData("Left lift position", liftLeft.getCurrentPosition());
         telemetry.addData("Right lift position", liftRight.getCurrentPosition());
+
+        telemetry.addData("Left lift Target position", liftLeft.getTargetPosition());
+        telemetry.addData("Right lift Target position", liftRight.getTargetPosition());
+
+        telemetry.addData("Left lift power", liftLeft.getPower());
+        telemetry.addData("Right lift power", liftRight.getPower());
+
+
+
         telemetry.update();
     }
 
