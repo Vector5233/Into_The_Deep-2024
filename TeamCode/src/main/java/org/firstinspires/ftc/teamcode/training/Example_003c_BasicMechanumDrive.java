@@ -42,10 +42,11 @@ public class Example_003c_BasicMechanumDrive extends LinearOpMode {
     }
 
     public void initDrive() {
-        initiDriveMotors();
+
+        initDriveMotors();
     }
 
-    private void initiDriveMotors() {
+    private void initDriveMotors() {
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");

@@ -1,9 +1,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
@@ -25,7 +27,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Servos
  *
  */
-//@Disabled
+@Disabled
 @TeleOp(group = "TELEOP", name = "5233-Teleop.V1")
 public class TELEOP5233 extends LinearOpMode {
 
@@ -45,13 +47,17 @@ public class TELEOP5233 extends LinearOpMode {
     
     private Servo Pivot; // servos go from 0 to 1 rotates 180 degrees
     double PivotInitPosition = 0.0; // doubles store a decimal
-    double PivotUp = 0.0;
-    double PivotDown = 0.55;
+    double PivotUp =1.0;
+    double PivotDown = 0.0;
 
     private Servo Extension; // servos go from 0 to 1 rotates 180 degrees
-    double ExtensionInitPosition = 0.5; // doubles store a decimal
-    double ExtensionOut = 1.0;
-    double ExtensionIn = 0.1;
+    double ExtensionInitPosition = 1.0; // doubles store a decimal
+    double ExtensionOut = 0.0;
+    double ExtensionIn = 1.0;
+
+    int liftPosition;
+
+    float DEADBAND = 0.05f;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -61,31 +67,70 @@ public class TELEOP5233 extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             servoTelemetry();
+            driveTrainTelemetry();
+            liftTelemetry();
             teleOpControls();
+            //setLift(liftPosition);
         }
 
     }
-    public void Lift()
-    {
-        if(gamepad1.y)
-        {
+
+    public boolean setLift(int LiftPosition) {
+        //TODO: tune this function
+        //This function might be buggy
+        float padding = 0.5f; //this value might need to change
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setTargetPosition(-(LiftPosition));
+        liftLeft.setTargetPosition(LiftPosition);
+        //return !(liftLeft.isBusy()|| liftRight.isBusy());
+
+        if (liftRight.getCurrentPosition() < LiftPosition + padding){
+        liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        return false;
+                }
+        else if(liftRight.getCurrentPosition() > LiftPosition - padding){
+            liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+            liftRight.setDirection(DcMotorSimple.Direction.FORWARD);
+            return false;
+        }
+        else{
+            liftRight.setPower(0.0);
+            liftLeft.setPower(0.0);
+            return true;
+        }
+
+    }
+    //return liftDirection;
+    public void Lift() {
+        double power = .5;
+        if (gamepad1.right_trigger > 0.5) {
             liftDirection = 1;
         }
-        else if(gamepad1.a)
+        else if (gamepad1.left_trigger > 0.5)
         {
             liftDirection = -1;
         }
-        else {
-            liftDirection = 0;
-        }
         liftRight.setPower(liftDirection);
         liftLeft.setPower(liftDirection);
-
-        //return liftDirection;
     }
+
+    private float falloff(float input)
+    {
+        if (Math.abs(input) < DEADBAND)
+        {
+            input = 0;
+        }
+        // Curve for smoothing drivetrain
+        return input * input * input;
+    }
+
+
     public void initHardware() {
         initDrive();
         initServos();
+        initLift();
     }
 
     private void initDrive() {
@@ -100,6 +145,23 @@ public class TELEOP5233 extends LinearOpMode {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
     }
+
+    public  void initLift(){
+        liftRight = hardwareMap.get(DcMotor.class, "rightLift");
+        liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
+        liftLeft.setDirection(DcMotor.Direction.REVERSE);
+        liftRight.setDirection(DcMotor.Direction.FORWARD);
+        liftLeft.setPower(0.0);
+        liftRight.setPower(0.0);
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+
     public void initServos() {
         // Grabber Servo 
         Grabber = hardwareMap.get(Servo.class, "Grabber"); // maps the servo
@@ -165,9 +227,9 @@ public class TELEOP5233 extends LinearOpMode {
 
     public void driveTrain()
     {
-        double lx = gamepad1.left_stick_x;
-        double ly = -gamepad1.left_stick_y;
-        double rx = gamepad1.right_stick_x;
+        double lx = falloff(gamepad1.left_stick_x);
+        double ly = falloff(gamepad1.left_stick_y);
+        double rx = falloff(gamepad1.right_stick_x);
         double max = Math.max(Math.abs(lx) + Math.abs(ly) + Math.abs(rx), 1);
         frontLeft.setPower((ly + lx + rx) / max);
         frontRight.setPower((ly - lx - rx) / max);
@@ -175,7 +237,6 @@ public class TELEOP5233 extends LinearOpMode {
         backRight.setPower((ly + lx - rx) / max);
     }
     public void servoTelemetry() {
-        //telemetry.log().clear();
         telemetry.addData("Position", Grabber.getPosition());
         telemetry.addData("Direction", Grabber.getDirection());
         telemetry.addData("Controller", Grabber.getController());
@@ -187,6 +248,22 @@ public class TELEOP5233 extends LinearOpMode {
         telemetry.addData("Position", Extension.getPosition());
         telemetry.addData("Direction", Extension.getDirection());
         telemetry.addData("Controller", Extension.getController());
+        telemetry.update();
     }
+
+    public void driveTrainTelemetry() {
+        telemetry.addData("frontLeft", frontLeft.getPower());
+        telemetry.addData("frontRight", frontRight.getPower());
+        telemetry.addData("backLeft", backLeft.getPower());
+        telemetry.addData("backRight", backRight.getPower());
+        telemetry.update();
+    }
+
+    public void liftTelemetry() {
+        telemetry.addData("Lift Right", liftRight.getPower());
+        telemetry.addData("Lift Left", liftLeft.getPower());
+        telemetry.update();
+    }
+
 
 }
