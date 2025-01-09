@@ -151,6 +151,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                     robotBase.initServos(hardwareMap);
                     if(liftsRanUp == false)
                     {
+                        robotBase.initServos(hardwareMap);
                         RaiseLift();
                         liftsRanUp = true;
                     }

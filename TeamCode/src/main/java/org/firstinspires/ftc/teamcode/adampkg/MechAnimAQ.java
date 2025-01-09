@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *
  */
 //@Disabled
-@TeleOp(group = "Qureshi", name = "BasicTeleop")
+@TeleOp(group = "Qureshi", name = "ManualTeleop")
 public class MechAnimAQ extends LinearOpMode {
     final RobotBase robotBase = new RobotBase();
 
