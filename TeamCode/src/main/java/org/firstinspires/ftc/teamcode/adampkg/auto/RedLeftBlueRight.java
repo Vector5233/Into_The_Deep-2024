@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.adampkg.RobotBase;
 
 import java.util.Locale;
-@Autonomous(name="RedLeft_BlueRight_AQ", group="VECTORAUTO")
+@Autonomous(name="RedLeft_BlueLeft_AQ", group="VECTORAUTO")
 
 public class RedLeftBlueRight extends LinearOpMode {
 //@Disabled
@@ -167,7 +167,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                 }
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_2){
-                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 0.1)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.8, 0.1)) {
                     robotBase.initServos(hardwareMap);
 
                     telemetry.addLine("at position #2!");

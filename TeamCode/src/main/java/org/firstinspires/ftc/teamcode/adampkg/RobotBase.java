@@ -21,7 +21,7 @@ public class RobotBase {
     double servoPincherPositionOpena = 0.3;
     Servo pincherPivot; // servos go from 0 to 1 rotates 180 degrees
     double pincherPivotInitPosition = 0.0; // doubles store a decimal
-    double pincherPivotDown = 1.0;
+    double pincherPivotDown = 0.7;
     double pincherPivotUp = 0.0;
     Servo extension; // servos go from 0 to 1 rotates 180 degrees
     double extensionInitPosition = 1.0; // doubles store a decimal
