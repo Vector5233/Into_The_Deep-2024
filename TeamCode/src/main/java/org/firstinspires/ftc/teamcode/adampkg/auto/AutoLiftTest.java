@@ -11,8 +11,8 @@ public class AutoLiftTest extends LinearOpMode {
     private DcMotor liftLeft;
     private DcMotor liftRight;
 
-    public int liftPosUp = 300;
-    public int liftPosDown = -300;
+    public int liftPosUp = 1500;
+    public int liftPosDown = -1000;
 
     double liftRightPower = 1.0;
     double liftLeftPower = 1.0;
@@ -21,33 +21,24 @@ public class AutoLiftTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException
     {
         waitForStart();
-        //do Initializations
-        initLifts();
+        inits();
 
         liftLeft.setTargetPosition(liftPosUp);
         liftRight.setTargetPosition(liftPosUp);
-        while(opModeIsActive() && liftLeft.isBusy())
+        while(opModeIsActive() && liftRight.isBusy() && liftLeft.isBusy())
         {
-            telemetry.addData("liftLeft Currently At: %7d", liftLeft.getCurrentPosition());
-            telemetry.addData("liftRight Currently At: %7d", liftRight.getCurrentPosition());
-            telemetry.addData("Running to:", "%7d", liftPosUp);
-            telemetry.update();
-            sleep(1000);
+            motorTelemetry();
         }
-        liftLeft.setTargetPosition(liftPosDown);
-        liftRight.setTargetPosition(liftPosDown);
-        while(opModeIsActive() && liftLeft.isBusy())
-        {
-            telemetry.addData("liftLeft Currently At: %7d", liftLeft.getCurrentPosition());
-            telemetry.addData("liftRight Currently At: %7d", liftRight.getCurrentPosition());
-            telemetry.addData("Running to:", "%7d", liftPosUp);
-            telemetry.update();
-            sleep(1000);
-        }
-
-
     }
-
+    public void  motorTelemetry(){
+        telemetry.addData("leftLift","Encoder: %2d, Power: %2f", liftLeft.getCurrentPosition(), liftLeft.getPower());
+     telemetry.addData("leftRight","Encoder: %2d, Power: %2f", liftRight.getCurrentPosition(), liftRight.getPower());
+     telemetry.update();
+    }
+    public void inits()
+    {
+        initLifts();
+    }
     public void initLifts()
     {
         liftRight = hardwareMap.get(DcMotor.class, "rightLift");
