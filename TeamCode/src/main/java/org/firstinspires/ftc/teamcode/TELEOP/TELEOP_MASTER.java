@@ -1,13 +1,13 @@
 
 package org.firstinspires.ftc.teamcode.TELEOP;
-.
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 //@Disabled
 @TeleOp(group = "Qureshi", name = "StatesTeleop")
 public class TELEOP_MASTER extends LinearOpMode {
-    final org.firstinspires.ftc.teamcode.adampkg.RobotBase robotBase = new org.firstinspires.ftc.teamcode.adampkg.RobotBase();
+    final org.firstinspires.ftc.teamcode.TELEOP.RobotBase robotBase = new org.firstinspires.ftc.teamcode.TELEOP.RobotBase();
 
     boolean slowMode = false;
     boolean slowModeDebounce = false;
