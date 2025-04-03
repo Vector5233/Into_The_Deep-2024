@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TELEOP;
+package org.firstinspires.ftc.teamcode.NEFARIO;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  * Port 03: backRight
  */
 //@Disabled
-@TeleOp(group = "Zalkin", name = "beltDriveTest")
+@TeleOp(group = "Practive Bot", name = "beltDriveTest")
 public class BELTDRIVETEST extends LinearOpMode {
     // Motors
     private DcMotorEx frontLeft, frontRight, backLeft, backRight;
