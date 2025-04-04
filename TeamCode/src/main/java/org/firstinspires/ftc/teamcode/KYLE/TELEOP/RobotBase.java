@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TELEOP;
+package org.firstinspires.ftc.teamcode.KYLE.TELEOP;
 
 //import com.qualcomm.robotcore.eventloop.opmode.OpModeInternal;
 //import com.qualcomm.robotcore.eventloop.opmode.OpModeInternal;
@@ -22,7 +22,7 @@ public class RobotBase {
     Servo servoPincher; // servos go from 0 to 1 rotates 180 degrees
     double servoPincherInitPosition = 0.08; // doubles store a decimal
     double servoPincherPositionClosed = 0.08;
-    double servoPincherPositionOpena = 0.3;
+    double servoPincherPositionOpen = 0.3;
     Servo pincherPivot; // servos go from 0 to 1 rotates 180 degrees
     double pincherPivotInitPosition = 0.0; // doubles store a decimal
     double pincherPivotDown = 0.7;
@@ -73,7 +73,7 @@ public class RobotBase {
 
     public void OpenPincher()
     {
-        servoPincher.setPosition(servoPincherPositionOpena);
+        servoPincher.setPosition(servoPincherPositionOpen);
     }
     void Extension(Gamepad gamepad2) {
         if(gamepad2.b)

@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode.TELEOP;
+package org.firstinspires.ftc.teamcode.KYLE.TELEOP;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //@Disabled
 @TeleOp(group = "Qureshi", name = "StatesTeleop")
 public class TELEOP_MASTER extends LinearOpMode {
-    final org.firstinspires.ftc.teamcode.TELEOP.RobotBase robotBase = new org.firstinspires.ftc.teamcode.TELEOP.RobotBase();
+    final RobotBase robotBase = new RobotBase();
 
     boolean slowMode = false;
     boolean slowModeDebounce = false;
@@ -91,7 +91,7 @@ public class TELEOP_MASTER extends LinearOpMode {
         }
         if(gamepad1.left_bumper||gamepad2.left_bumper)
         {
-            robotBase.servoPincher.setPosition(robotBase.servoPincherPositionOpena);
+            robotBase.servoPincher.setPosition(robotBase.servoPincherPositionOpen);
         }
     }
     public void slowModeSwitcher()

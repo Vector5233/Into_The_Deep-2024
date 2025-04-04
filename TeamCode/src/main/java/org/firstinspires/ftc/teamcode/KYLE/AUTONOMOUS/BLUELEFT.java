@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode.AUTONOMOUS;
+package org.firstinspires.ftc.teamcode.KYLE.AUTONOMOUS;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -6,12 +7,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.TELEOP.RobotBase;
+import org.firstinspires.ftc.teamcode.KYLE.TELEOP.RobotBase;
 
 import java.util.Locale;
-@Autonomous(name="RedRight_BlueRight", group="VECTORAUTO")
+@Autonomous(name="RedLeft_BlueLeft_AQ", group="VECTORAUTO")
 
-public class BLUERIGHT extends LinearOpMode {
+public class BLUELEFT extends LinearOpMode {
     //@Disabled
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     private DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
@@ -36,8 +37,8 @@ public class BLUERIGHT extends LinearOpMode {
 
     static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-715,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -550, 900, AngleUnit.DEGREES, 0);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-1400 , 400, AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -550, -900, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-1400 , -400, AngleUnit.DEGREES,0);
     @Override //1300
     public void runOpMode() {
 
