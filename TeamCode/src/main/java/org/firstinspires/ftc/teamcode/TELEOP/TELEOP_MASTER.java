@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-
 //@Disabled
 @TeleOp(group = "Qureshi", name = "StatesTeleop")
 public class TELEOP_MASTER extends LinearOpMode {
@@ -24,6 +23,7 @@ public class TELEOP_MASTER extends LinearOpMode {
         while (opModeIsActive()) {
             servoTelemetry();
             teleOpControls();
+            telemetry.update();
         }
 
     }
@@ -60,20 +60,9 @@ public class TELEOP_MASTER extends LinearOpMode {
         //return liftDirection;
     }
     public void initHardware() {
-        initDrive();  robotBase.initServos(hardwareMap);
-    }
-
-    private void initDrive() {
-        robotBase.frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
-        robotBase.frontRight = hardwareMap.get(DcMotor.class, "rightFront");
-        robotBase.backLeft = hardwareMap.get(DcMotor.class, "leftBack");
-        robotBase.backRight = hardwareMap.get(DcMotor.class, "rightBack");
-        robotBase.liftRight = hardwareMap.get(DcMotor.class, "rightLift");
-        robotBase.liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
-        robotBase.liftLeft.setDirection(DcMotor.Direction.REVERSE);
-        //back left reverse os up for debate because we changed hardware and it stopped working
-        robotBase.backLeft.setDirection(DcMotor.Direction.REVERSE);
-        robotBase.frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        // moved hardwareMaps to robot base
+        robotBase.initServos(hardwareMap);
+        robotBase.initDrive(hardwareMap);
     }
 
     public void ServoMovement()

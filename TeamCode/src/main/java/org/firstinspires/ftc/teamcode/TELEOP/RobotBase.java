@@ -2,9 +2,13 @@ package org.firstinspires.ftc.teamcode.TELEOP;
 
 //import com.qualcomm.robotcore.eventloop.opmode.OpModeInternal;
 //import com.qualcomm.robotcore.eventloop.opmode.OpModeInternal;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion;
 
 public class RobotBase {
     double liftDirection = 0;
@@ -28,8 +32,6 @@ public class RobotBase {
     double extensionExtended = 0.0;
     double extensionRetracted = 1.0;
 
-    public RobotBase() {
-    }
 
     public void initServos(com.qualcomm.robotcore.hardware.HardwareMap hardwareMap) {
         servoPincher = hardwareMap.get(Servo.class, "grabber"); // maps the servo
@@ -55,6 +57,20 @@ public class RobotBase {
         extension.setDirection(Servo.Direction.REVERSE); // sets the direction of rotation - optional but good practice
         extension.setPosition(extensionInitPosition); // sets the initial position from the variable above.
     }
+    public void initDrive(HardwareMap hardwareMap) {
+        frontLeft = BlocksOpModeCompanion.hardwareMap.get(DcMotor.class, "leftFront");
+        frontRight = BlocksOpModeCompanion.hardwareMap.get(DcMotor.class, "rightFront");
+        backLeft = BlocksOpModeCompanion.hardwareMap.get(DcMotor.class, "leftBack");
+        backRight = BlocksOpModeCompanion.hardwareMap.get(DcMotor.class, "rightBack");
+        liftRight = BlocksOpModeCompanion.hardwareMap.get(DcMotor.class, "rightLift");
+        liftLeft = BlocksOpModeCompanion.hardwareMap.get(DcMotor.class, "leftLift");
+        liftLeft.setDirection(DcMotor.Direction.REVERSE);
+        //back left reverse os up for debate because we changed hardware and it stopped working
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+    }
+
+
     public void OpenPincher()
     {
         servoPincher.setPosition(servoPincherPositionOpena);
