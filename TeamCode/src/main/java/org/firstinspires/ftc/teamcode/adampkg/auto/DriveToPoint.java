@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.adampkg.auto;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.RADIANS;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM;
 
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
@@ -102,7 +104,7 @@ public class DriveToPoint {
         rightBackDrive = setupDriveMotor("rightBack", DcMotorSimple.Direction.FORWARD);
     }
 
-    public boolean driveTo(Pose2D currentPosition, Pose2D targetPosition, double power, double holdTime) {
+    public boolean driveTo(Pose2D currentPosition, Pose2D targetPosition, double power, double holdTime, Telemetry telemetry) {
         boolean atTarget;
 
         if (selectedDriveType == DriveType.TANK){
@@ -150,13 +152,19 @@ public class DriveToPoint {
             driveMecanums(xOutput * power, yOutput * power, hOutput * power);
         }
 
-        if(inBounds(currentPosition,targetPosition) == InBounds.IN_BOUNDS){
+        if(inBounds(currentPosition,targetPosition) == InBounds.IN_X_Y){
             atTarget = true;
+
         }
         else {
             holdTimer.reset();
             atTarget = false;
         }
+        telemetry.addData("At Target:", atTarget);
+        telemetry.addData("Currenttimer:", holdTimer.time());
+        telemetry.addData("Holdtime:", holdTime);
+
+
 
         if(atTarget && holdTimer.time() > holdTime){
             return true;

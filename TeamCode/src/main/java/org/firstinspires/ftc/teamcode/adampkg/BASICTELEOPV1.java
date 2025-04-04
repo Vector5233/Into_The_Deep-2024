@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Port 02: Servo extension
  */
 //@Disabled
-@TeleOp(group = "Team5233", name = "BasicTeleopV1.1")
+@TeleOp(group = "Team5233", name = "Obsolete.1")
 public class BASICTELEOPV1 extends LinearOpMode {
     double liftDirection = 0;
     DcMotor frontLeft;

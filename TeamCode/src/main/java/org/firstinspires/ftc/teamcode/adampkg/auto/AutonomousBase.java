@@ -77,19 +77,19 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                 stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_1;
             }
             if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_1) {
-                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 0.1)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 0.1, telemetry)) {
                     telemetry.addLine("at position #1!");
                     stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_2;
                 }
             }
             if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_2){
-                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 0.1)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 0.1, telemetry)) {
                     telemetry.addLine("at position #2!");
                     stateMachine = AutonomousBase.StateMachine.DRIVE_TO_TARGET_3;
                 }
             }
             if (stateMachine == AutonomousBase.StateMachine.DRIVE_TO_TARGET_3){
-                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1)){
+                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1, telemetry)){
                     telemetry.addLine("at position #3!");
                     stateMachine = AutonomousBase.StateMachine.AT_TARGET;
                 }

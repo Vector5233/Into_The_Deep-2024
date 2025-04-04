@@ -5,8 +5,10 @@ package org.firstinspires.ftc.teamcode.adampkg;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class RobotBase {
+    TouchSensor touchSensor;
     double liftDirection = 0;
     DcMotor frontLeft;
     DcMotor frontRight;
@@ -16,9 +18,9 @@ public class RobotBase {
     DcMotor liftLeft;
     //ALL THE SERVO STUFF
     Servo servoPincher; // servos go from 0 to 1 rotates 180 degrees
-    double servoPincherInitPosition = 0.08; // doubles store a decimal
-    double servoPincherPositionClosed = 0.08;
-    double servoPincherPositionOpena = 0.3;
+    double servoPincherInitPosition = 0.03; // doubles store a decimal
+    double servoPincherPositionClosed = 0.03;
+    double servoPincherPositionOpena = 0.25;
     Servo pincherPivot; // servos go from 0 to 1 rotates 180 degrees
     double pincherPivotInitPosition = 0.0; // doubles store a decimal
     double pincherPivotDown = 0.7;
@@ -32,6 +34,7 @@ public class RobotBase {
     }
 
     public void initServos(com.qualcomm.robotcore.hardware.HardwareMap hardwareMap) {
+        touchSensor = hardwareMap.get(TouchSensor.class, "touchSensor");
         servoPincher = hardwareMap.get(Servo.class, "grabber"); // maps the servo
         servoPincher.setDirection(Servo.Direction.FORWARD); // sets the direction of rotation - optional but good practice
         servoPincher.setPosition(servoPincherInitPosition); // sets the initial position from the variable above.

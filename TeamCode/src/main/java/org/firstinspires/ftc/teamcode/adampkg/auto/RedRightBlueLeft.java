@@ -35,8 +35,8 @@ public class RedRightBlueLeft extends LinearOpMode {
     final RobotBase robotBase = new RobotBase();
 
     static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-715,0,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -550, 900, AngleUnit.DEGREES, 0);
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-710,0,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -550, 950, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-1400 , 400, AngleUnit.DEGREES,0);
     @Override //1300
     public void runOpMode() {
@@ -54,7 +54,7 @@ public class RedRightBlueLeft extends LinearOpMode {
 
         nav.initializeMotors();
         nav.setXYCoefficients(0.03 ,0.000,0.0,DistanceUnit.MM,50);
-        nav.setYawCoefficients(1,0,0.0, AngleUnit.DEGREES,2);
+        nav.setYawCoefficients(1,0,0.0, AngleUnit.DEGREES,360);
         nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
         StateMachine stateMachine;
@@ -142,19 +142,19 @@ public class RedRightBlueLeft extends LinearOpMode {
             odo.update();
             if(stateMachine == StateMachine.WAITING_FOR_START){
                 stateMachine = StateMachine.DRIVE_TO_TARGET_1;
-
+                if(liftsRanUp == false)
+                {
+                    robotBase.initServos(hardwareMap);
+                    RaiseLift();
+                    liftsRanUp = true;
+                }
 
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_1) {
 
-                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 2)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 2, telemetry)) {
                     robotBase.initServos(hardwareMap);
-                    if(liftsRanUp == false)
-                    {
-                        robotBase.initServos(hardwareMap);
-                        RaiseLift();
-                        liftsRanUp = true;
-                    }
+
                     waitLifts(2000);
                     if(liftsRanDown == false)
                     {
@@ -167,7 +167,7 @@ public class RedRightBlueLeft extends LinearOpMode {
                 }
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_2){
-                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.8, 0.1)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.8, 0.1, telemetry)) {
                     robotBase.initServos(hardwareMap);
 
                     telemetry.addLine("at position #2!");
@@ -175,7 +175,7 @@ public class RedRightBlueLeft extends LinearOpMode {
                 }
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_3){
-                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1)){
+                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1, telemetry)){
                     telemetry.addLine("at position #3!");
                     stateMachine = StateMachine.AT_TARGET;
                 }
