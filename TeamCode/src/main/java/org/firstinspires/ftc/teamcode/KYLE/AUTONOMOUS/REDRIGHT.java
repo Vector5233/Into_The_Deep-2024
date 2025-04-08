@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.KYLE.TELEOP.RobotBase;
 
 import java.util.Locale;
-@Autonomous(name="RedRight_BlueRight", group="VECTORAUTO")
+@Autonomous(name="RedRight", group="VECTORAUTO")
 
 public class REDRIGHT extends LinearOpMode {
     //@Disabled

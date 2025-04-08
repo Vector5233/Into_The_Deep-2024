@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import java.util.Locale;
-@Autonomous(name="RedLeft_AM", group="GoBildaPinpointDriverBase")
+@Autonomous(name="AutonomousBase", group="GoBildaPinpointDriverBase")
 
 public class AutonomousBase extends LinearOpMode {
     //@Disabled
@@ -65,10 +65,10 @@ public class AutonomousBase extends LinearOpMode {
         resetRuntime();
         stateMachine(stateMachine);
     }
-    public void initMotors()
+   /* public void initMotors()
     {
 
-    }
+    }*/
     public void stateMachine(AutonomousBase.StateMachine stateMachine)
     {
         while (opModeIsActive()) {
