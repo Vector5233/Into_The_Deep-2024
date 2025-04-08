@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 @TeleOp(group = "Practive Bot", name = "beltDriveTest")
 public class BELTDRIVETEST extends LinearOpMode {
     // Motors
-    private DcMotorEx frontLeft, frontRight, backLeft, backRight;
+    private DcMotorEx LEFT_FRONT,  RIGHT_FRONT, LEFT_BACK, RIGHT_BACK;
 
     // Gamepad
     private Gamepad gamepad1;
@@ -45,31 +45,31 @@ public class BELTDRIVETEST extends LinearOpMode {
 
     public void initHardware() {
         // Initialize Motors
-        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
-        backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
-        backRight = hardwareMap.get(DcMotorEx.class, "backRight");
+        LEFT_FRONT = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        RIGHT_FRONT = hardwareMap.get(DcMotorEx.class, "frontRight");
+        LEFT_BACK = hardwareMap.get(DcMotorEx.class, "backLeft");
+        RIGHT_BACK = hardwareMap.get(DcMotorEx.class, "backRight");
 
 
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
+        LEFT_FRONT.setDirection(DcMotor.Direction.FORWARD);
+        RIGHT_FRONT.setDirection(DcMotor.Direction.REVERSE);
+        LEFT_BACK.setDirection(DcMotor.Direction.FORWARD);
+        RIGHT_BACK.setDirection(DcMotor.Direction.REVERSE);
 
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LEFT_FRONT.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RIGHT_FRONT.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LEFT_BACK.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RIGHT_BACK.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
+        LEFT_FRONT.setPower(0);
+        RIGHT_FRONT.setPower(0);
+        LEFT_BACK.setPower(0);
+        RIGHT_BACK.setPower(0);
 
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        LEFT_FRONT.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        RIGHT_FRONT.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        LEFT_BACK.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        RIGHT_BACK.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void drive() {
@@ -100,10 +100,10 @@ public class BELTDRIVETEST extends LinearOpMode {
         backRightPower *= mecanumDriveSpeedMultiplier;
 
 
-        frontLeft.setPower(frontLeftPower);
-        frontRight.setPower(frontRightPower);
-        backLeft.setPower(backLeftPower);
-        backRight.setPower(backRightPower);
+        LEFT_FRONT.setPower(frontLeftPower);
+        RIGHT_FRONT.setPower(frontRightPower);
+        LEFT_BACK.setPower(backLeftPower);
+        RIGHT_BACK.setPower(backRightPower);
 
         // Telemetry
         telemetry.addData("Front Left", frontLeftPower);
