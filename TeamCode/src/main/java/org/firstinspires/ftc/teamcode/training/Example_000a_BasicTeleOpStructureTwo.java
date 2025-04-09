@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class Example_000a_BasicTeleOpStructureTwo {
     //define gobal variables here
 
-    @Override
+    //@Override
     public void init(){
         //init method stack goes here
     }
-    @Override
+    //@Override
     public void init_loop(){
 
     }
