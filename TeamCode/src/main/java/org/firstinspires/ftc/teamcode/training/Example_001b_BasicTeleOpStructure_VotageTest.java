@@ -17,7 +17,7 @@ Block Comments can collapse...
  *
  */
 
-//@Disabled // does not show up on DriverStation- must be commented out before uploading
+@Disabled // does not show up on DriverStation- must be commented out before uploading
 @TeleOp(group = "Primary", name = "VoltageTest")
 public class Example_001b_BasicTeleOpStructure_VotageTest extends LinearOpMode {
     //public - An access modifier indicating this method can be called from outside this class

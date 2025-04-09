@@ -13,13 +13,13 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  * Port 03: backRight
  */
 //@Disabled
-@TeleOp(group = "Practive Bot", name = "beltDriveTest")
+@TeleOp(group = "Practice Bot", name = "beltDriveTest")
 public class BELTDRIVETEST extends LinearOpMode {
     // Motors
     private DcMotorEx LEFT_FRONT,  RIGHT_FRONT, LEFT_BACK, RIGHT_BACK;
 
     // Gamepad
-    private Gamepad gamepad1;
+    //private Gamepad gamepad1;
 
     // Drive Constants
     private double mecanumDriveSpeedMultiplier = 1.0;
@@ -74,9 +74,9 @@ public class BELTDRIVETEST extends LinearOpMode {
 
     public void drive() {
         // Get gamepad input
-        double leftStickY = -gamepad1.left_stick_y; // Inverted for forward/backward
-        double leftStickX = gamepad1.left_stick_x; // Strafe left/right
-        double rightStickX = gamepad1.right_stick_x; // Turn
+        double leftStickY = gamepad1.left_stick_y; // Inverted for forward/backward
+        double leftStickX = -gamepad1.left_stick_x; // Strafe left/right
+        double rightStickX = -gamepad1.right_stick_x; // Turn
 
         // motor powers
         double frontLeftPower = leftStickY + leftStickX + rightStickX;

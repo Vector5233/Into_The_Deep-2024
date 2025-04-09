@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.training;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,8 +13,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * Motor port 02: motorThree
  */
 
-//@Disabled
 @TeleOp(group = "Primary", name = "DC Motor Run to position")
+@Disabled
+
 public class Example_002b_DCMotorThree extends LinearOpMode {
     //Global Variables
     private DcMotor motorOne;
