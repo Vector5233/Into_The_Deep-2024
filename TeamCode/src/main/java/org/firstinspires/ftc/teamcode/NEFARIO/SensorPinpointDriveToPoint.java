@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.NEFARIO;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,16 +11,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import java.util.Locale;
-//
+// This is the calibration for the goBilda PinPoint Odemetry Computer.
+
+
+
 @Autonomous(name="Pinpoint Navigation Example", group="Pinpoint")
-//@Disabled
+@Disabled
 
 public class SensorPinpointDriveToPoint extends LinearOpMode {
 
-    DcMotor leftFrontDrive;
-    DcMotor rightFrontDrive;
-    DcMotor leftBackDrive;
-    DcMotor rightBackDrive;
+    DcMotor LEFT_FRONT;
+    DcMotor RIGHT_FRONT;
+    DcMotor  LEFT_BACK;
+    DcMotor RIGHT_BACK;
 
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
@@ -47,23 +51,23 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFrontDrive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
-        leftBackDrive   = hardwareMap.get(DcMotor.class, "leftBackDrive");
-        rightBackDrive  = hardwareMap.get(DcMotor.class, "rightBackDrive");
+        LEFT_FRONT = hardwareMap.get(DcMotor.class, "frontLeft");
+        RIGHT_FRONT = hardwareMap.get(DcMotor.class, "frontRight");
+        LEFT_BACK   = hardwareMap.get(DcMotor.class, "backLeft");
+        RIGHT_BACK  = hardwareMap.get(DcMotor.class, "rightBackDrive");
 
-        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LEFT_FRONT.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RIGHT_FRONT.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LEFT_BACK.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RIGHT_BACK.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        LEFT_FRONT.setDirection(DcMotorSimple.Direction.REVERSE);
+        LEFT_BACK.setDirection(DcMotorSimple.Direction.REVERSE);
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odo.setOffsets(-142.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
         odo.resetPosAndIMU();
 
@@ -133,10 +137,10 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
 
 
             //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
-            leftFrontDrive.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
-            rightFrontDrive.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));
-            leftBackDrive.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_BACK));
-            rightBackDrive.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
+            LEFT_FRONT.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
+            RIGHT_FRONT.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));
+            LEFT_BACK.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_BACK));
+            RIGHT_BACK.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
 
             telemetry.addData("current state:",stateMachine);
 
