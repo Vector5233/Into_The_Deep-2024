@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.adampkg.RobotBase;
+import org.firstinspires.ftc.teamcode.adampkg.teleop.RobotBase;
 
 import java.util.Locale;
 @Autonomous(name="RedRight_BlueRight", group="VECTORAUTO")
