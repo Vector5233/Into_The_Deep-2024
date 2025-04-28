@@ -37,12 +37,12 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
         DRIVE_TO_TARGET_4,
         DRIVE_TO_TARGET_5
     }
-
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,2000,20,AngleUnit.DEGREES,0);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 2600, -20, AngleUnit.DEGREES, -90);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,2600,-2600, AngleUnit.DEGREES,-90);
-    static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM, 100, -2600, AngleUnit.DEGREES, 90);
-    static final Pose2D TARGET_5 = new Pose2D(DistanceUnit.MM, 100, 0, AngleUnit.DEGREES, 0);
+// heading comes first then x then y
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,2500,20,AngleUnit.DEGREES,0);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 2500, 2600, AngleUnit.DEGREES, 90);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,225, 2600, AngleUnit.DEGREES,176);
+   // static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM, 2500,  20, AngleUnit.DEGREES, 90);
+   // static final Pose2D TARGET_5 = new Pose2D(DistanceUnit.MM, 2500, 20, AngleUnit.DEGREES, 90);
 
 
     @Override
@@ -63,15 +63,15 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
 
         LEFT_FRONT.setDirection(DcMotorSimple.Direction.REVERSE);
         LEFT_BACK.setDirection(DcMotorSimple.Direction.REVERSE);
-
+// adjust offset here
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-        odo.setOffsets(-180.0, 120.0); //these are tuned for 3110-0002-0001 Product Insight #1
+        odo.setOffsets(-180.0, -120.0); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
         odo.resetPosAndIMU();
 
-        //nav.setXYCoefficients(0.02,0.002,0.0,DistanceUnit.MM,12);
+        //nav.setXYCoefficients(0.02,0.002,0.2,DistanceUnit.MM,12);
         //nav.setYawCoefficients(1,0,0.0, AngleUnit.DEGREES,2);
         nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
@@ -103,36 +103,43 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
                     the robot has reached the target, and has been there for (holdTime) seconds.
                     Once driveTo returns true, it prints a telemetry line and moves the state machine forward.
                      */
-                    if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5, 0)){
+                    if (nav.driveTo(odo.getPosition(), TARGET_1, 0.7, 3)){
                         telemetry.addLine("at position #1!");
+                        telemetry.addData("X offset", odo.getXOffset());
+                        telemetry.addData("Y offset", odo.getYOffset());
                         stateMachine = StateMachine.DRIVE_TO_TARGET_2;
                     }
-                    break;
-                case DRIVE_TO_TARGET_2:
+                   break;
+               case DRIVE_TO_TARGET_2:
                     //drive to the second target
-                    if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 1)){
+                    if (nav.driveTo(odo.getPosition(), TARGET_2, 0.7, 3)){
                         telemetry.addLine("at position #2!");
+                        telemetry.addData("X offset", odo.getXOffset());
+                        telemetry.addData("Y offset", odo.getYOffset());
                         stateMachine = StateMachine.DRIVE_TO_TARGET_3;
                     }
                     break;
                 case DRIVE_TO_TARGET_3:
-                    if(nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 3)){
+                    if(nav.driveTo(odo.getPosition(), TARGET_3, 0.7, 3)){
+                        telemetry.addData("X offset", odo.getXOffset());
+                        telemetry.addData("Y offset", odo.getYOffset());
                         telemetry.addLine("at position #3");
-                        stateMachine = StateMachine.DRIVE_TO_TARGET_4;
+                        //stateMachine = StateMachine.DRIVE_TO_TARGET_4;
                     }
                     break;
-                case DRIVE_TO_TARGET_4:
-                    if(nav.driveTo(odo.getPosition(),TARGET_4,0.5,1)){
+                    /*
+                 case DRIVE_TO_TARGET_4:
+                    if(nav.driveTo(odo.getPosition(),TARGET_4,0.7,3)){
                         telemetry.addLine("at position #4");
                         stateMachine = StateMachine.DRIVE_TO_TARGET_5;
                     }
                     break;
                 case DRIVE_TO_TARGET_5:
-                    if(nav.driveTo(odo.getPosition(),TARGET_5,0.5,1)){
+                    if(nav.driveTo(odo.getPosition(),TARGET_5,0.7,3)){
                         telemetry.addLine("There!");
                         stateMachine = StateMachine.AT_TARGET;
                     }
-                    break;
+                    break; */
             }
 
 
