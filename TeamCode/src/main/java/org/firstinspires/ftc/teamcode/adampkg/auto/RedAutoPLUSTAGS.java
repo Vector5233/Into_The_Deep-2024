@@ -9,9 +9,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.adampkg.RobotBase;
 
 import java.util.Locale;
+
 @Autonomous(name="RedLeft_BlueRight_AQ", group="VECTORAUTO")
 
-public class RedLeftBlueRight extends LinearOpMode {
+public class RedAutoPLUSTAGS extends LinearOpMode {
 //@Disabled
 GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     private DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
