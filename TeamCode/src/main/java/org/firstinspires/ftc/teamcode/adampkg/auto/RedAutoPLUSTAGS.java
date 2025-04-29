@@ -2,15 +2,20 @@ package org.firstinspires.ftc.teamcode.adampkg.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.adampkg.RobotBase;
+import org.firstinspires.ftc.teamcode.adampkg.teleop.RobotBase;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.Locale;
 
-@Autonomous(name="RedLeft_BlueRight_AQ", group="VECTORAUTO")
+@Autonomous(name="RedLeftPLUSTAGS", group="VECTORAUTO")
 
 public class RedAutoPLUSTAGS extends LinearOpMode {
 //@Disabled
@@ -60,6 +65,9 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 
         StateMachine stateMachine;
         stateMachine = StateMachine.WAITING_FOR_START;
+        
+        AprilTagDetection detectedTag = null;
+        startCameraProcessing(detectedTag);
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", odo.getXOffset());
@@ -195,6 +203,30 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
             telemetry.addData("target heading: ", heading.getHeading(AngleUnit.RADIANS));
             telemetry.update();
 
+        }
+    }
+    public void startCameraProcessing(AprilTagDetection detectedTag){
+        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .build();
+        VisionPortal visionPortal = new VisionPortal.Builder()
+                .addProcessor(tagProcessor)
+                .setCamera(hardwareMap.get(WebcamName.class, "kyleCamLeft"))
+                .build();
+        while (!isStopRequested() && opModeIsActive())
+        {
+            if(tagProcessor.getDetections().size() > 0)
+            {
+                detectedTag = tagProcessor.getDetections().get(0);
+                telemetry.addData("x", tag.ftcPose.x);
+                telemetry.addData("y", tag.ftcPose.y);
+                telemetry.addData("z", tag.ftcPose.z);
+                telemetry.addData("Pitch", tag.ftcPose.pitch);
+                telemetry.addData("Yaw", tag.ftcPose.yaw);
+                telemetry.addData("Roll", tag.ftcPose.roll);
+                telemetry.update();
+            }
         }
     }
 }
