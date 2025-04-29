@@ -23,7 +23,6 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
    // int liftsHighPos =  2850;
     int liftsHighPos =  2850;
 
-
     double liftRightPower = 1.0;
     double liftLeftPower = 1.0;
     enum StateMachine{
@@ -143,65 +142,64 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     {
         while (opModeIsActive()) {
             odo.update();
-            if(stateMachine == StateMachine.WAITING_FOR_START){
-                stateMachine = StateMachine.DRIVE_TO_TARGET_1;
-                if(liftsRanUp == false)
-                {
-
-                    robotBase.initServos(hardwareMap);
-                    RaiseLift();
-                    telemetry.addLine("FinishedRaiseLift");
-
-                    liftsRanUp = true;
-                }
+            if (aprilTagInitialized) {
+                updateAprilTagPoseEstimate();
             }
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_1) {
 
-                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.3 , 2, telemetry)) {
-                    robotBase.initServos(hardwareMap);
-                    telemetry.addLine("In drive to target 1");
-
-
-                    waitLifts(1000);
-                    if(!liftsRanDown)
-                    {
-                        LowerLift();
-                        telemetry.addLine("Called LowerLift()");
+            switch (stateMachine) {
+                case WAITING_FOR_START:
+                    stateMachine = StateMachine.DRIVE_TO_TARGET_1;
+                    if (!liftsRanUp) {
                         robotBase.initServos(hardwareMap);
-                        liftsRanDown = true;
+                        RaiseLift();
+                        liftsRanUp = true;
                     }
-                    telemetry.addLine("at position #1!");
-                    stateMachine = StateMachine.DRIVE_TO_TARGET_2;
-                }
+                    break;
+                case DRIVE_TO_TARGET_1:
+                    if (nav.driveTo(odo.getPosition(), TARGET_1, 0.3, 2, telemetry)) {
+                        robotBase.initServos(hardwareMap);
+                        telemetry.addLine("In drive to target 1");
+                        waitLifts(1000);
+                        if (!liftsRanDown) {
+                            LowerLift();
+                            telemetry.addLine("Called LowerLift()");
+                            robotBase.initServos(hardwareMap);
+                            liftsRanDown = true;
+                        }
+                        telemetry.addLine("at position #1!");
+                        stateMachine = StateMachine.DRIVE_TO_TARGET_2;
+                    }
+                    break;
+                case DRIVE_TO_TARGET_2:
+                    if (nav.driveTo(odo.getPosition(), TARGET_2, 0.8, 0.1, telemetry)) {
+                        robotBase.initServos(hardwareMap);
+                        telemetry.addLine("at position #2!");
+                        stateMachine = StateMachine.DRIVE_TO_TARGET_3;
+                    }
+                    break;
+                case DRIVE_TO_TARGET_3:
+                    if (nav.driveTo(odo.getPosition(), TARGET_3, 1.0, 0.1, telemetry)) {
+                        telemetry.addLine("at position #3!");
+                        stateMachine = StateMachine.AT_TARGET;
+                    }
+                    break;
+                case AT_TARGET:
+                    nav.Stop();
+                    break;
             }
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_2){
-                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.8, 0.1, telemetry)) {
-                    robotBase.initServos(hardwareMap);
 
-                    telemetry.addLine("at position #2!");
-                    stateMachine = StateMachine.DRIVE_TO_TARGET_3;
-                }
-            }
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_3){
-                if (nav.driveTo(odo.getPosition(), TARGET_3, 1.0, 0.1, telemetry)){
-                    telemetry.addLine("at position #3!");
-                    stateMachine = StateMachine.AT_TARGET;
-                }
-
-            }
-            if(stateMachine == StateMachine.AT_TARGET)
-            {
-                nav.Stop();
-            }
-            telemetry.addData("current state:",stateMachine);
+            telemetry.addData("current state:", stateMachine);
             Pose2D pos = odo.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
-            telemetry.addData("Position", data);
-
-            Pose2D heading = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.RADIANS,nav.calculateTargetHeading(pos,TARGET_2));
-            telemetry.addData("target heading: ", heading.getHeading(AngleUnit.DEGREES));
+            telemetry.addData("Odo Position", data);
+            if (aprilTagDetected) {
+                telemetry.addData("AT Est. X", String.format("%.1f", estimatedRobotX_AT));
+                telemetry.addData("AT Est. Y", String.format("%.1f", estimatedRobotY_AT));
+                telemetry.addData("AT Est. Heading", String.format("%.1f", estimatedRobotHeading_AT));
+            } else {
+                telemetry.addLine("No AprilTag Detected for Localization");
+            }
             telemetry.update();
-
         }
     }
 }
