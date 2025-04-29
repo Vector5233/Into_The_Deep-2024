@@ -10,7 +10,12 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-
+/*
+When a tag is detected, access the translation and rotation data. Use this data to:
+Calculate the robot's current position and orientation.
+Determine the error between the robot's desired position and its current position relative to the tag.
+Generate motor commands to correct the robot's movement.
+ */
 @TeleOp (group = "Qureshi", name = "CamTeleop")
 public class CamTest extends LinearOpMode {
     final RobotBase robotBase = new RobotBase();

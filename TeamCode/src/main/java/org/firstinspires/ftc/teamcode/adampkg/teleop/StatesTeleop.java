@@ -4,9 +4,15 @@ package org.firstinspires.ftc.teamcode.adampkg.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 @TeleOp(group = "Qureshi", name = "StatesTeleop")
 public class StatesTeleop extends LinearOpMode {
+    enum LauncherStates {INIT, FIRST_TAP_STARTED, FIRST_TAP_ENDED, DOUBLE_TAPPED};
+    LauncherStates launcherState = LauncherStates.INIT;
+    ElapsedTime doubleTapTimer = new ElapsedTime();
+    final double shortTime = 250.0;
+    int ASCENT_HEIGHT = 3900;
     int MAX_HEIGHT = 6130;
     int SCORING_HEIGHT = 2575;
     int DOWN_SCORING_HEIGHT = 1850;
@@ -133,9 +139,8 @@ public class StatesTeleop extends LinearOpMode {
         }
         robotBase.liftRight.setPower(robotBase.liftDirection);
         robotBase.liftLeft.setPower(robotBase.liftDirection);
+        liftToAscentHeight();
         telemetry.addData("liftTicks", liftTicks);
-
-
         //return liftDirection;
     }
     public void initHardware() {
@@ -225,6 +230,35 @@ public class StatesTeleop extends LinearOpMode {
         telemetry.addData("Direction", robotBase.pincherPivot.getDirection());
         telemetry.addData("Controller", robotBase.pincherPivot.getController());
     }
+    public void liftToAscentHeight()
+    {
+        switch(launcherState)
+        {
+            case INIT:
+                if(gamepad1.x)
+                {
+                    launcherState = LauncherStates.FIRST_TAP_ENDED;
+                    doubleTapTimer.reset();
+                } break;
+            case FIRST_TAP_ENDED:
+            {
+                //less than?
+                if(doubleTapTimer.milliseconds() >= shortTime)
+                {
+                    if(gamepad1.x){
+                        launcherState = LauncherStates.DOUBLE_TAPPED;
+                    }
+                    else {
+                        launcherState = LauncherStates.INIT;}
+                }
+            } break;
+            case DOUBLE_TAPPED:
+                runLiftsToPos(ASCENT_HEIGHT);
+                launcherState = LauncherStates.INIT;
+                break;
+        }
+    }
+
     public void teleOpControls() {
         slowModeSwitcher();
         driveTrain();
