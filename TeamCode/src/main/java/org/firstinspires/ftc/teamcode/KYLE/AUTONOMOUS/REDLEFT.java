@@ -16,7 +16,7 @@ public class REDLEFT extends LinearOpMode {
     //@Disabled
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     private DriveToPoint nav = new DriveToPoint(this); //OpMode member for the point-to-point navigation class
-
+//gort
     private DcMotor liftLeft;
     private DcMotor liftRight;
     int liftsBottom = 0;
