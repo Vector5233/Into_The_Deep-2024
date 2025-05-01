@@ -1,19 +1,19 @@
 package org.firstinspires.ftc.teamcode.adampkg.auto;
 // ... other imports ...
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.teamcode.adampkg.teleop.RobotBase;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName; // If using a webcam
-import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
-import org.firstinspires.ftc.robotcore.external.navigation.Rotation;
 
 import java.util.List;
 import java.util.Locale;
@@ -63,12 +63,13 @@ public class RedAutoLeftTags extends LinearOpMode {
     }
     private TagInfo[] knownTagLocations = { /* ... */ };
 
-    private double cameraToRobotOffsetX = /* ... */;
-    private double cameraToRobotOffsetY = /* ... */;
-    private double cameraToRobotOffsetZ = /* ... */;
-    private double cameraToRobotOffsetYawDegrees = /* ... */;
-    private double cameraToRobotOffsetPitchDegrees = /* ... */;
-    private double cameraToRobotOffsetRollDegrees = /* ... */;
+    //Use mm
+    private double cameraToRobotOffsetX = 1;
+    private double cameraToRobotOffsetY = 1;
+    private double cameraToRobotOffsetZ = 1;
+    private double cameraToRobotOffsetYawDegrees = 1;
+    private double cameraToRobotOffsetPitchDegrees = 1;
+    private double cameraToRobotOffsetRollDegrees = 1;
 
     private double estimatedRobotX_AT = 0.0;
     private double estimatedRobotY_AT = 0.0;
@@ -99,7 +100,67 @@ public class RedAutoLeftTags extends LinearOpMode {
     }
 
     // ... initMotors(), runLiftsToPos(), RaiseLift(), LowerLift(), waitLifts(), motorTelemetry() ...
+    public void initMotors()
+    {
+        liftRight = hardwareMap.get(DcMotor.class, "rightLift");
+        liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
+        liftLeft.setDirection(DcMotor.Direction.REVERSE);
 
+        liftLeft.setPower(liftLeftPower);
+        liftRight.setPower(liftRightPower);
+
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        liftLeft.setTargetPosition(0);
+        liftRight.setTargetPosition(0);
+
+        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+    public void runLiftsToPos(int position)
+    {
+        robotBase.initServos(hardwareMap);
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftLeft.setTargetPosition(position);
+        liftRight.setTargetPosition(position);
+    }
+    public void RaiseLift()
+    {
+        runLiftsToPos(liftsHighPos);
+        waitLifts(2000);
+    }
+    public void LowerLift()
+    {
+        runLiftsToPos(liftsLowPos);
+        waitLifts(2000);
+        robotBase.OpenPincher();
+
+        waitLifts(500);
+        runLiftsToPos(liftsBottom);
+        waitLifts(1000);
+    }
+    public void waitLifts(int holdTime)
+    {
+        while(opModeIsActive() && liftRight.isBusy() && liftLeft.isBusy())
+        {
+            motorTelemetry();
+        }
+        sleep(holdTime);
+    }
+    public void  motorTelemetry(){
+        telemetry.addData("leftLift","Encoder: %2d, Power: %2f", liftLeft.getCurrentPosition(), liftLeft.getPower());
+        telemetry.addData("leftRight","Encoder: %2d, Power: %2f", liftRight.getCurrentPosition(), liftRight.getPower());
+        telemetry.update();
+    }
     /**
      * Initialize the AprilTag processor.
      */
@@ -129,33 +190,46 @@ public class RedAutoLeftTags extends LinearOpMode {
                 updateAprilTagPoseEstimate(); // Call this function periodically
             }
 
-            if(stateMachine == StateMachine.WAITING_FOR_START){
-                // ... (your WAITING_FOR_START logic) ...
-            }
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_1) {
-                // Potentially use estimatedRobotX_AT, estimatedRobotY_AT, estimatedRobotHeading_AT
-                // to adjust the target or the navigation if aprilTagDetected is true.
-                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.3 , 2, telemetry)) {
-                    // ... (your DRIVE_TO_TARGET_1 logic) ...
-                    stateMachine = StateMachine.DRIVE_TO_TARGET_2;
-                }
-            }
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_2){
-                // Potentially use the AprilTag-based estimate here as well.
-                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.8, 0.1, telemetry)) {
-                    // ... (your DRIVE_TO_TARGET_2 logic) ...
-                    stateMachine = StateMachine.DRIVE_TO_TARGET_3;
-                }
-            }
-            if (stateMachine == StateMachine.DRIVE_TO_TARGET_3){
-                // Potentially use the AprilTag-based estimate here.
-                if (nav.driveTo(odo.getPosition(), TARGET_3, 1.0, 0.1, telemetry)){
-                    // ... (your DRIVE_TO_TARGET_3 logic) ...
-                    stateMachine = StateMachine.AT_TARGET;
-                }
-            }
-            if(stateMachine == StateMachine.AT_TARGET) {
-                nav.Stop();
+            switch (stateMachine) {
+                case WAITING_FOR_START:
+                    stateMachine = RedAutoLeftTags.StateMachine.DRIVE_TO_TARGET_1;
+                    if (!liftsRanUp) {
+                        robotBase.initServos(hardwareMap);
+                        RaiseLift();
+                        liftsRanUp = true;
+                    }
+                    break;
+                case DRIVE_TO_TARGET_1:
+                    if (nav.driveTo(odo.getPosition(), TARGET_1, 0.3, 2, telemetry)) {
+                        robotBase.initServos(hardwareMap);
+                        telemetry.addLine("In drive to target 1");
+                        waitLifts(1000);
+                        if (!liftsRanDown) {
+                            LowerLift();
+                            telemetry.addLine("Called LowerLift()");
+                            robotBase.initServos(hardwareMap);
+                            liftsRanDown = true;
+                        }
+                        telemetry.addLine("at position #1!");
+                        stateMachine = RedAutoLeftTags.StateMachine.DRIVE_TO_TARGET_2;
+                    }
+                    break;
+                case DRIVE_TO_TARGET_2:
+                    if (nav.driveTo(odo.getPosition(), TARGET_2, 0.8, 0.1, telemetry)) {
+                        robotBase.initServos(hardwareMap);
+                        telemetry.addLine("at position #2!");
+                        stateMachine = RedAutoLeftTags.StateMachine.DRIVE_TO_TARGET_3;
+                    }
+                    break;
+                case DRIVE_TO_TARGET_3:
+                    if (nav.driveTo(odo.getPosition(), TARGET_3, 1.0, 0.1, telemetry)) {
+                        telemetry.addLine("at position #3!");
+                        stateMachine = RedAutoLeftTags.StateMachine.AT_TARGET;
+                    }
+                    break;
+                case AT_TARGET:
+                    nav.Stop();
+                    break;
             }
 
             telemetry.addData("current state:",stateMachine);
@@ -197,37 +271,24 @@ public class RedAutoLeftTags extends LinearOpMode {
 
                 if (knownTag != null) {
                     // Get tag pose relative to camera
-                    double tagRelativeX = detection.ftcPose.x;
-                    double tagRelativeY = detection.ftcPose.y;
-                    double tagRelativeZ = detection.ftcPose.z;
+                    double tagRelativeX = detection.ftcPose.x;    // Forward from camera
+                    double tagRelativeY = detection.ftcPose.y;    // Left from camera
+                    double tagRelativeZ = detection.ftcPose.z;    // Up from camera
                     double tagRelativeYaw = detection.ftcPose.yaw;
-                    double tagRelativePitch = detection.ftcPose.pitch;
-                    double tagRelativeRoll = detection.ftcPose.roll;
 
-                    // Camera to Robot Rotation
-                    Quaternion cameraToRobotQuat = Quaternion.fromEulerAngles(
-                            Math.toRadians(cameraToRobotOffsetRollDegrees),
-                            Math.toRadians(cameraToRobotOffsetPitchDegrees),
-                            Math.toRadians(cameraToRobotOffsetYawDegrees)
-                    );
+                    // Apply camera offset to estimated robot position
+                    // Adjust tag's position from camera space to robot space using camera offset
+                    double tagXRobot = tagRelativeX + cameraToRobotOffsetX;
+                    double tagYRobot = tagRelativeY + cameraToRobotOffsetY;
+                    double tagZRobot = tagRelativeZ + cameraToRobotOffsetZ;
 
-                    // Tag vector in camera frame
-                    double[] tagVecCam = {tagRelativeX, tagRelativeY, tagRelativeZ};
+                    // Adjust yaw (rotation about Z) for camera mounting angle
+                    double adjustedYaw = tagRelativeYaw + cameraToRobotOffsetYawDegrees;
 
-                    // Rotate to robot frame
-                    Quaternion tagQuatCam = Quaternion.fromEulerAngles(Math.toRadians(tagRelativeRoll), Math.toRadians(tagRelativePitch), Math.toRadians(tagRelativeYaw));
-                    Quaternion tagQuatRobot = cameraToRobotQuat.multiplied(tagQuatCam);
-                    Rotation tagRotRobot = Rotation.fromQuaternion(tagQuatRobot);
-                    double[] tagVecRobot = tagRotRobot.apply(tagVecCam);
-
-                    double tagXRobot = tagVecRobot[0];
-                    double tagYRobot = tagVecRobot[1];
-                    double tagYawRobot = Math.toDegrees(tagRotRobot.getZ(AngleUnit.RADIANS));
-
-                    // Estimate robot world pose (adjust based on your setup)
+                    // Estimate robot's position in the world
                     double estRobotWorldX = knownTag.x - tagYRobot;
                     double estRobotWorldY = knownTag.y + tagXRobot;
-                    double estRobotWorldHeading = AngleUnit.normalizeDegrees(knownTag.yaw - tagYawRobot - cameraToRobotOffsetYawDegrees);
+                    double estRobotWorldHeading = AngleUnit.normalizeDegrees(knownTag.yaw - adjustedYaw);
 
                     sumRobotX += estRobotWorldX;
                     sumRobotY += estRobotWorldY;
@@ -246,29 +307,21 @@ public class RedAutoLeftTags extends LinearOpMode {
             aprilTagDetected = false;
         }
     }
-    public void initMotors()
-    {
-        liftRight = hardwareMap.get(DcMotor.class, "rightLift");
-        liftLeft = hardwareMap.get(DcMotor.class, "leftLift");
-        liftLeft.setDirection(DcMotor.Direction.REVERSE);
 
-        liftLeft.setPower(liftLeftPower);
-        liftRight.setPower(liftRightPower);
+    public static Quaternion eulerToQuaternion(double roll, double pitch, double yaw) {
+        double cy = Math.cos(yaw * 0.5);
+        double sy = Math.sin(yaw * 0.5);
+        double cp = Math.cos(pitch * 0.5);
+        double sp = Math.sin(pitch * 0.5);
+        double cr = Math.cos(roll * 0.5);
+        double sr = Math.sin(roll * 0.5);
 
-        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        double w = cr * cp * cy + sr * sp * sy;
+        double x = sr * cp * cy - cr * sp * sy;
+        double y = cr * sp * cy + sr * cp * sy;
+        double z = cr * cp * sy - sr * sp * cy;
 
-        liftLeft.setTargetPosition(0);
-        liftRight.setTargetPosition(0);
-
-        liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        return new Quaternion((float) x, (float) y, (float) z, (float) w, System.nanoTime());
     }
+
 }

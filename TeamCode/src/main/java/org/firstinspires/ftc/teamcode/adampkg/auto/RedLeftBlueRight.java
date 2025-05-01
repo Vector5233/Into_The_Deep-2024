@@ -142,9 +142,6 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     {
         while (opModeIsActive()) {
             odo.update();
-            if (aprilTagInitialized) {
-                updateAprilTagPoseEstimate();
-            }
 
             switch (stateMachine) {
                 case WAITING_FOR_START:
@@ -192,13 +189,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
             Pose2D pos = odo.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Odo Position", data);
-            if (aprilTagDetected) {
-                telemetry.addData("AT Est. X", String.format("%.1f", estimatedRobotX_AT));
-                telemetry.addData("AT Est. Y", String.format("%.1f", estimatedRobotY_AT));
-                telemetry.addData("AT Est. Heading", String.format("%.1f", estimatedRobotHeading_AT));
-            } else {
-                telemetry.addLine("No AprilTag Detected for Localization");
-            }
+
             telemetry.update();
         }
     }
