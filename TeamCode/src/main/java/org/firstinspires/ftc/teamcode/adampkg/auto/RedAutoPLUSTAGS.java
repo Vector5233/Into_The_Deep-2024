@@ -29,6 +29,9 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     int liftsHighPos =  2850;
     double liftRightPower = 1.0;
     double liftLeftPower = 1.0;
+
+
+
     enum StateMachine{
         WAITING_FOR_START,
         AT_TARGET,
@@ -40,11 +43,22 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     boolean liftsRanDown = false;
     final RobotBase robotBase = new RobotBase();
 
+    AprilTagDetection detectedTag = null;
+
     static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-715,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -550, -900, AngleUnit.DEGREES, 0);
     static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-1400 , -400, AngleUnit.DEGREES,0);
-    @Override //1300
+   // @Override //1300
+
+    aprilTagFieldLocation tag11 = new aprilTagFieldLocation(-1828, 1219, 11);
+    aprilTagFieldLocation tag12 = new aprilTagFieldLocation(0, 1828, 12);
+    aprilTagFieldLocation tag13 = new aprilTagFieldLocation(1828, 1219, 13);
+    aprilTagFieldLocation tag14 = new aprilTagFieldLocation(1828, -1219, 14);
+    aprilTagFieldLocation tag15 = new aprilTagFieldLocation(0, -1828, 15);
+    aprilTagFieldLocation tag16 = new aprilTagFieldLocation(-1828, -1219, 16);
+    aprilTagFieldLocation[] fieldLocations = {tag11, tag12, tag13, tag14, tag15, tag16};
+
     public void runOpMode() {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
@@ -156,7 +170,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_1) {
 
-                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 2)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_1, 0.5 , 2, telemetry)) {
                     robotBase.initServos(hardwareMap);
                     if(liftsRanUp == false)
                     {
@@ -176,7 +190,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                 }
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_2){
-                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 0.1)) {
+                if (nav.driveTo(odo.getPosition(), TARGET_2, 0.5, 0.1, telemetry)) {
                     robotBase.initServos(hardwareMap);
 
                     telemetry.addLine("at position #2!");
@@ -184,7 +198,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                 }
             }
             if (stateMachine == StateMachine.DRIVE_TO_TARGET_3){
-                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1)){
+                if (nav.driveTo(odo.getPosition(), TARGET_3, 0.5, 0.1, telemetry)){
                     telemetry.addLine("at position #3!");
                     stateMachine = StateMachine.AT_TARGET;
                 }
@@ -214,11 +228,24 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
                 .addProcessor(tagProcessor)
                 .setCamera(hardwareMap.get(WebcamName.class, "kyleCamLeft"))
                 .build();
+        telemetry.addData("detections:", tagProcessor.getDetections());
         while (!isStopRequested() && opModeIsActive())
         {
             if(tagProcessor.getDetections().size() > 0)
             {
-                detectedTag = tagProcessor.getDetections().get(0);
+                AprilTagDetection tag = tagProcessor.getDetections().get(0);
+                Pose2D tagPose2d = new Pose2D(DistanceUnit.MM, tag.ftcPose.x, tag.ftcPose.y, AngleUnit.DEGREES, tag.ftcPose.yaw);
+                int fieldTagX;
+                int fieldTagY;
+                for(int i=0; i<fieldLocations.length; i++) {
+                    if (fieldLocations[i].id == tag.id) {
+                        fieldTagX = fieldLocations[i].x;
+                        fieldTagY = fieldLocations[i].y;
+                        telemetry.addData("fieldTagX", fieldTagX);
+                        telemetry.addData("fieldTagY", fieldTagY);
+                    }
+                }
+                //odo.setPosition(tagPose2d);
                 telemetry.addData("x", tag.ftcPose.x);
                 telemetry.addData("y", tag.ftcPose.y);
                 telemetry.addData("z", tag.ftcPose.z);
