@@ -30,6 +30,16 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     double liftRightPower = 1.0;
     double liftLeftPower = 1.0;
 
+    public Pose2D cameraPosToRealPos(double cameraX, double cameraY, double heading, int id, int tagX, int tagY){
+        double xOutput = 0;
+        double yOutput = 0;
+        switch(id){
+            case 11:
+            case 16:
+
+        }
+        return new Pose2D(DistanceUnit.MM,xOutput,yOutput,AngleUnit.DEGREES,);
+    }
 
 
     enum StateMachine{
