@@ -103,7 +103,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         StateMachine stateMachine;
         stateMachine = StateMachine.WAITING_FOR_START;
 
-        startCameraProcessing();
+        startCameraProcessing(tagProcessor, visionPortal);
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", odo.getXOffset());
