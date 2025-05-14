@@ -297,29 +297,6 @@ public class RedAutoLeftTags extends LinearOpMode {
                 }
 
                 if (knownTag != null) {
-                    // Get tag pose relative to camera
-                    double tagRelativeX = detection.ftcPose.x;    // Forward from camera
-                    double tagRelativeY = detection.ftcPose.y;    // Left from camera
-                    double tagRelativeZ = detection.ftcPose.z;    // Up from camera
-                    double tagRelativeYaw = detection.ftcPose.yaw;
-
-                    // Apply camera offset to estimated robot position
-                    // Adjust tag's position from camera space to robot space using camera offset
-                    double tagXRobot = tagRelativeX + cameraToRobotOffsetX;
-                    double tagYRobot = tagRelativeY + cameraToRobotOffsetY;
-                    double tagZRobot = tagRelativeZ + cameraToRobotOffsetZ;
-
-                    // Adjust yaw (rotation about Z) for camera mounting angle
-                    double adjustedYaw = tagRelativeYaw + cameraToRobotOffsetYawDegrees;
-
-                    // Estimate robot's position in the world
-                    double estRobotWorldX = knownTag.x - tagYRobot;
-                    double estRobotWorldY = knownTag.y + tagXRobot;
-                    double estRobotWorldHeading = AngleUnit.normalizeDegrees(knownTag.yaw - adjustedYaw);
-
-                    sumRobotX += estRobotWorldX;
-                    sumRobotY += estRobotWorldY;
-                    sumRobotHeading += estRobotWorldHeading;
                     validDetections++;
                     aprilTagDetected = true;
                 }
