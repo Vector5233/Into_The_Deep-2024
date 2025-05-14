@@ -115,7 +115,7 @@ public class DriveToPoint {
             Pose2D temp = new Pose2D(MM,targetPosition.getX(MM),targetPosition.getY(MM),RADIANS,headingTowardsTarget);
 
             if (headingTowardsTarget > (Math.PI/2) || headingTowardsTarget < -(Math.PI/2)){
-                //headingTowardsTarget -= Math.PI;
+                headingTowardsTarget -= Math.PI;
                 headingTowardsTarget = targetPosition.getHeading(RADIANS);
                 lengthToTarget = -lengthToTarget;
             }
