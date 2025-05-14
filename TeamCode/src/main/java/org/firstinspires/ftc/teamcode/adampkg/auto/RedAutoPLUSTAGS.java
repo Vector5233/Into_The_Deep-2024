@@ -30,6 +30,22 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     double liftRightPower = 1.0;
     double liftLeftPower = 1.0;
 
+    public Pose2D cameraPosToRealPos(double cameraX, double cameraY, double heading, int id, int tagX, int tagY){
+        switch(id){
+            case 11:
+            case 16:
+                return new Pose2D(DistanceUnit.MM, tagX+cameraY, tagY-cameraX, AngleUnit.DEGREES, heading);
+            case 13:
+            case 14:
+                return new Pose2D(DistanceUnit.MM, tagX-cameraY, tagY+cameraX, AngleUnit.DEGREES, heading);
+            case 12:
+                return new Pose2D(DistanceUnit.MM, tagX-cameraX, tagY-cameraY, AngleUnit.DEGREES, heading);
+            case 15:
+                return new Pose2D(DistanceUnit.MM, tagX+cameraX, tagY+cameraY, AngleUnit.DEGREES, heading);
+            default:
+                return null;
+        }
+    }
 
 
     enum StateMachine{
@@ -42,8 +58,6 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     boolean liftsRanUp = false;
     boolean liftsRanDown = false;
     final RobotBase robotBase = new RobotBase();
-
-    AprilTagDetection detectedTag = null;
 
     static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
     static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-715,0,AngleUnit.DEGREES,0);
@@ -58,6 +72,15 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     aprilTagFieldLocation tag15 = new aprilTagFieldLocation(0, -1828, 15);
     aprilTagFieldLocation tag16 = new aprilTagFieldLocation(-1828, -1219, 16);
     aprilTagFieldLocation[] fieldLocations = {tag11, tag12, tag13, tag14, tag15, tag16};
+
+    AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
+            .setDrawAxes(true)
+            .setDrawCubeProjection(true)
+            .build();
+    VisionPortal visionPortal = new VisionPortal.Builder()
+            .addProcessor(tagProcessor)
+            .setCamera(hardwareMap.get(WebcamName.class, "kyleCamLeft"))
+            .build();
 
     public void runOpMode() {
 
@@ -79,9 +102,8 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 
         StateMachine stateMachine;
         stateMachine = StateMachine.WAITING_FOR_START;
-        
-        AprilTagDetection detectedTag = null;
-        startCameraProcessing(detectedTag);
+
+        startCameraProcessing(tagProcessor, visionPortal);
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", odo.getXOffset());
@@ -215,45 +237,36 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 
             Pose2D heading = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.RADIANS,nav.calculateTargetHeading(pos,TARGET_2));
             telemetry.addData("target heading: ", heading.getHeading(AngleUnit.RADIANS));
+            startCameraProcessing(tagProcessor, visionPortal);
             telemetry.update();
 
         }
     }
-    public void startCameraProcessing(AprilTagDetection detectedTag){
-        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
-                .setDrawAxes(true)
-                .setDrawCubeProjection(true)
-                .build();
-        VisionPortal visionPortal = new VisionPortal.Builder()
-                .addProcessor(tagProcessor)
-                .setCamera(hardwareMap.get(WebcamName.class, "kyleCamLeft"))
-                .build();
+    public void startCameraProcessing(AprilTagProcessor tagProcessor, VisionPortal visionPortal){
         telemetry.addData("detections:", tagProcessor.getDetections());
-        while (!isStopRequested() && opModeIsActive())
+        if(tagProcessor.getDetections().size() > 0)
         {
-            if(tagProcessor.getDetections().size() > 0)
-            {
-                AprilTagDetection tag = tagProcessor.getDetections().get(0);
-                Pose2D tagPose2d = new Pose2D(DistanceUnit.MM, tag.ftcPose.x, tag.ftcPose.y, AngleUnit.DEGREES, tag.ftcPose.yaw);
-                int fieldTagX;
-                int fieldTagY;
-                for(int i=0; i<fieldLocations.length; i++) {
-                    if (fieldLocations[i].id == tag.id) {
-                        fieldTagX = fieldLocations[i].x;
-                        fieldTagY = fieldLocations[i].y;
-                        telemetry.addData("fieldTagX", fieldTagX);
-                        telemetry.addData("fieldTagY", fieldTagY);
-                    }
+            AprilTagDetection tag = tagProcessor.getDetections().get(0);
+            //probably scrap Pose2D tagPose2d = new Pose2D(DistanceUnit.MM, tag.ftcPose.x, tag.ftcPose.y, AngleUnit.DEGREES, tag.ftcPose.yaw);
+            int fieldTagX;
+            int fieldTagY;
+            for(int i=0; i<fieldLocations.length; i++) {
+                if (fieldLocations[i].id == tag.id) {
+                    fieldTagX = fieldLocations[i].x;
+                    fieldTagY = fieldLocations[i].y;
+                    telemetry.addData("fieldTagX", fieldTagX);
+                    telemetry.addData("fieldTagY", fieldTagY);
+                    //odo.setPosition(cameraPosToRealPos(tag.ftcPose.x, tag.ftcPose.y, tag.ftcPose.yaw, tag.id, fieldTagX, fieldTagY));
+                    telemetry.addData("Tag Estimated Real Coords:", cameraPosToRealPos(tag.ftcPose.x, tag.ftcPose.y, tag.ftcPose.yaw, tag.id, fieldTagX, fieldTagY));
                 }
-                //odo.setPosition(tagPose2d);
-                telemetry.addData("x", tag.ftcPose.x);
-                telemetry.addData("y", tag.ftcPose.y);
-                telemetry.addData("z", tag.ftcPose.z);
-                telemetry.addData("Pitch", tag.ftcPose.pitch);
-                telemetry.addData("Yaw", tag.ftcPose.yaw);
-                telemetry.addData("Roll", tag.ftcPose.roll);
-                telemetry.update();
             }
+            //odo.setPosition(tagPose2d);
+            telemetry.addData("x", tag.ftcPose.x);
+            telemetry.addData("y", tag.ftcPose.y);
+            telemetry.addData("z", tag.ftcPose.z);
+            telemetry.addData("Pitch", tag.ftcPose.pitch);
+            telemetry.addData("Yaw", tag.ftcPose.yaw);
+            telemetry.addData("Roll", tag.ftcPose.roll);
         }
     }
 }
