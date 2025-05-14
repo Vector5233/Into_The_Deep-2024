@@ -55,18 +55,16 @@ public class RedAutoRightTags extends LinearOpMode {
     private boolean aprilTagInitialized = false;
 
     //Wesley tag id case system
-    public Pose2D cameraPosToRealPos(double cameraX, double cameraY, double heading, int id, int tagX, int tagY){
-        switch(id){
-            case 11:
-            case 16:
-                return new Pose2D(DistanceUnit.MM, tagX+cameraY, tagY-cameraX, AngleUnit.DEGREES, heading);
-            case 13:
-            case 14:
-                return new Pose2D(DistanceUnit.MM, tagX-cameraY, tagY+cameraX, AngleUnit.DEGREES, heading);
-            case 12:
-                return new Pose2D(DistanceUnit.MM, tagX-cameraX, tagY-cameraY, AngleUnit.DEGREES, heading);
-            case 15:
+    public Pose2D cameraPosToRealPos(double cameraX, double cameraY, double heading, int id, double tagX, double tagY, int tagYaw){
+        switch(tagYaw){
+            case 90:
+                return new Pose2D(DistanceUnit.MM, tagX+cameraY+cameraToRobotOffsetY, tagY-cameraX-cameraToRobotOffsetX, AngleUnit.DEGREES, heading);
+            case 180:
+                return new Pose2D(DistanceUnit.MM, tagX+cameraX+cameraToRobotOffsetX, tagY+cameraY+cameraToRobotOffsetY, AngleUnit.DEGREES, heading);
+            case -90:
                 return new Pose2D(DistanceUnit.MM, tagX+cameraX, tagY+cameraY, AngleUnit.DEGREES, heading);
+            case 0:
+                return new Pose2D(DistanceUnit.MM, tagX-cameraX, tagY-cameraY-cameraToRobotOffsetY, AngleUnit.DEGREES, heading);
             default:
                 return null;
         }
@@ -95,8 +93,8 @@ public class RedAutoRightTags extends LinearOpMode {
     };
 
     //Use mm
-    private double cameraToRobotOffsetX = 159;
-    private double cameraToRobotOffsetY = 150;
+    private double cameraToRobotOffsetX = 150;
+    private double cameraToRobotOffsetY = 159;
     private double cameraToRobotOffsetZ = 1;
     private double cameraToRobotOffsetYawDegrees = 90;
     private double cameraToRobotOffsetPitchDegrees = 1;
@@ -319,7 +317,7 @@ public class RedAutoRightTags extends LinearOpMode {
                     telemetry.addData("Info", info.id);
                     if (info.id == detection.id) {
                         knownTag = info;
-                        Pose2D newRotationCoords = getRobotPoseFromTag(detection.ftcPose.x * 25.4 +cameraToRobotOffsetX, detection.ftcPose.y * 25.4 +cameraToRobotOffsetY, detection.ftcPose.yaw, knownTag);
+                        Pose2D newRotationCoords = cameraPosToRealPos(detection.ftcPose.x * 25.4, detection.ftcPose.y * 25.4, odo.getHeading(), knownTag.id, knownTag.x, knownTag.y, (int)Math.round(knownTag.yaw));
                         odo.setPosition(newRotationCoords);
                         Pose2D pos = odo.getPosition();
                         String realData = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
