@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.NEFARIO;
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.RADIANS;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -10,8 +11,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-
+@Config
 public class DriveToPoint {
+    public static double XY_P = 0.02;
+    public static double XY_I = 0.002;
+    public static double XY_D = 0.0;
+    public static double YAW_P = 1.0;
+    public static double YAW_I = 0.0;
+    public static double YAW_D = 0.0;
+    public static double XY_TOLERANCE_MM = 12.0;
+    public static double YAW_TOLERANCE_DEG = 2.0;
 
     public enum DriveType {
         MECANUM,
