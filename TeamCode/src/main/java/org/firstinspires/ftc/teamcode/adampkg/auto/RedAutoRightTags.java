@@ -96,7 +96,7 @@ public class RedAutoRightTags extends LinearOpMode {
 
     //Use mm
     private double cameraToRobotOffsetX = 159;
-    private double cameraToRobotOffsetY = 150;
+    private double cameraToRobotOffsetY = -150;
     private double cameraToRobotOffsetZ = 1;
     private double cameraToRobotOffsetYawDegrees = 90;
     private double cameraToRobotOffsetPitchDegrees = 1;
@@ -139,6 +139,7 @@ public class RedAutoRightTags extends LinearOpMode {
         Pose2D pos = odo.getPosition();
         String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
         telemetry.addData("Odo Position", data);
+        telemetry.update();
         waitForStart();
 
         resetRuntime();
@@ -205,6 +206,7 @@ public class RedAutoRightTags extends LinearOpMode {
     public void  motorTelemetry(){
         telemetry.addData("leftLift","Encoder: %2d, Power: %2f", liftLeft.getCurrentPosition(), liftLeft.getPower());
         telemetry.addData("leftRight","Encoder: %2d, Power: %2f", liftRight.getCurrentPosition(), liftRight.getPower());
+        telemetry.update();
     }
     /**
      * Initialize the AprilTag processor.
@@ -288,9 +290,9 @@ public class RedAutoRightTags extends LinearOpMode {
             telemetry.addData("current state:",stateMachine);
 
             if (aprilTagDetected) {
-                //telemetry.addData("AT Est. X", String.format("%.1f", estimatedRobotX_AT));
-                //telemetry.addData("AT Est. Y", String.format("%.1f", estimatedRobotY_AT));
-                //telemetry.addData("AT Est. Heading", String.format("%.1f", estimatedRobotHeading_AT));
+                telemetry.addData("AT Est. X", String.format("%.1f", estimatedRobotX_AT));
+                telemetry.addData("AT Est. Y", String.format("%.1f", estimatedRobotY_AT));
+                telemetry.addData("AT Est. Heading", String.format("%.1f", estimatedRobotHeading_AT));
             } else {
                 telemetry.addLine("No AprilTag Detected for Localization");
             }
@@ -319,13 +321,11 @@ public class RedAutoRightTags extends LinearOpMode {
                     telemetry.addData("Info", info.id);
                     if (info.id == detection.id) {
                         knownTag = info;
-                        Pose2D newRotationCoords = getRobotPoseFromTag(detection.ftcPose.x * 25.4 +cameraToRobotOffsetX, detection.ftcPose.y * 25.4 +cameraToRobotOffsetY, detection.ftcPose.yaw, knownTag);
+                        Pose2D newRotationCoords = getRobotPoseFromTag(detection.ftcPose.x * 25.4 , detection.ftcPose.y * 25.4 , detection.ftcPose.yaw, knownTag);
                         odo.setPosition(newRotationCoords);
                         Pose2D pos = odo.getPosition();
-                        String realData = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
-                        String cameraData = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", detection.ftcPose.x*25.4+cameraToRobotOffsetX, detection.ftcPose.y*25.4+cameraToRobotOffsetY, detection.ftcPose.yaw);
-                        telemetry.addData("Odo Coords", realData);
-                        telemetry.addData("Camera values:", cameraData);
+                        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+                        telemetry.addData("Odo Coords", data);
                         break;
                     }
                 }
@@ -365,14 +365,31 @@ public class RedAutoRightTags extends LinearOpMode {
         return new Quaternion((float) x, (float) y, (float) z, (float) w, System.nanoTime());
     }
     private Pose2D getRobotPoseFromTag(double camX, double camY, double camYaw, TagInfo tag) {
-        double yawRad = Math.toRadians(tag.yaw);
-        double rotX = camX * Math.cos(yawRad) - camY * Math.sin(yawRad);
-        double rotY = camX * Math.sin(yawRad) + camY * Math.cos(yawRad);
-        double robotX = tag.x - rotX;
-        double robotY = tag.y - rotY;
-        double robotHeading = AngleUnit.normalizeDegrees(tag.yaw - camYaw);
-        telemetry.addData("Estimated location from tags:", String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",robotX,robotY,robotHeading));
+        // Step 1: Convert tag's yaw to radians for rotation
+        double tagYawRad = Math.toRadians(tag.yaw);
 
-        return new Pose2D(DistanceUnit.MM, robotX, robotY, AngleUnit.DEGREES, robotHeading);
+        // Step 2: Rotate the relative camera position (from tag frame to global field frame)
+        double fieldRelativeCamX = camX * Math.cos(tagYawRad) - camY * Math.sin(tagYawRad);
+        double fieldRelativeCamY = camX * Math.sin(tagYawRad) + camY * Math.cos(tagYawRad);
+
+        // Step 3: Compute the global position of the camera
+        double cameraGlobalX = tag.x + fieldRelativeCamX;
+        double cameraGlobalY = tag.y + fieldRelativeCamY;
+
+        // Step 4: Compute the robot's global heading
+        double robotHeadingDeg = AngleUnit.normalizeDegrees(tag.yaw - camYaw);
+        double robotHeadingRad = Math.toRadians(robotHeadingDeg);
+
+        // Step 5: Rotate the camera-to-robot offset into the field frame
+        //double offsetXGlobal = cameraToRobotOffsetX * Math.cos(robotHeadingRad) - cameraToRobotOffsetY * Math.sin(robotHeadingRad);
+        //double offsetYGlobal = cameraToRobotOffsetX * Math.sin(robotHeadingRad) + cameraToRobotOffsetY * Math.cos(robotHeadingRad);
+
+        // Step 6: Compute the final robot position in the global field frame
+        double robotGlobalX = cameraGlobalX;// + offsetXGlobal;
+        double robotGlobalY = cameraGlobalY;// + offsetYGlobal;
+
+        // Step 7: Return the full global robot pose
+        return new Pose2D(DistanceUnit.MM, robotGlobalX, robotGlobalY, AngleUnit.DEGREES, robotHeadingDeg);
     }
+
 }
