@@ -370,9 +370,11 @@ public class RedAutoRightTags extends LinearOpMode {
         double rotY = camX * Math.sin(yawRad) + camY * Math.cos(yawRad);
         double robotX = tag.x - rotX;
         double robotY = tag.y - rotY;
+        double offsetXGlobal = cameraToRobotOffsetX * Math.cos(Math.toRadians(camYaw)) - cameraToRobotOffsetY * Math.sin(Math.toRadians(camYaw));
+        double offsetYGlobal = cameraToRobotOffsetX * Math.sin(Math.toRadians(camYaw)) + cameraToRobotOffsetY * Math.cos(Math.toRadians(camYaw));
         double robotHeading = AngleUnit.normalizeDegrees(tag.yaw - camYaw);
         telemetry.addData("Estimated location from tags:", String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",robotX,robotY,robotHeading));
 
-        return new Pose2D(DistanceUnit.MM, robotX, robotY, AngleUnit.DEGREES, robotHeading);
+        return new Pose2D(DistanceUnit.MM, robotX+offsetXGlobal, robotY+offsetYGlobal, AngleUnit.DEGREES, robotHeading);
     }
 }
