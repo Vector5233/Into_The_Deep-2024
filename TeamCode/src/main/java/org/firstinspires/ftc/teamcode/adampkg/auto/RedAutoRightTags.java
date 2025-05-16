@@ -44,10 +44,10 @@ public class RedAutoRightTags extends LinearOpMode {
 
     final RobotBase robotBase = new RobotBase();
     // ... Pose2D constants ...
-    static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,-225,1401,AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-225,661,AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -955, 661, AngleUnit.DEGREES, 90);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-600 , 0, AngleUnit.DEGREES,90);
+    static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,-175,1401,AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-175,661,AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -905, 661, AngleUnit.DEGREES, 90);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-550 , 0, AngleUnit.DEGREES,90);
 
     // *** APRILTAG LOCALIZATION DECLARATIONS ***
     private AprilTagProcessor aprilTag;
@@ -375,6 +375,6 @@ public class RedAutoRightTags extends LinearOpMode {
         double robotHeading = AngleUnit.normalizeDegrees(tag.yaw - camYaw);
         telemetry.addData("Estimated location from tags:", String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",robotX,robotY,robotHeading));
 
-        return new Pose2D(DistanceUnit.MM, robotX+offsetXGlobal, robotY+offsetYGlobal, AngleUnit.DEGREES, robotHeading);
+        return new Pose2D(DistanceUnit.MM, robotX+offsetXGlobal, robotY+offsetYGlobal-100, AngleUnit.DEGREES, robotHeading);
     }
 }
