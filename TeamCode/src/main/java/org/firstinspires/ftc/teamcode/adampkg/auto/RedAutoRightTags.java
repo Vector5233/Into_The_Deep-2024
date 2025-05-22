@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.adampkg.auto;
 // ... other imports ...
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -44,10 +46,10 @@ public class RedAutoRightTags extends LinearOpMode {
 
     final RobotBase robotBase = new RobotBase();
     // ... Pose2D constants ...
-    static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,-225,1401,AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-225,661,AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -955, 661, AngleUnit.DEGREES, 90);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-600 , 0, AngleUnit.DEGREES,90);
+    static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,-175,1401,AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-175,750,AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -905, 750, AngleUnit.DEGREES, 90);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-550 , 0, AngleUnit.DEGREES,90);
 
     // *** APRILTAG LOCALIZATION DECLARATIONS ***
     private AprilTagProcessor aprilTag;
@@ -96,7 +98,7 @@ public class RedAutoRightTags extends LinearOpMode {
 
     //Use mm
     private double cameraToRobotOffsetX = 159;
-    private double cameraToRobotOffsetY = -150;
+    private double cameraToRobotOffsetY = 150;
     private double cameraToRobotOffsetZ = 1;
     private double cameraToRobotOffsetYawDegrees = 90;
     private double cameraToRobotOffsetPitchDegrees = 1;
@@ -106,10 +108,15 @@ public class RedAutoRightTags extends LinearOpMode {
     private double estimatedRobotY_AT = 0.0;
     private double estimatedRobotHeading_AT = 0.0;
     private boolean aprilTagDetected = false;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+
+    double fps = visionPortal.getFps();  // Method may vary slightly based on SDK
+
 
 
     @Override
     public void runOpMode() {
+
         // ... odometry and navigation initialization ...
         initMotors();
         robotBase.initServos(hardwareMap);
@@ -139,9 +146,9 @@ public class RedAutoRightTags extends LinearOpMode {
         Pose2D pos = odo.getPosition();
         String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
         telemetry.addData("Odo Position", data);
-        telemetry.update();
         waitForStart();
-
+        telemetry.addData("Camera FPS", fps);
+        telemetry.update();
         resetRuntime();
         stateMachine(stateMachine);
     }
@@ -206,14 +213,17 @@ public class RedAutoRightTags extends LinearOpMode {
     public void  motorTelemetry(){
         telemetry.addData("leftLift","Encoder: %2d, Power: %2f", liftLeft.getCurrentPosition(), liftLeft.getPower());
         telemetry.addData("leftRight","Encoder: %2d, Power: %2f", liftRight.getCurrentPosition(), liftRight.getPower());
-        telemetry.update();
     }
     /**
      * Initialize the AprilTag processor.
      */
     private void initAprilTag() {
         // Create the AprilTag processor by using a builder.
-        aprilTag = new AprilTagProcessor.Builder().build();
+        aprilTag = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+
+                .build();
         aprilTag.setDecimation(2); // Adjust as needed
 
         // Create the vision portal by using a builder.
@@ -240,7 +250,7 @@ public class RedAutoRightTags extends LinearOpMode {
                 updateAprilTagPoseEstimate(); // Call this function periodically
 
                 if (aprilTagDetected) {
-                   // odo.setPosition();
+                    // odo.setPosition();
                 }
             }
 
@@ -290,9 +300,9 @@ public class RedAutoRightTags extends LinearOpMode {
             telemetry.addData("current state:",stateMachine);
 
             if (aprilTagDetected) {
-                telemetry.addData("AT Est. X", String.format("%.1f", estimatedRobotX_AT));
-                telemetry.addData("AT Est. Y", String.format("%.1f", estimatedRobotY_AT));
-                telemetry.addData("AT Est. Heading", String.format("%.1f", estimatedRobotHeading_AT));
+                //telemetry.addData("AT Est. X", String.format("%.1f", estimatedRobotX_AT));
+                //telemetry.addData("AT Est. Y", String.format("%.1f", estimatedRobotY_AT));
+                //telemetry.addData("AT Est. Heading", String.format("%.1f", estimatedRobotHeading_AT));
             } else {
                 telemetry.addLine("No AprilTag Detected for Localization");
             }
@@ -315,29 +325,39 @@ public class RedAutoRightTags extends LinearOpMode {
         aprilTagDetected = false;
 
         for (AprilTagDetection detection : currentDetections) {
-                TagInfo knownTag = null;
-                for (TagInfo info : knownTagLocations) {
-                    telemetry.addData("Detected Tag", detection.id);
-                    telemetry.addData("Info", info.id);
-                    if (info.id == detection.id) {
-                        knownTag = info;
-                        Pose2D newRotationCoords = getRobotPoseFromTag(detection.ftcPose.x * 25.4 , detection.ftcPose.y * 25.4 , detection.ftcPose.yaw, knownTag);
-                        odo.setPosition(newRotationCoords);
-                        Pose2D pos = odo.getPosition();
-                        String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
-                        telemetry.addData("Odo Coords", data);
-                        break;
-                    }
-                }
+            TagInfo knownTag = null;
+            for (TagInfo info : knownTagLocations) {
+                telemetry.addData("Detected Tag", detection.id);
+                telemetry.addData("Info", info.id);
+                if (info.id == detection.id) {
+                    knownTag = info;
+                    Pose2D newRotationCoords = getRobotPoseFromTag(detection.ftcPose.x * 25.4 +cameraToRobotOffsetX, detection.ftcPose.y * 25.4 +cameraToRobotOffsetY, detection.ftcPose.yaw, knownTag);
+                    odo.setPosition(newRotationCoords);
+                    Pose2D pos = odo.getPosition();
+                    String realData = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+                    String cameraData = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", detection.ftcPose.x*25.4+cameraToRobotOffsetX, detection.ftcPose.y*25.4+cameraToRobotOffsetY, detection.ftcPose.yaw);
+                    TelemetryPacket packet = new TelemetryPacket();
+                    packet.put("Odo Coords", realData);
+                    packet.put("Camera values:", cameraData);
+                    packet.put("X:", pos.getX(DistanceUnit.MM));
+                    packet.put("Y:", pos.getY(DistanceUnit.MM));
+                    packet.put("Heading:", pos.getHeading(AngleUnit.DEGREES));
+                    dashboard.sendTelemetryPacket(packet);
 
-                if (knownTag != null) {
-                    validDetections++;
-                    telemetry.addLine("Matched known tag!");
-                    aprilTagDetected = true;
+                    telemetry.addData("Odo Coords", realData);
+                    telemetry.addData("Camera values:", cameraData);
+                    break;
                 }
-                else {
+            }
+
+            if (knownTag != null) {
+                validDetections++;
+                telemetry.addLine("Matched known tag!");
+                aprilTagDetected = true;
+            }
+            else {
                 telemetry.addLine("Tag ID not in knownTagLocations");
-              }
+            }
         }
 
         if (validDetections > 0) {
@@ -365,31 +385,16 @@ public class RedAutoRightTags extends LinearOpMode {
         return new Quaternion((float) x, (float) y, (float) z, (float) w, System.nanoTime());
     }
     private Pose2D getRobotPoseFromTag(double camX, double camY, double camYaw, TagInfo tag) {
-        // Step 1: Convert tag's yaw to radians for rotation
-        double tagYawRad = Math.toRadians(tag.yaw);
+        double yawRad = Math.toRadians(tag.yaw);
+        double rotX = camX * Math.cos(yawRad) - camY * Math.sin(yawRad);
+        double rotY = camX * Math.sin(yawRad) + camY * Math.cos(yawRad);
+        double robotX = tag.x - rotX;
+        double robotY = tag.y - rotY;
+        double offsetXGlobal = cameraToRobotOffsetX * Math.cos(Math.toRadians(camYaw)) - cameraToRobotOffsetY * Math.sin(Math.toRadians(camYaw));
+        double offsetYGlobal = cameraToRobotOffsetX * Math.sin(Math.toRadians(camYaw)) + cameraToRobotOffsetY * Math.cos(Math.toRadians(camYaw));
+        double robotHeading = AngleUnit.normalizeDegrees(tag.yaw - camYaw);
+        telemetry.addData("Estimated location from tags:", String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}",robotX,robotY,robotHeading));
 
-        // Step 2: Rotate the relative camera position (from tag frame to global field frame)
-        double fieldRelativeCamX = camX * Math.cos(tagYawRad) - camY * Math.sin(tagYawRad);
-        double fieldRelativeCamY = camX * Math.sin(tagYawRad) + camY * Math.cos(tagYawRad);
-
-        // Step 3: Compute the global position of the camera
-        double cameraGlobalX = tag.x + fieldRelativeCamX;
-        double cameraGlobalY = tag.y + fieldRelativeCamY;
-
-        // Step 4: Compute the robot's global heading
-        double robotHeadingDeg = AngleUnit.normalizeDegrees(tag.yaw - camYaw);
-        double robotHeadingRad = Math.toRadians(robotHeadingDeg);
-
-        // Step 5: Rotate the camera-to-robot offset into the field frame
-        //double offsetXGlobal = cameraToRobotOffsetX * Math.cos(robotHeadingRad) - cameraToRobotOffsetY * Math.sin(robotHeadingRad);
-        //double offsetYGlobal = cameraToRobotOffsetX * Math.sin(robotHeadingRad) + cameraToRobotOffsetY * Math.cos(robotHeadingRad);
-
-        // Step 6: Compute the final robot position in the global field frame
-        double robotGlobalX = cameraGlobalX;// + offsetXGlobal;
-        double robotGlobalY = cameraGlobalY;// + offsetYGlobal;
-
-        // Step 7: Return the full global robot pose
-        return new Pose2D(DistanceUnit.MM, robotGlobalX, robotGlobalY, AngleUnit.DEGREES, robotHeadingDeg);
+        return new Pose2D(DistanceUnit.MM, robotX+offsetXGlobal, robotY+offsetYGlobal-100, AngleUnit.DEGREES, robotHeading);
     }
-
 }
