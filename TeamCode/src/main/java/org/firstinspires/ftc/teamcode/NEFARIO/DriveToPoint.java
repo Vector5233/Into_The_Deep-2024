@@ -12,7 +12,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 
 public class DriveToPoint {
-
+    //test
+    public static double XY_P = 0.02;
+    public static double XY_I = 0.002;
+    public static double XY_D = 0.0;
+    public static double YAW_P = 1.0;
+    public static double YAW_I = 0.0;
+    public static double YAW_D = 0.0;
+    public static double XY_TOLERANCE_MM = 12.0;
+    public static double YAW_TOLERANCE_DEG = 2.0;
     public enum DriveType {
         MECANUM,
         TANK
@@ -38,16 +46,16 @@ public class DriveToPoint {
         IN_BOUNDS
     }
 
-    private static double xyTolerance = 12;
-    private static double yawTolerance = 0.0349066;
+    public static double xyTolerance = 12;
+    public static double yawTolerance = 0.0349066;
 
-    private static double pGain = 0.008;
-    private static double dGain = 0.00001;
-    private static double accel = 10.0;
+   public static double pGain = 0.008;
+    public static double dGain = 0.00001;
+    public static double accel = 10.0;
 
-    private static double yawPGain = 5.0;
-    private static double yawDGain = 0.0;
-    private static double yawAccel = 20.0;
+    public static double yawPGain = 5.0;
+    public static double yawDGain = 0.0;
+    public static double yawAccel = 20.0;
 
     private double leftFrontMotorOutput  = 0;
     private double rightFrontMotorOutput = 0;

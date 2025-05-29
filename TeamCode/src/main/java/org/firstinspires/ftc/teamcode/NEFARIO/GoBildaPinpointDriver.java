@@ -66,6 +66,7 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
 
     //i2c address of the device
     public static final byte DEFAULT_ADDRESS = 0x31;
+    private Pose2D currentPose;
 
     public GoBildaPinpointDriver(I2cDeviceSynchSimple deviceClient, boolean deviceClientIsOwned) {
         super(deviceClient, deviceClientIsOwned);
@@ -500,7 +501,20 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
                 AngleUnit.RADIANS,
                 hOrientation);
     }
+    // Inside the GoBildaPinpointDriver class
+    public void setPose(Pose2D newPose) {
+        // Store the new pose internally
+        this.currentPose = newPose;
 
+        // You might also need to adjust internal encoder counts or IMU readings
+        // based on the new pose, depending on how the odometry is implemented.
+        // This is more complex and specific to the GoBildaPinpointDriver implementation.
+        // For example, if the odometry tracks relative movement and adds it to an initial pose,
+        // setting the pose might just involve updating the initial pose offset.
+        // If it relies on absolute encoder counts relative to the initial position,
+        // you might need to calculate a "virtual" starting encoder count.
+        // Consult the GoBilda Pinpoint documentation or source code for specifics.
+    }
 
 
     /**
