@@ -40,7 +40,7 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
     // ... (CORNER definitions, etc.) ...
     // Define your PID coefficients here if you want them to be @Config editable
     // Or get them from your 'nav' object if it stores them publicly
-    public static double Kp_XY = 0.8; // Example, link to nav.setXYCoefficients
+    public static double Kp_XY = 11.82; // Example, link to nav.setXYCoefficients
     public static double Ki_XY = 0.0;
     public static double Kd_XY = 0.0;
 
@@ -64,11 +64,11 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
     static final Pose2D CORNER_1 = new Pose2D(DistanceUnit.MM, SQUARE_SIDE_LENGTH_MM, 0, AngleUnit.DEGREES, 0);
     static final Pose2D CORNER_2 = new Pose2D(DistanceUnit.MM, SQUARE_SIDE_LENGTH_MM, SQUARE_SIDE_LENGTH_MM, AngleUnit.DEGREES, 90);
     static final Pose2D CORNER_3 = new Pose2D(DistanceUnit.MM, 0, SQUARE_SIDE_LENGTH_MM, AngleUnit.DEGREES, 178);
-    static final Pose2D CORNER_4 = new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES,  -90);
+    //static final Pose2D CORNER_4 = new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES,  -90);
 
-    static final Pose2D Drive_Side_1 = new Pose2D(DistanceUnit.MM, 2000, 20, AngleUnit.DEGREES, 0);
-    static final Pose2D Drive_Side_2 = new Pose2D(DistanceUnit.MM,  26000, 20, AngleUnit.DEGREES, -90);
-    static final Pose2D Drive_Side_3 = new Pose2D(DistanceUnit.MM, 2600, -2600, AngleUnit.DEGREES, -90);
+    static final Pose2D DRIVE_SIDE_1 = new Pose2D(DistanceUnit.MM, 2000, 20, AngleUnit.DEGREES, 0);
+    static final Pose2D DRIVE_SIDE_2 = new Pose2D(DistanceUnit.MM,  2500, 20, AngleUnit.DEGREES, -90);
+    static final Pose2D DRIVE_SIDE_3 = new Pose2D(DistanceUnit.MM, 1000, -1000, AngleUnit.DEGREES, -90);
     static final Pose2D Drive_Side_4 = new Pose2D(DistanceUnit.MM, 100, -2600, AngleUnit.DEGREES, 90);
     static final Pose2D Drive_Side_5 = new Pose2D(DistanceUnit.MM, 100, 0, AngleUnit.DEGREES, 0);
 
@@ -103,7 +103,7 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
 
         odo.resetPosAndIMU();
 
-        //nav.setXYCoefficients(0.5,0.01,0.00,DistanceUnit.MM,12);
+        //nav.setXYCoefficients(Kp_XY,Ki_XY,0.00,DistanceUnit.MM,12);
         //nav.setYawCoefficients(1,0,0.0, AngleUnit.DEGREES,2);
         nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
@@ -113,12 +113,10 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", odo.getXOffset());
         telemetry.addData("Y offset", odo.getYOffset());
-        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
-        telemetry.addData("Device Scalar", odo.getYawScalar());
+        //telemetry.addData("Device Version Number:", odo.getDeviceVersion());
+        //telemetry.addData("Device Scalar", odo.getYawScalar());
 
-
-
-
+        odo.resetPosAndIMU();
         // Wait for the game to start (driver presses START)
         waitForStart();
         resetRuntime();
@@ -135,6 +133,7 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
                     stateMachine = StateMachine.DRIVE_SIDE_1;
                     break;
                 case DRIVE_SIDE_1:
+                   // stateMachine = StateMachine.DRIVE_SIDE_1;
                     targetPose = CORNER_1;
                     // Drive to the first corner
                     if (nav.driveTo(currentPose, targetPose, 0.7, 0.5)) { // Adjust speed and hold time
@@ -271,6 +270,9 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
             telemetry.addData("X", currentPose.getX(DistanceUnit.MM));
             telemetry.addData("Y", currentPose.getY(DistanceUnit.MM));
             telemetry.addData("H", currentPose.getHeading(AngleUnit.DEGREES));
+            telemetry.addData("Robot X inches", robotXInches);
+            telemetry.addData("Robot Y inches", robotYInches);
+            telemetry.addData("Robot Heading Rad", robotHeadingRad);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
             telemetry.update();
 
