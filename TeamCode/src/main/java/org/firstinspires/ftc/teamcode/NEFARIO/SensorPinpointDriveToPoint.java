@@ -40,7 +40,7 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
     // ... (CORNER definitions, etc.) ...
     // Define your PID coefficients here if you want them to be @Config editable
     // Or get them from your 'nav' object if it stores them publicly
-    public static double Kp_XY = 11.82; // Example, link to nav.setXYCoefficients
+    public static double Kp_XY = 0.82; // Example, link to nav.setXYCoefficients
     public static double Ki_XY = 0.0;
     public static double Kd_XY = 0.0;
 
@@ -49,6 +49,7 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
     public static double Kd_Yaw = 0.0;
     enum StateMachine {
         WAITING_FOR_START,
+        START_POSE,
         DRIVE_SIDE_1,
         TURN_1,
         DRIVE_SIDE_2,
@@ -57,20 +58,23 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
         TURN_3,
         DRIVE_SIDE_4,
         TURN_4, // Or just return to the start position
+        RETURN_TO_START_ORIENTATION,
         AT_START
     }
     public static double SQUARE_SIDE_LENGTH_MM = 2600.0;
     // Define the target poses for the corners of the square
+    static final Pose2D START_POSE = new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES, 0); // Define for clarity
     static final Pose2D CORNER_1 = new Pose2D(DistanceUnit.MM, SQUARE_SIDE_LENGTH_MM, 0, AngleUnit.DEGREES, 0);
     static final Pose2D CORNER_2 = new Pose2D(DistanceUnit.MM, SQUARE_SIDE_LENGTH_MM, SQUARE_SIDE_LENGTH_MM, AngleUnit.DEGREES, 90);
-    static final Pose2D CORNER_3 = new Pose2D(DistanceUnit.MM, 0, SQUARE_SIDE_LENGTH_MM, AngleUnit.DEGREES, 178);
-    //static final Pose2D CORNER_4 = new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES,  -90);
+    static final Pose2D CORNER_3 = new Pose2D(DistanceUnit.MM, SQUARE_SIDE_LENGTH_MM, SQUARE_SIDE_LENGTH_MM, AngleUnit.DEGREES, 178);
+    static final Pose2D CORNER_4 = new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES,  -268);
+    static final Pose2D RETURN_TO_START = new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES, 0);
 
-    static final Pose2D DRIVE_SIDE_1 = new Pose2D(DistanceUnit.MM, 2000, 20, AngleUnit.DEGREES, 0);
-    static final Pose2D DRIVE_SIDE_2 = new Pose2D(DistanceUnit.MM,  2500, 20, AngleUnit.DEGREES, -90);
-    static final Pose2D DRIVE_SIDE_3 = new Pose2D(DistanceUnit.MM, 1000, -1000, AngleUnit.DEGREES, -90);
-    static final Pose2D Drive_Side_4 = new Pose2D(DistanceUnit.MM, 100, -2600, AngleUnit.DEGREES, 90);
-    static final Pose2D Drive_Side_5 = new Pose2D(DistanceUnit.MM, 100, 0, AngleUnit.DEGREES, 0);
+//    static final Pose2D DRIVE_SIDE_1 = new Pose2D(DistanceUnit.MM, 2000, 20, AngleUnit.DEGREES, 0);
+//    static final Pose2D DRIVE_SIDE_2 = new Pose2D(DistanceUnit.MM,  2500, 20, AngleUnit.DEGREES, -90);
+//    static final Pose2D DRIVE_SIDE_3 = new Pose2D(DistanceUnit.MM, 1000, -1000, AngleUnit.DEGREES, -90);
+//    static final Pose2D Drive_Side_4 = new Pose2D(DistanceUnit.MM, 100, -2600, AngleUnit.DEGREES, 90);
+//    static final Pose2D Drive_Side_5 = new Pose2D(DistanceUnit.MM, 100, 0, AngleUnit.DEGREES, 0);
 
 
     @Override
@@ -138,46 +142,45 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
                     // Drive to the first corner
                     if (nav.driveTo(currentPose, targetPose, 0.7, 0.5)) { // Adjust speed and hold time
                         telemetry.addLine("Reached Corner 1!");
-                        stateMachine = StateMachine.TURN_1;
-                    }
-                    break;
-
-                case TURN_1:
-                    // Turn towards the next corner
-                    // Assuming driveTo can handle turns by targeting a new heading
-                    if (nav.driveTo(odo.getPosition(), CORNER_2, 0.7, 0.5)) { // Target the next corner to achieve the turn
-                        telemetry.addLine("Turned to Corner 2 direction!");
                         stateMachine = StateMachine.DRIVE_SIDE_2;
                     }
                     break;
 
+//                case TURN_1:
+//                    // Turn towards the next corner
+//                    // Assuming driveTo can handle turns by targeting a new heading
+//                    if (nav.driveTo(odo.getPosition(), CORNER_2, 0.7, 0.5)) { // Target the next corner to achieve the turn
+//                        telemetry.addLine("Turned to Corner 2 direction!");
+//                        stateMachine = StateMachine.DRIVE_SIDE_2;
+//                    }
+//                    break;
+
                 case DRIVE_SIDE_2:
                     // Drive to the second corner
+                    targetPose = CORNER_2;
                     if (nav.driveTo(odo.getPosition(), CORNER_2, 0.7, 0.5)) {
                         telemetry.addLine("Reached Corner 2!");
-                        stateMachine = StateMachine.TURN_2;
-                    }
-                    break;
-
-                case TURN_2:
-                    // Turn towards the next corner
-                    if (nav.driveTo(odo.getPosition(), CORNER_3, 0.7, 0.5)) {
-                        telemetry.addLine("Turned to Corner 3 direction!");
                         stateMachine = StateMachine.DRIVE_SIDE_3;
                     }
                     break;
+
+//                case TURN_2:
+//                    // Turn towards the next corner
+//                    if (nav.driveTo(odo.getPosition(), CORNER_3, 0.7, 0.5)) {
+//                        telemetry.addLine("Turned to Corner 3 direction!");
+//                        stateMachine = StateMachine.DRIVE_SIDE_3;
+//                    }
+//                    break;
                     
                case DRIVE_SIDE_3:
                     // Drive to the third corner
+                   targetPose = CORNER_3;
                     if (nav.driveTo(odo.getPosition(), CORNER_3, 0.7, 0.5)) {
                         telemetry.addLine("Reached Corner 3!");
-                        stateMachine = StateMachine.TURN_3;
+                        stateMachine = StateMachine.DRIVE_SIDE_4;
                     }
                     break;
-                    case AT_START:
-                    requestOpModeStop();
-                    break;
-            }
+
 //                case TURN_3:
 //                    // Turn towards the last corner (or start)
 //                    if (nav.driveTo(odo.getPosition(), CORNER_4, 0.7, 0.5)) {
@@ -185,23 +188,49 @@ public class SensorPinpointDriveToPoint extends LinearOpMode {
 //                        stateMachine = StateMachine.DRIVE_SIDE_4;
 //                    }
 //                    break;
-//                case DRIVE_SIDE_4:
-//                    // Drive back to the start
-//                    if (nav.driveTo(odo.getPosition(), CORNER_4, 0.7, 0.5)) {
-//                        telemetry.addLine("Reached Corner 4!");
+
+                case DRIVE_SIDE_4:
+                    // Drive back to the start
+                    targetPose = CORNER_4;;
+                    if (nav.driveTo(odo.getPosition(), CORNER_4, 0.7, 0.5)) {
+                        telemetry.addLine("Reached Corner 4!");
+                        stateMachine = StateMachine.RETURN_TO_START_ORIENTATION;                    }
+
+                    break;
+                case RETURN_TO_START_ORIENTATION:
+                    // Target the true start pose (0,0,0) to correct final orientation
+                    targetPose = RETURN_TO_START; // Or START_POSE
+                    if (nav.driveTo(currentPose, targetPose, 0.7, 0.5)) { // Speed for turn might be lower
+                        telemetry.addLine("Returned to start orientation!");
+                        stateMachine = StateMachine.AT_START;
+                    }
+                    break;
+//                    case TURN_4:
+//                    // Turn towards the Start (or start)
+//                    if (nav.driveTo(odo.getPosition(), CORNER_1, 0.7, 0.5)) {
+//                        telemetry.addLine("Turned to Corner 1 direction!");
 //                        stateMachine = StateMachine.AT_START;
 //                    }
 //                    break;
-//                case AT_START:
-//                    // The square movement is complete
-//                    // You can add a final pose check or simply end the OpMode
-//                    telemetry.addLine("Square movement complete!");
-//                    requestOpModeStop(); // Stop the OpMode
-//                    break;
-//            }
+                case AT_START:
+                    // The square movement is complete
+                    // You can add a final pose check or simply end the OpMode
+                    telemetry.addLine("Square movement complete!");
+                    leftFrontDrive.setPower(0);
+                    rightFrontDrive.setPower(0);
+                    leftBackDrive.setPower(0);
+                    rightBackDrive.setPower(0);
+                    requestOpModeStop();// Stop the OpMode
+                    break;
+            }
+//            break;   case AT_START:
+//                requestOpModeStop();
+//                break;
+//        }
 
 
-            //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
+
+        //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
             leftFrontDrive.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
             rightFrontDrive.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));
             leftBackDrive.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_BACK));
