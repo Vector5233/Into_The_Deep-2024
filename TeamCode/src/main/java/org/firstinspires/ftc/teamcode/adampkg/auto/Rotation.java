@@ -1,38 +1,34 @@
 package org.firstinspires.ftc.teamcode.adampkg.auto;
 // ... other imports ...
-import com.acmerobotics.dashboard.FtcDashboard;
 
+import android.graphics.Canvas;
+import android.util.Size;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import android.util.Size; // Make sure you import this at the top
-
-import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.vision.VisionProcessor;
-import org.opencv.core.Mat;
-import android.graphics.Canvas;
-
-import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvPipeline;
-//import org.firstinspires.ftc.vision.opencv.OpenCvVisionProcessor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
+import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.adampkg.teleop.RobotBase;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
 
 import java.util.List;
 import java.util.Locale;
 
-@Autonomous(name="RedAutoPLUSTAGS", group="VECTORAUTO")
-public class RedAutoRightTags extends LinearOpMode {
+@Autonomous(name="Totation", group="VECTORAUTO")
+public class Rotation extends LinearOpMode {
     //@Disabled
     GoBildaPinpointDriver odo;
     private DriveToPoint nav = new DriveToPoint(this);
@@ -50,18 +46,20 @@ public class RedAutoRightTags extends LinearOpMode {
         DRIVE_TO_TARGET_1,
         DRIVE_TO_TARGET_2,
         DRIVE_TO_TARGET_3,
-        DRIVE_TO_TARGET_4;
+        DRIVE_TO_TARGET_4,
+
     }
     boolean liftsRanUp = false;
     boolean liftsRanDown = false;
 
     final RobotBase robotBase = new RobotBase();
     // ... Pose2D constants ...
-    static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,-120,1401,AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-120,661,AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -120, 700, AngleUnit.DEGREES, 90);
-    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-1200 , 700, AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,-600   , 0, AngleUnit.DEGREES,90);
+    static final Pose2D REDRIGHT_INIT = new Pose2D(DistanceUnit.MM,-1000,1000,AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,-1000,-1000,AngleUnit.DEGREES,180);
+    static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, 1000, -1000, AngleUnit.DEGREES, 270);
+    static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,1000 , 1000, AngleUnit.DEGREES,360);
+    static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,-1000   , 1000, AngleUnit.DEGREES,450);
+
 
     // *** APRILTAG LOCALIZATION DECLARATIONS ***
     private AprilTagProcessor aprilTag;
@@ -100,12 +98,12 @@ public class RedAutoRightTags extends LinearOpMode {
         }
     }
     private TagInfo[] knownTagLocations = {
-            new TagInfo(11, -1828, 1219, 0, 90),
-            new TagInfo(12, 0, 1828, 0, 0),
-            new TagInfo(13, 1828, 1219, 0, -90),
-            new TagInfo(14, 1828, -1219, 0, 270),
-            new TagInfo(15, 0, -1828, 0, 180),
-            new TagInfo(16, -1828, -1219, 0, 90),
+            new TagInfo(11, -1791, 1189, 0, 90),
+            new TagInfo(12, 0, 1791, 0, 0),
+            new TagInfo(13, 1791, 1189, 0, -90),
+            new TagInfo(14, 1791, -1189, 0, 270),
+            new TagInfo(15, 0, -1791, 0, 180),
+            new TagInfo(16, -1791, -1189, 0, 90),
     };
 
     //Use mm
@@ -202,17 +200,17 @@ public class RedAutoRightTags extends LinearOpMode {
     public void RaiseLift()
     {
         runLiftsToPos(liftsHighPos);
-        waitLifts(2000);
+        waitLifts(100);
     }
     public void LowerLift()
     {
         runLiftsToPos(liftsLowPos);
-        waitLifts(2000);
+        waitLifts(100);
         robotBase.OpenPincher();
 
-        waitLifts(500);
+        waitLifts(200);
         runLiftsToPos(liftsBottom);
-        waitLifts(1000);
+        waitLifts(100);
     }
     public void waitLifts(int holdTime)
     {
@@ -275,47 +273,107 @@ public class RedAutoRightTags extends LinearOpMode {
             switch (stateMachine) {
 
                 case WAITING_FOR_START:
-                    stateMachine = RedAutoRightTags.StateMachine.DRIVE_TO_TARGET_1;
-                    if (!liftsRanUp) {
-                        robotBase.initServos(hardwareMap);
-                        RaiseLift();
-                        liftsRanUp = true;
-                    }
+                    stateMachine = StateMachine.DRIVE_TO_TARGET_1;
+//                    if (!liftsRanUp) {
+//                        robotBase.initServos(hardwareMap);
+//                        RaiseLift();
+//                        liftsRanUp = true;
+//                    }
                     break;
                 case DRIVE_TO_TARGET_1:
                     if (nav.driveTo(odo.getPosition(), TARGET_1, 0.3, 2, telemetry)) {
-                        robotBase.initServos(hardwareMap);
-                        telemetry.addLine("In drive to target 1");
-                        waitLifts(1000);
-                        if (!liftsRanDown) {
-                            LowerLift();
-                            telemetry.addLine("Called LowerLift()");
-                            robotBase.initServos(hardwareMap);
-                            liftsRanDown = true;
-                        }
+//                        robotBase.initServos(hardwareMap);
+//                        telemetry.addLine("In drive to target 1");
+//                        waitLifts(100);
+//                        if (!liftsRanDown) {
+//                            LowerLift();
+//                            telemetry.addLine("Called LowerLift()");
+//                            robotBase.initServos(hardwareMap);
+//                            liftsRanDown = true;
+//                        }
                         telemetry.addLine("at position #1!");
-                        stateMachine = RedAutoRightTags.StateMachine.DRIVE_TO_TARGET_2;
+                        stateMachine = StateMachine.DRIVE_TO_TARGET_2;
                     }
                     break;
                 case DRIVE_TO_TARGET_2:
-                    if (nav.driveTo(odo.getPosition(), TARGET_2, 0.8, 0.1, telemetry)) {
+                    if (nav.driveTo(odo.getPosition(), TARGET_2, 1.0, 0.1, telemetry)) {
                         robotBase.initServos(hardwareMap);
                         telemetry.addLine("at position #2!");
-                        stateMachine = RedAutoRightTags.StateMachine.DRIVE_TO_TARGET_3;
+                        stateMachine = StateMachine.DRIVE_TO_TARGET_3;
                     }
                     break;
                 case DRIVE_TO_TARGET_3:
                     if (nav.driveTo(odo.getPosition(), TARGET_3, 1.0, 0.1, telemetry)) {
                         telemetry.addLine("at position #3!");
-                        stateMachine = RedAutoRightTags.StateMachine.DRIVE_TO_TARGET_4;
+                        stateMachine = StateMachine.DRIVE_TO_TARGET_4;
                     }
                     break;
                 case DRIVE_TO_TARGET_4:
                     if (nav.driveTo(odo.getPosition(), TARGET_4, 1.0, 0.1, telemetry)) {
                         telemetry.addLine("at position #4!");
-                        stateMachine = RedAutoRightTags.StateMachine.AT_TARGET;
+                        stateMachine = StateMachine.AT_TARGET;
                     }
                     break;
+//                case DRIVE_TO_TARGET_5:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_5, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.DRIVE_TO_TARGET_6;
+//                    }
+//                    break;
+//                case DRIVE_TO_TARGET_6:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_6, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.DRIVE_TO_TARGET_7;
+//                    }
+//                    break;
+//                case DRIVE_TO_TARGET_7:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_7, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.DRIVE_TO_TARGET_8;
+//                    }
+//                    break;
+//                case DRIVE_TO_TARGET_8:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_8, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.DRIVE_TO_TARGET_9;
+//                    }
+//                    break;
+//                case DRIVE_TO_TARGET_9:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_9, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.DRIVE_TO_TARGET_10;
+//                    }
+//                    break;
+//                case DRIVE_TO_TARGET_10:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_10, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.DRIVE_TO_TARGET_11;
+//                    }
+//                    break;
+//                case DRIVE_TO_TARGET_11:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_11, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.DRIVE_TO_TARGET_12;
+//                    }
+//                    break;
+//                case DRIVE_TO_TARGET_12:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_12, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.DRIVE_TO_TARGET_13;
+//                    }
+//                    break;
+//                case DRIVE_TO_TARGET_13:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_13, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.DRIVE_TO_TARGET_14;
+//                    }
+//                    break;
+//                case DRIVE_TO_TARGET_14:
+//                    if (nav.driveTo(odo.getPosition(), TARGET_14, 1.0, 0.1, telemetry)) {
+//                        telemetry.addLine("at position #5!");
+//                        stateMachine = StateMachine.AT_TARGET;
+//                    }
+//                    break;
                 case AT_TARGET:
                     nav.Stop();
                     break;

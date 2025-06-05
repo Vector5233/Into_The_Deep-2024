@@ -53,8 +53,10 @@ public class RedAutoRightMario extends LinearOpMode {
         DRIVE_TO_TARGET_8,
         DRIVE_TO_TARGET_9,
         DRIVE_TO_TARGET_10,
-        DRIVE_TO_TARGET_11;
-
+        DRIVE_TO_TARGET_11,
+        DRIVE_TO_TARGET_12,
+        DRIVE_TO_TARGET_13,
+        DRIVE_TO_TARGET_14;
     }
     boolean liftsRanUp = false;
     boolean liftsRanDown = false;
@@ -66,13 +68,16 @@ public class RedAutoRightMario extends LinearOpMode {
     static final Pose2D TARGET_2 = new Pose2D(DistanceUnit.MM, -120, 700, AngleUnit.DEGREES, 90);
     static final Pose2D TARGET_3 = new Pose2D(DistanceUnit.MM,-920 , 700, AngleUnit.DEGREES,90);
     static final Pose2D TARGET_4 = new Pose2D(DistanceUnit.MM,-920   , 0, AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_5 = new Pose2D(DistanceUnit.MM,-1250   , 0, AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_6 = new Pose2D(DistanceUnit.MM,-1250   , 1200, AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_7 = new Pose2D(DistanceUnit.MM,-1250   , 0, AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_8 = new Pose2D(DistanceUnit.MM,-1462   , 0, AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_9 = new Pose2D(DistanceUnit.MM,-1462   , 1200, AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_10 = new Pose2D(DistanceUnit.MM,-1462   , 0, AngleUnit.DEGREES,90);
-    static final Pose2D TARGET_11 = new Pose2D(DistanceUnit.MM,-1616   , 1200, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_5 = new Pose2D(DistanceUnit.MM,-1100   , 0, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_6 = new Pose2D(DistanceUnit.MM,-1100   , 1200, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_7 = new Pose2D(DistanceUnit.MM,-1100   , 0, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_8 = new Pose2D(DistanceUnit.MM,-1402   , 0, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_9 = new Pose2D(DistanceUnit.MM,-1402   , 1200, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_10 = new Pose2D(DistanceUnit.MM,-1402   , 0, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_11 = new Pose2D(DistanceUnit.MM,-1469   , 0, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_12 = new Pose2D(DistanceUnit.MM,-1469   , 1200, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_13 = new Pose2D(DistanceUnit.MM,-1469   , 0, AngleUnit.DEGREES,90);
+    static final Pose2D TARGET_14 = new Pose2D(DistanceUnit.MM,-900   , 0, AngleUnit.DEGREES,90);
 
 
     // *** APRILTAG LOCALIZATION DECLARATIONS ***
@@ -214,17 +219,17 @@ public class RedAutoRightMario extends LinearOpMode {
     public void RaiseLift()
     {
         runLiftsToPos(liftsHighPos);
-        waitLifts(2000);
+        waitLifts(100);
     }
     public void LowerLift()
     {
         runLiftsToPos(liftsLowPos);
-        waitLifts(2000);
+        waitLifts(100);
         robotBase.OpenPincher();
 
-        waitLifts(500);
+        waitLifts(200);
         runLiftsToPos(liftsBottom);
-        waitLifts(1000);
+        waitLifts(100);
     }
     public void waitLifts(int holdTime)
     {
@@ -298,7 +303,7 @@ public class RedAutoRightMario extends LinearOpMode {
                     if (nav.driveTo(odo.getPosition(), TARGET_1, 0.3, 2, telemetry)) {
                         robotBase.initServos(hardwareMap);
                         telemetry.addLine("In drive to target 1");
-                        waitLifts(1000);
+                        waitLifts(100);
                         if (!liftsRanDown) {
                             LowerLift();
                             telemetry.addLine("Called LowerLift()");
@@ -310,7 +315,7 @@ public class RedAutoRightMario extends LinearOpMode {
                     }
                     break;
                 case DRIVE_TO_TARGET_2:
-                    if (nav.driveTo(odo.getPosition(), TARGET_2, 0.8, 0.1, telemetry)) {
+                    if (nav.driveTo(odo.getPosition(), TARGET_2, 1.0, 0.1, telemetry)) {
                         robotBase.initServos(hardwareMap);
                         telemetry.addLine("at position #2!");
                         stateMachine = StateMachine.DRIVE_TO_TARGET_3;
@@ -361,11 +366,29 @@ public class RedAutoRightMario extends LinearOpMode {
                 case DRIVE_TO_TARGET_10:
                     if (nav.driveTo(odo.getPosition(), TARGET_10, 1.0, 0.1, telemetry)) {
                         telemetry.addLine("at position #5!");
-                        stateMachine = StateMachine.DRIVE_TO_TARGET11;
+                        stateMachine = StateMachine.DRIVE_TO_TARGET_11;
                     }
                     break;
                 case DRIVE_TO_TARGET_11:
                     if (nav.driveTo(odo.getPosition(), TARGET_11, 1.0, 0.1, telemetry)) {
+                        telemetry.addLine("at position #5!");
+                        stateMachine = StateMachine.DRIVE_TO_TARGET_12;
+                    }
+                    break;
+                case DRIVE_TO_TARGET_12:
+                    if (nav.driveTo(odo.getPosition(), TARGET_12, 1.0, 0.1, telemetry)) {
+                        telemetry.addLine("at position #5!");
+                        stateMachine = StateMachine.DRIVE_TO_TARGET_13;
+                    }
+                    break;
+                case DRIVE_TO_TARGET_13:
+                    if (nav.driveTo(odo.getPosition(), TARGET_13, 1.0, 0.1, telemetry)) {
+                        telemetry.addLine("at position #5!");
+                        stateMachine = StateMachine.DRIVE_TO_TARGET_14;
+                    }
+                    break;
+                case DRIVE_TO_TARGET_14:
+                    if (nav.driveTo(odo.getPosition(), TARGET_14, 1.0, 0.1, telemetry)) {
                         telemetry.addLine("at position #5!");
                         stateMachine = StateMachine.AT_TARGET;
                     }
